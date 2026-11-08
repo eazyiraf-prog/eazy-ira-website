@@ -1,0 +1,30 @@
+---
+type Variant = "primary" | "secondary" | "ghost" | "donate";
+
+interface Props {
+  variant?: Variant;
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  variant = "primary",
+  href,
+  type = "button",
+  disabled = false,
+  class: className,
+} = Astro.props;
+const classes = ["ui-button", `ui-button--${variant}`, className];
+---
+
+{href ? (
+  <a href={href} class:list={classes}>
+    <slot />
+  </a>
+) : (
+  <button type={type} disabled={disabled} class:list={classes}>
+    <slot />
+  </button>
+)}

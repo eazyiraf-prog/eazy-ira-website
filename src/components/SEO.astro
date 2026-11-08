@@ -1,0 +1,46 @@
+---
+import site from "../data/site.json";
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: string;
+  canonical?: string;
+  robots?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description,
+  lang = "en",
+  canonical,
+  robots = "index, follow",
+  image,
+} = Astro.props;
+const pageTitle = `${title} | ${site.name}`;
+const socialImage = image
+  ? new URL(image, Astro.site ?? Astro.url).href
+  : undefined;
+const locale = lang === "rw" ? "rw_RW" : lang === "fr" ? "fr_FR" : "en_US";
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+{canonical && <link rel="canonical" href={canonical} />}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:locale" content={locale} />
+{canonical && <meta property="og:url" content={canonical} />}
+{socialImage && <meta property="og:image" content={socialImage} />}
+<meta
+  name="twitter:card"
+  content={socialImage ? "summary_large_image" : "summary"}
+/>
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+{socialImage && <meta name="twitter:image" content={socialImage} />}
+<slot name="hreflang" />

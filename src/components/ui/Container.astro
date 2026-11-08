@@ -1,0 +1,12 @@
+---
+interface Props {
+  wide?: boolean;
+  class?: string;
+}
+
+const { wide = false, class: className } = Astro.props;
+---
+
+<div class:list={["ui-container", wide && "ui-container--wide", className]}>
+  <slot />
+</div>

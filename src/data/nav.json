@@ -1,0 +1,18 @@
+{
+  "primary": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about" },
+    { "label": "Programs", "href": "/programs" },
+    { "label": "Impact", "href": "/impact" },
+    { "label": "Transparency", "href": "/transparency" },
+    { "label": "Gallery", "href": "/gallery" },
+    { "label": "Get Involved", "href": "/get-involved" },
+    { "label": "News", "href": "/news" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "legal": [
+    { "label": "Privacy", "href": "/legal/privacy" },
+    { "label": "Terms", "href": "/legal/terms" },
+    { "label": "Safeguarding", "href": "/legal/safeguarding" }
+  ]
+}

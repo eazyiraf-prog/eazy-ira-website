@@ -1,0 +1,75 @@
+---
+type IconName =
+  | "heart"
+  | "book"
+  | "users"
+  | "sprout"
+  | "arrow-right"
+  | "check"
+  | "sun"
+  | "map-pin";
+
+interface Props {
+  name: IconName;
+  size?: number;
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 24, label, class: className } = Astro.props;
+---
+
+<svg
+  class:list={["ui-icon", className]}
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={label ? "img" : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+  {name === "heart" && (
+    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+  )}
+  {name === "book" && (
+    <>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z" />
+      <path d="M4 5.5v13A2.5 2.5 0 0 1 6.5 16H20M8 7h8" />
+    </>
+  )}
+  {name === "users" && (
+    <>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" />
+    </>
+  )}
+  {name === "sprout" && (
+    <>
+      <path d="M12 22v-9M12 13c-5.5 0-8-3-8-8 5 0 8 2.5 8 8ZM12 10c0-4.5 2.5-7 7-7 0 4.5-2.5 7-7 7Z" />
+    </>
+  )}
+  {name === "arrow-right" && (
+    <>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </>
+  )}
+  {name === "check" && <path d="m5 12 4 4L19 6" />}
+  {name === "sun" && (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+    </>
+  )}
+  {name === "map-pin" && (
+    <>
+      <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </>
+  )}
+</svg>

@@ -1,0 +1,246 @@
+---
+import Badge from "../components/ui/Badge.astro";
+import Button from "../components/ui/Button.astro";
+import Card from "../components/ui/Card.astro";
+import Container from "../components/ui/Container.astro";
+import Icon from "../components/ui/Icon.astro";
+import Image from "../components/ui/Image.astro";
+import Section from "../components/ui/Section.astro";
+import HeroSlider from "../components/HeroSlider.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Design System"
+  description="Private visual reference for the EAZY-IRA Charity Foundation design system."
+  robots="noindex, nofollow"
+>
+  <section class="ui-section">
+    <Container>
+      <p class="ui-section__eyebrow">Private design review</p>
+      <h1 class="sample-heading">A foundation for good things.</h1>
+      <p class="sample-body" style="margin-top: 1.25rem">
+        A warm, clear, and accessible visual language for EAZY-IRA Charity
+        Foundation. Colors are placeholders and can be replaced with the logo
+        colors.
+      </p>
+    </Container>
+  </section>
+
+  <Section
+    id="hero-slider"
+    eyebrow="00 / Featured stories"
+    heading="Hero slider"
+    intro="A responsive image and silent-video carousel with keyboard, touch, and pause controls."
+  />
+  <HeroSlider />
+
+  <Section
+    id="colors"
+    eyebrow="01 / Color"
+    heading="A palette with purpose"
+    intro="Every palette swatch shows its color value and a foreground pairing selected to meet WCAG AA contrast requirements for normal text."
+  >
+    <div class="design-grid">
+      <div class="theme-panel" data-theme="light">
+        <h3>Light theme</h3>
+        <div class="design-grid">
+          <div class="color-swatch color-swatch--primary">
+            Primary · #155C54
+          </div>
+          <div class="color-swatch color-swatch--accent">Accent · #F2BC4B</div>
+          <div class="color-swatch color-swatch--page">Page · #FCF9F2</div>
+          <div class="color-swatch color-swatch--surface">
+            Surface · #FFFFFF
+          </div>
+          <div class="color-swatch color-swatch--text">Text · #252A28</div>
+          <div class="color-swatch color-swatch--muted">Muted · #505A55</div>
+          <div class="color-swatch color-swatch--border">Border · #C9D0CB</div>
+        </div>
+        <p class="design-note">
+          Primary/accent swatches use contrasting text rather than white on
+          gold.
+        </p>
+      </div>
+      <div class="theme-panel" data-theme="dark">
+        <h3>Dark theme</h3>
+        <div class="design-grid">
+          <div class="color-swatch color-swatch--primary">
+            Primary · #8CD4C1
+          </div>
+          <div class="color-swatch color-swatch--accent">Accent · #FFD36E</div>
+          <div class="color-swatch color-swatch--page">Page · #161D1B</div>
+          <div class="color-swatch color-swatch--surface">
+            Surface · #202A26
+          </div>
+          <div class="color-swatch color-swatch--text">Text · #F4F1E8</div>
+          <div class="color-swatch color-swatch--muted">Muted · #C1CBC5</div>
+          <div class="color-swatch color-swatch--border">Border · #43514A</div>
+        </div>
+        <p class="design-note">
+          The dark palette adjusts primary and accent colors for legibility.
+        </p>
+      </div>
+    </div>
+    <p class="design-note">
+      Palette values are placeholders. Replace them with the supplied logo
+      colors after review.
+    </p>
+  </Section>
+
+  <Section
+    id="type"
+    eyebrow="02 / Typography"
+    heading="Friendly, grounded, readable"
+    intro="Fraunces is used for expressive headings and Inter for clear body copy. Fonts are requested as web subsets; local system fallbacks remain in place."
+  >
+    <Card>
+      <h3 class="sample-heading">Love in Action, Hope in Every Child.</h3>
+      <p class="sample-body" style="margin-top: 1rem">
+        Body text is fluid from 16px to 18px, with generous line height to
+        support comfortable reading across screen sizes.
+      </p>
+      <p class="design-note">
+        Display: Fraunces · Body: Inter · Scale: fluid from small labels to
+        display headings.
+      </p>
+    </Card>
+  </Section>
+
+  <Section
+    id="buttons"
+    eyebrow="03 / Actions"
+    heading="Buttons"
+    intro="Four clear action styles, including a distinct donation action."
+  >
+    <div class="design-stack">
+      <Button variant="primary">Primary action</Button>
+      <Button variant="secondary">Secondary action</Button>
+      <Button variant="ghost">Ghost action</Button>
+      <Button variant="donate">Donate</Button>
+      <Button disabled>Disabled</Button>
+    </div>
+  </Section>
+
+  <Section
+    id="cards"
+    eyebrow="04 / Surfaces"
+    heading="Cards, sections, and containers"
+    intro="Reusable layout building blocks keep spacing and hierarchy consistent."
+  >
+    <div class="design-grid">
+      <Card>
+        <Icon name="heart" size={28} />
+        <h3 style="margin-top: 1rem; font-size: var(--type-xl)">
+          Card component
+        </h3>
+        <p class="design-note">
+          Soft border, rounded corners, and a subtle shadow create a calm
+          surface for content.
+        </p>
+      </Card>
+      <Card>
+        <Icon name="book" size={28} />
+        <h3 style="margin-top: 1rem; font-size: var(--type-xl)">
+          One shared rhythm
+        </h3>
+        <p class="design-note">
+          Section includes an eyebrow, heading, and optional intro; Container
+          constrains content width.
+        </p>
+      </Card>
+    </div>
+  </Section>
+
+  <Section
+    id="badges"
+    eyebrow="05 / Labels"
+    heading="Badges"
+    intro="Compact labels for status and emphasis."
+  >
+    <div class="design-stack">
+      <Badge tone="primary">Primary</Badge>
+      <Badge tone="accent">Accent</Badge>
+      <Badge tone="neutral">Neutral</Badge>
+    </div>
+  </Section>
+
+  <Section
+    id="icons"
+    eyebrow="06 / Icons"
+    heading="One consistent line-icon set"
+    intro="A small, shared set of accessible, decorative-by-default line icons."
+  >
+    <div class="design-stack">
+      <span>
+        <Icon name="heart" /> Heart
+      </span>
+      <span>
+        <Icon name="book" /> Book
+      </span>
+      <span>
+        <Icon name="users" /> People
+      </span>
+      <span>
+        <Icon name="sprout" /> Growth
+      </span>
+      <span>
+        <Icon name="arrow-right" /> Arrow
+      </span>
+      <span>
+        <Icon name="check" /> Check
+      </span>
+      <span>
+        <Icon name="sun" /> Sun
+      </span>
+      <span>
+        <Icon name="map-pin" /> Location
+      </span>
+    </div>
+  </Section>
+
+  <Section
+    id="image"
+    eyebrow="07 / Media"
+    heading="Responsive image"
+    intro="Images use a required alt description and load lazily by default."
+  >
+    <div class="ui-image-frame">
+      <Image
+        src="/images/design-placeholder.svg"
+        alt="Abstract hills and a sunrise in the placeholder color palette."
+        width={1200}
+        height={700}
+        sizes="(max-width: 768px) 100vw, 72rem"
+      />
+    </div>
+  </Section>
+
+  <Section
+    id="layout"
+    eyebrow="08 / Layout tokens"
+    heading="Space to breathe"
+    intro="Spacing uses a fluid section rhythm, while card/control radii, shadow, and container widths stay consistent."
+  >
+    <div class="design-grid">
+      <Card>
+        <h3 style="font-size: var(--type-lg)">Spacing</h3>
+        <p class="design-note">
+          Section padding: clamp(3.5rem, 8vw, 7rem). Page gutter adapts to
+          viewport.
+        </p>
+      </Card>
+      <Card>
+        <h3 style="font-size: var(--type-lg)">Shape &amp; depth</h3>
+        <p class="design-note">
+          Cards: 1.25rem radius · Controls: pill radius · Soft, low-contrast
+          shadow.
+        </p>
+      </Card>
+      <Card>
+        <h3 style="font-size: var(--type-lg)">Containers</h3>
+        <p class="design-note">Content: 72rem max · Wide: 80rem max.</p>
+      </Card>
+    </div>
+  </Section>
+</BaseLayout>

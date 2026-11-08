@@ -1,0 +1,35 @@
+{
+  "name": "EAZY-IRA Charity Foundation",
+  "tagline": "Love in Action, Hope in Every Child.",
+  "location": "Masoro, Kigali, Rwanda",
+  "email": {
+    "value": null,
+    "needsConfirmation": true
+  },
+  "phone": {
+    "value": null,
+    "needsConfirmation": true
+  },
+  "socials": {
+    "facebook": {
+      "value": null,
+      "needsConfirmation": true
+    },
+    "instagram": {
+      "value": null,
+      "needsConfirmation": true
+    },
+    "youtube": {
+      "value": null,
+      "needsConfirmation": true
+    }
+  },
+  "donationUrl": {
+    "value": null,
+    "needsConfirmation": true
+  },
+  "registrationDetails": {
+    "value": null,
+    "needsConfirmation": true
+  }
+}

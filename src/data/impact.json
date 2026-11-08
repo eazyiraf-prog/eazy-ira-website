@@ -1,25 +1,28 @@
 {
-  "founding": {
-    "month": "May",
-    "year": 2025,
-    "founders": 11
-  },
-  "childrenCurrentlyServed": {
-    "value": null,
-    "status": "confirm"
+  "childrenServed": {
+    "value": 78,
+    "needsConfirmation": true
   },
   "weeklyGatherings": {
+    "value": null,
     "startMonth": "May",
     "startYear": 2025,
-    "consecutiveCount": null,
-    "status": "confirm"
+    "needsConfirmation": true,
+    "note": "Placeholder: confirm the current total of weekly gatherings."
   },
-  "schoolMaterials": {
-    "childrenCovered": null,
+  "childrenWithSchoolMaterials": {
+    "value": 78,
     "academicYears": ["2025-2026", "2026-2027"],
-    "status": "confirm"
+    "needsConfirmation": true
   },
+  "foundedYear": 2025,
+  "foundedMonth": "May",
+  "founders": 11,
   "publicSpeakingAcademy": {
     "sessions": 8
+  },
+  "lastUpdated": {
+    "value": null,
+    "needsConfirmation": true
   }
 }

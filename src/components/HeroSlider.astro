@@ -1,0 +1,393 @@
+---
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import Button from "./ui/Button.astro";
+import slides from "../data/hero-slides.json";
+
+const childConsentViolation = slides.find(
+  (slide) => slide.containsChildren && !slide.consentConfirmed,
+);
+
+if (childConsentViolation) {
+  throw new Error(
+    `Hero slider build failed: slide "${childConsentViolation.id}" is flagged as containing children but guardian consent is not confirmed.`,
+  );
+}
+
+const videoIsAvailable = (src: string) =>
+  src.startsWith("/") &&
+  existsSync(fileURLToPath(new URL(`../../public${src}`, import.meta.url)));
+---
+
+<section
+  class="hero-slider"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="Featured stories"
+  data-hero-slider
+>
+  <div class="hero-slider__slides">
+    {slides.map((slide, index) => (
+      <article
+        class="hero-slider__slide"
+        id={`hero-slide-${slide.id}`}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${index + 1} of ${slides.length}`}
+        aria-hidden={index !== 0 ? "true" : "false"}
+        inert={index !== 0}
+        data-slide
+        data-slide-index={index}
+        data-slide-type={slide.type}
+      >
+        <img
+          class="hero-slider__image"
+          src={slide.src}
+          srcset="/images/hero-placeholder-640.svg 640w, /images/design-placeholder.svg 1200w, /images/hero-placeholder-1920.svg 1920w"
+          sizes="100vw"
+          alt={slide.alt}
+          width="1200"
+          height="700"
+          loading={index === 0 ? "eager" : "lazy"}
+          fetchpriority={index === 0 ? "high" : "auto"}
+          decoding="async"
+        />
+        {slide.type === "video" && (
+          <video
+            class="hero-slider__video"
+            muted
+            loop={false}
+            playsinline
+            preload="none"
+            poster={slide.poster}
+            aria-label={slide.alt}
+            data-video
+            data-video-src={videoIsAvailable(slide.src) ? slide.src : undefined}
+            data-video-poster={slide.poster}
+          ></video>
+        )}
+        <div class="hero-slider__scrim" aria-hidden="true" />
+        <div class="hero-slider__content">
+          <p class="hero-slider__eyebrow">{slide.eyebrow}</p>
+          <h2 class="hero-slider__headline">{slide.headline}</h2>
+          <p class="hero-slider__text">{slide.text}</p>
+          <div class="hero-slider__actions">
+            <Button variant="primary" href={slide.buttonHref}>
+              {slide.buttonLabel}
+            </Button>
+            <Button
+              variant="secondary"
+              href="/about"
+              class="hero-slider__secondary-link"
+            >
+              Discover the foundation
+            </Button>
+          </div>
+          {slide.type === "video" && (
+            <p class="hero-slider__video-alternative">
+              Video description: {slide.alt} {slide.text}
+            </p>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div
+    class="hero-slider__controls"
+    role="group"
+    aria-label="Carousel controls"
+  >
+    <button
+      class="hero-slider__control"
+      type="button"
+      data-previous
+      aria-label="Previous slide"
+    >
+      <span aria-hidden="true">&larr;</span>
+    </button>
+    <div class="hero-slider__dots" role="group" aria-label="Choose a slide">
+      {slides.map((slide, index) => (
+        <button
+          class="hero-slider__dot"
+          type="button"
+          data-go-to={index}
+          aria-label={`Go to slide ${index + 1}: ${slide.headline}`}
+          aria-current={index === 0 ? "true" : undefined}
+        />
+      ))}
+    </div>
+    <button
+      class="hero-slider__control"
+      type="button"
+      data-next
+      aria-label="Next slide"
+    >
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+    <button
+      class="hero-slider__control hero-slider__toggle"
+      type="button"
+      data-toggle
+      aria-label="Pause slideshow"
+      aria-pressed="false"
+    >
+      Pause
+    </button>
+  </div>
+  <p
+    class="hero-slider__status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-status
+  >
+    Slide 1 of {slides.length}: {slides[0].headline}
+  </p>
+</section>
+
+<script src="../scripts/hero-slider.js"></script>
+
+<style>
+  .hero-slider {
+    position: relative;
+    height: clamp(30rem, 78vh, 60rem);
+    min-height: 30rem;
+    overflow: hidden;
+    background: var(--text-primary);
+    color: var(--surface-page);
+  }
+
+  .hero-slider__slides,
+  .hero-slider__slide {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-slider__slide {
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 450ms ease,
+      visibility 450ms ease;
+  }
+
+  .hero-slider__slide.is-active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .hero-slider__image,
+  .hero-slider__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-slider__video {
+    visibility: hidden;
+  }
+
+  .hero-slider__video.is-ready {
+    visibility: visible;
+  }
+
+  .hero-slider__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--text-primary) 94%, transparent) 0%,
+      color-mix(in srgb, var(--text-primary) 90%, transparent) 70%,
+      color-mix(in srgb, var(--text-primary) 70%, transparent) 100%
+    );
+  }
+
+  .hero-slider__content {
+    position: absolute;
+    top: 50%;
+    left: max(var(--container-gutter), calc((100vw - 72rem) / 2));
+    width: min(42rem, 76%);
+    transform: translateY(-50%);
+  }
+
+  .hero-slider__eyebrow {
+    margin-bottom: 1rem;
+    color: var(--brand-accent);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-slider__headline {
+    max-width: 13ch;
+    color: var(--surface-page);
+    font-family: var(--font-display);
+    font-size: var(--type-3xl);
+  }
+
+  .hero-slider__text {
+    max-width: 38rem;
+    margin-top: 1.25rem;
+    color: var(--surface-page);
+    font-size: var(--type-lg);
+    line-height: 1.55;
+  }
+
+  .hero-slider__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .hero-slider__secondary-link {
+    border-color: color-mix(in srgb, var(--surface-page) 70%, transparent);
+    background: color-mix(in srgb, var(--text-primary) 40%, transparent);
+    color: var(--surface-page);
+  }
+
+  .hero-slider__secondary-link:hover {
+    background: color-mix(in srgb, var(--surface-page) 12%, transparent);
+  }
+
+  .hero-slider__controls {
+    position: absolute;
+    z-index: 1;
+    right: var(--container-gutter);
+    bottom: 1.5rem;
+    left: var(--container-gutter);
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .hero-slider__control,
+  .hero-slider__dot {
+    display: inline-flex;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--surface-page) 70%, transparent);
+    border-radius: var(--radius-control-token);
+    background: color-mix(in srgb, var(--text-primary) 78%, transparent);
+    color: var(--surface-page);
+    font: 700 var(--type-sm) / 1.2 var(--font-sans);
+    cursor: pointer;
+  }
+
+  .hero-slider__control:hover,
+  .hero-slider__dot:hover {
+    background: color-mix(in srgb, var(--text-primary) 94%, transparent);
+  }
+
+  .hero-slider__toggle {
+    min-width: 5.5rem;
+  }
+
+  .hero-slider__dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero-slider__dot {
+    min-width: 1.25rem;
+    min-height: 1.25rem;
+    width: 1.25rem;
+    padding: 0;
+  }
+
+  .hero-slider__dot[aria-current="true"] {
+    border-color: var(--brand-accent);
+    background: var(--brand-accent);
+  }
+
+  .hero-slider__status,
+  .hero-slider__video-alternative {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  @media (max-width: 48rem) {
+    .hero-slider {
+      height: max(60svh, 24rem);
+      min-height: 24rem;
+    }
+
+    .hero-slider__scrim {
+      background: linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--text-primary) 94%, transparent) 0%,
+        color-mix(in srgb, var(--text-primary) 90%, transparent) 65%,
+        color-mix(in srgb, var(--text-primary) 70%, transparent) 100%
+      );
+    }
+
+    .hero-slider__content {
+      top: auto;
+      bottom: 5rem;
+      left: var(--container-gutter);
+      width: calc(100% - var(--container-gutter) - var(--container-gutter));
+      transform: none;
+    }
+
+    .hero-slider__headline {
+      max-width: 15ch;
+      font-size: var(--type-2xl);
+    }
+
+    .hero-slider__text {
+      margin-top: 0.875rem;
+      font-size: var(--type-body);
+    }
+
+    .hero-slider__actions {
+      gap: 0.75rem 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .hero-slider__controls {
+      right: var(--container-gutter);
+      bottom: 1rem;
+      left: var(--container-gutter);
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .hero-slider__control {
+      min-width: 2.75rem;
+    }
+
+    .hero-slider__toggle {
+      min-width: 4.5rem;
+    }
+
+    .hero-slider__dots {
+      gap: 0.375rem;
+    }
+
+    .hero-slider__dot {
+      min-width: 1rem;
+      min-height: 1rem;
+      width: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slider__slide {
+      transition: none !important;
+    }
+  }
+</style>

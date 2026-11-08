@@ -1,0 +1,16 @@
+---
+import Container from "./ui/Container.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="page-placeholder">
+  <Container>
+    <h1>{title}</h1>
+    <p>This page is being prepared. Please check back soon.</p>
+  </Container>
+</section>

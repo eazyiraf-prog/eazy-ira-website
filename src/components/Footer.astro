@@ -1,0 +1,108 @@
+---
+import Button from "./ui/Button.astro";
+import Container from "./ui/Container.astro";
+import impact from "../data/impact.json";
+import nav from "../data/nav.json";
+import site from "../data/site.json";
+---
+
+<footer class="site-footer">
+  <Container wide>
+    <div class="site-footer__main">
+      <div class="site-footer__identity">
+        <a class="site-footer__brand" href="/">
+          {site.name}
+        </a>
+        <p>{site.tagline}</p>
+        <p>{site.location}</p>
+        <ul class="site-socials" aria-label="Social media">
+          {Object.entries(site.socials).map(([platform, contact]) => (
+            <li>
+              <span>
+                {platform}:{" "}
+                {contact.needsConfirmation
+                  ? "link to be confirmed"
+                  : contact.value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <nav class="site-footer__sitemap" aria-label="Footer navigation">
+        <h2>Explore</h2>
+        <ul>
+          {nav.primary.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="site-footer__signup">
+        <h2>Stay connected</h2>
+        <p>Sign up for occasional foundation updates.</p>
+        <form
+          name="newsletter"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+        >
+          <input type="hidden" name="form-name" value="newsletter" />
+          <p class="form-honeypot">
+            <label>
+              Leave this field empty: <input name="bot-field" />
+            </label>
+          </p>
+          <label for="newsletter-email">Email address</label>
+          <input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          />
+          <label class="site-footer__consent">
+            <input name="consent" type="checkbox" value="yes" required />
+            <span>
+              I agree to receive email updates and understand I can unsubscribe.
+            </span>
+          </label>
+          <Button type="submit" variant="secondary">
+            Sign up
+          </Button>
+        </form>
+      </div>
+
+      <div class="site-footer__details">
+        <h2>Organization details</h2>
+        <p>
+          Registration details:{" "}
+          {site.registrationDetails.needsConfirmation
+            ? "to be confirmed"
+            : site.registrationDetails.value}
+        </p>
+        <p>
+          Last updated:{" "}
+          {impact.lastUpdated.needsConfirmation
+            ? "date to be confirmed"
+            : impact.lastUpdated.value}
+        </p>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {site.name}</p>
+      <nav aria-label="Legal links">
+        <ul>
+          {nav.legal.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </Container>
+</footer>

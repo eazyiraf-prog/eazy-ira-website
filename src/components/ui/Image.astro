@@ -1,0 +1,33 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  srcset?: string;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  srcset,
+  sizes,
+  class: className,
+} = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  srcset={srcset}
+  sizes={sizes}
+  loading="lazy"
+  decoding="async"
+  class:list={["ui-image", className]}
+/>

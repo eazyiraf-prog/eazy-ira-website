@@ -1,0 +1,28 @@
+---
+interface Props {
+  heading: string;
+  eyebrow?: string;
+  intro?: string;
+  id?: string;
+  class?: string;
+}
+
+const { heading, eyebrow, intro, id, class: className } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={["ui-section", className]}
+  aria-labelledby={id ? `${id}-heading` : undefined}
+>
+  <div class="ui-container">
+    <header class="ui-section__header">
+      {eyebrow && <p class="ui-section__eyebrow">{eyebrow}</p>}
+      <h2 id={id ? `${id}-heading` : undefined} class="ui-section__heading">
+        {heading}
+      </h2>
+      {intro && <p class="ui-section__intro">{intro}</p>}
+    </header>
+    <slot />
+  </div>
+</section>

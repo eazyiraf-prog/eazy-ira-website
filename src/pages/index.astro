@@ -1,0 +1,669 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSlider from "../components/HeroSlider.astro";
+import Button from "../components/ui/Button.astro";
+import Card from "../components/ui/Card.astro";
+import Icon from "../components/ui/Icon.astro";
+import Image from "../components/ui/Image.astro";
+import Section from "../components/ui/Section.astro";
+import impact from "../data/impact.json";
+import site from "../data/site.json";
+
+interface NewsFrontmatter {
+  title?: string;
+  description?: string;
+  pubDate?: string | Date;
+  date?: string | Date;
+}
+
+const newsModules = import.meta.glob<{ frontmatter?: NewsFrontmatter }>(
+  "../content/news/*.{md,mdx}",
+  { eager: true },
+);
+const newsPosts = Object.entries(newsModules)
+  .slice(0, 3)
+  .map(([path, post]) => ({
+    ...post.frontmatter,
+    href: `/news/${
+      path
+        .split("/")
+        .pop()
+        ?.replace(/\.mdx?$/, "") ?? ""
+    }`,
+  }));
+
+const counters = [
+  {
+    value: impact.childrenServed.value,
+    label: "Children currently served",
+    needsConfirmation: impact.childrenServed.needsConfirmation,
+  },
+  {
+    value: impact.founders,
+    label: "University student founders",
+    needsConfirmation: false,
+  },
+  {
+    value: impact.publicSpeakingAcademy.sessions,
+    label: "Public Speaking Academy sessions",
+    needsConfirmation: false,
+  },
+].filter((counter) => counter.value !== null);
+
+const needs = [
+  "School shoes",
+  "Weekly gathering meals",
+  "Hygiene items",
+  "Uniforms",
+];
+const donationHref = site.donationUrl.value || "/get-involved#current-needs";
+---
+
+<BaseLayout
+  title="Home"
+  description="EAZY-IRA Charity Foundation is a youth-led, community-rooted initiative supporting children and families in Masoro, Kigali, Rwanda."
+>
+  <h1 class="home-visually-hidden">{site.tagline}</h1>
+  <HeroSlider />
+
+  <div class="home-hero-followup">
+    <div class="home-container home-hero-followup__inner">
+      <div class="home-hero-actions" aria-label="Ways to support">
+        <Button variant="donate" href={donationHref}>
+          Give Hope
+        </Button>
+        <Button variant="secondary" href="/contact">
+          Partner With Us
+        </Button>
+      </div>
+      <ul class="home-trust-strip" aria-label="About the foundation">
+        <li>Youth-led</li>
+        <li>{site.location}</li>
+        <li>
+          Serving {impact.childrenServed.value} children
+          {impact.childrenServed.needsConfirmation && (
+            <span class="home-confirmation">Needs confirmation</span>
+          )}
+        </li>
+        <li>
+          Since {impact.foundedMonth} {impact.foundedYear}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <Section
+    id="impact"
+    eyebrow="Our impact"
+    heading="Small acts, lasting hope"
+    intro="A snapshot of the people and learning that shape our work."
+  >
+    <ul class="home-impact-grid">
+      {counters.map((counter) => (
+        <li>
+          <Card class="home-impact-card">
+            <p class="home-impact-card__label">{counter.label}</p>
+            <p class="home-impact-card__value">
+              <span data-count-up data-target={counter.value}>
+                {counter.value}
+              </span>
+            </p>
+            {counter.needsConfirmation && (
+              <span class="home-confirmation">Needs confirmation</span>
+            )}
+          </Card>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section
+    id="who-we-are"
+    eyebrow="Who we are"
+    heading="Rooted in community"
+    class="home-about-section"
+  >
+    <div class="home-about">
+      <div class="home-about__copy">
+        <p>
+          EAZY-IRA Charity Foundation is a youth-led, community-rooted
+          initiative in {site.location}. Founded in {impact.foundedMonth}{" "}
+          {impact.foundedYear} by {impact.founders} university student
+          volunteers, we support children's education, nutrition, spiritual and
+          moral development, mentorship, and community support. Our Christian,
+          Sabbath-based fellowship brings children together for teaching,
+          encouragement, and shared meals.
+        </p>
+        <Button variant="secondary" href="/about">
+          More about us
+        </Button>
+      </div>
+      <div class="home-about__decoration" aria-hidden="true">
+        <Icon name="heart" size={44} />
+        <p>Love in action, rooted in community.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    id="pillars"
+    eyebrow="What guides us"
+    heading="Four pillars of care"
+    intro="Our programs respond to children's learning, wellbeing, and belonging."
+  >
+    <div class="home-pillar-grid">
+      <Card class="home-pillar-card">
+        <Icon name="book" size={32} />
+        <h3>Education</h3>
+        <p>
+          School materials and encouragement help children take part in
+          learning.
+        </p>
+        <a href="/programs" aria-label="Explore education programs">
+          Explore education <Icon name="arrow-right" size={18} />
+        </a>
+      </Card>
+      <Card class="home-pillar-card">
+        <Icon name="sun" size={32} />
+        <h3>Nutrition</h3>
+        <p>Shared meals are part of the children's weekly gathering.</p>
+        <a href="/programs" aria-label="Explore nutrition programs">
+          Explore nutrition <Icon name="arrow-right" size={18} />
+        </a>
+      </Card>
+      <Card class="home-pillar-card">
+        <Icon name="heart" size={32} />
+        <h3>Spiritual &amp; Moral Development</h3>
+        <p>
+          Teaching encourages moral values, positive attitudes, and politeness.
+        </p>
+        <a
+          href="/programs"
+          aria-label="Explore spiritual and moral development"
+        >
+          Explore development <Icon name="arrow-right" size={18} />
+        </a>
+      </Card>
+      <Card class="home-pillar-card">
+        <Icon name="users" size={32} />
+        <h3>Community &amp; Mentorship</h3>
+        <p>Home visits offer families guidance, prayer, and encouragement.</p>
+        <a href="/programs" aria-label="Explore community and mentorship">
+          Explore community <Icon name="arrow-right" size={18} />
+        </a>
+      </Card>
+    </div>
+  </Section>
+
+  <Section
+    id="gathering"
+    eyebrow="Together each week"
+    heading="A day at our gathering"
+    intro="Children share a meal and learn about moral values, positive attitudes, and politeness."
+  >
+    <figure class="home-gathering">
+      <div class="ui-image-frame">
+        <Image
+          src="/images/design-placeholder.svg"
+          alt="Abstract hills and sunrise placeholder artwork; no people are shown."
+          width={1200}
+          height={700}
+          sizes="(max-width: 48rem) 100vw, 72rem"
+        />
+      </div>
+      <figcaption>
+        Placeholder artwork only. Real gathering photos will be added only when
+        appropriate guardian consent is recorded.
+      </figcaption>
+    </figure>
+  </Section>
+
+  <Section
+    id="current-needs"
+    eyebrow="How you can help"
+    heading="Current needs"
+    intro="Your support can help provide practical care for children and families."
+    class="home-needs-section"
+  >
+    <Card class="home-needs-card">
+      <div>
+        <h3>Needs we are working to meet</h3>
+        <ul class="home-needs-list">
+          {needs.map((need) => (
+            <li>
+              <Icon name="check" size={20} />
+              {need}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Button variant="donate" href={donationHref}>
+        Give Hope
+      </Button>
+    </Card>
+  </Section>
+
+  <Section
+    id="story"
+    eyebrow="Stories of hope"
+    heading="Every story deserves care"
+    intro="We will share a child or parent story here when it is ready to be told safely."
+  >
+    <Card class="home-story-placeholder">
+      <!-- Child or parent stories and photographs require recorded guardian consent before publication. -->
+      <Icon name="heart" size={32} />
+      <div>
+        <h3>Story placeholder</h3>
+        <p>
+          A story will appear here only after it has been approved for sharing.
+          No names or identifying details are shown in this placeholder.
+        </p>
+      </div>
+      <span class="home-consent-notice">
+        Consent required before publication
+      </span>
+    </Card>
+  </Section>
+
+  <Section
+    id="partners"
+    eyebrow="Working together"
+    heading="Our partners"
+    intro="We are grateful for the people and organizations who support this work."
+  >
+    <div class="home-partners-empty">
+      <p>Partner logos will appear here when approved for publication.</p>
+    </div>
+  </Section>
+
+  <Section
+    id="latest-news"
+    eyebrow="Updates"
+    heading="Latest news"
+    intro="Stories and updates from the foundation."
+  >
+    {newsPosts.length ? (
+      <div class="home-news-grid">
+        {newsPosts.map((post) => (
+          <Card class="home-news-card">
+            <p class="home-news-card__date">
+              {post.pubDate?.toString() ?? post.date?.toString() ?? ""}
+            </p>
+            <h3>{post.title ?? "Foundation update"}</h3>
+            {post.description && <p>{post.description}</p>}
+            <a href={post.href}>Read more</a>
+          </Card>
+        ))}
+      </div>
+    ) : (
+      <div class="home-news-empty">
+        <p>There are no news updates to share yet. Please check back soon.</p>
+      </div>
+    )}
+  </Section>
+
+  <section class="home-final-cta" aria-labelledby="home-final-heading">
+    <div class="home-container home-final-cta__inner">
+      <div>
+        <p class="home-final-cta__eyebrow">Be part of the hope</p>
+        <h2 id="home-final-heading">Love in action starts with us.</h2>
+      </div>
+      <div class="home-final-cta__actions">
+        <Button variant="donate" href={donationHref}>
+          Donate
+        </Button>
+        <Button variant="secondary" href="/get-involved#volunteer">
+          Volunteer
+        </Button>
+        <Button variant="secondary" href="/contact">
+          Partner
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const counters = document.querySelectorAll<HTMLElement>("[data-count-up]");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (!reducedMotion.matches && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const element = entry.target as HTMLElement;
+          const target = Number(element.dataset.target);
+          if (!Number.isFinite(target)) return;
+
+          observer.unobserve(element);
+          const duration = 900;
+          const startedAt = performance.now();
+          element.textContent = "0";
+
+          const update = (now: number) => {
+            const progress = Math.min((now - startedAt) / duration, 1);
+            const eased = 1 - (1 - progress) ** 3;
+            element.textContent = Math.round(target * eased).toLocaleString();
+            if (progress < 1) requestAnimationFrame(update);
+          };
+
+          requestAnimationFrame(update);
+        });
+      },
+      { threshold: 0.35 },
+    );
+
+    counters.forEach((counter) => observer.observe(counter));
+  }
+</script>
+
+<style>
+  .home-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 80rem;
+    margin-inline: auto;
+  }
+
+  .home-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .home-hero-followup {
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+  }
+
+  .home-hero-followup__inner {
+    display: grid;
+    gap: 1rem;
+    padding-block: 1.25rem;
+  }
+
+  .home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .home-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    list-style: none;
+  }
+
+  .home-confirmation {
+    display: inline-block;
+    margin-inline-start: 0.4rem;
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    font-weight: 600;
+  }
+
+  .home-impact-grid,
+  .home-pillar-grid,
+  .home-news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-impact-card__label {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .home-impact-card__value {
+    margin: 0.75rem 0 0;
+    color: var(--brand-primary);
+    font-family: var(--font-display);
+    font-size: var(--type-2xl);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .home-impact-card > .home-confirmation {
+    margin: 0.5rem 0 0;
+  }
+
+  .home-about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 0.8fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5rem);
+  }
+
+  .home-about__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+  }
+
+  .home-about__decoration {
+    display: grid;
+    min-height: 14rem;
+    align-content: center;
+    justify-items: center;
+    gap: 1rem;
+    border-radius: var(--radius-card-token);
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 10%,
+      var(--surface-card)
+    );
+    color: var(--brand-primary);
+    text-align: center;
+  }
+
+  .home-about__decoration p {
+    max-width: 16ch;
+    font-family: var(--font-display);
+    font-size: var(--type-xl);
+  }
+
+  .home-pillar-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.875rem;
+  }
+
+  .home-pillar-card > .ui-icon {
+    color: var(--brand-primary);
+  }
+
+  .home-pillar-card h3,
+  .home-needs-card h3,
+  .home-story-placeholder h3,
+  .home-news-card h3 {
+    font-size: var(--type-xl);
+  }
+
+  .home-pillar-card a,
+  .home-news-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .home-gathering {
+    margin: 0;
+  }
+
+  .home-gathering .ui-image {
+    aspect-ratio: 12 / 7;
+    object-fit: cover;
+  }
+
+  .home-gathering figcaption {
+    margin-top: 0.75rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .home-needs-section {
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 6%,
+      var(--surface-page)
+    );
+  }
+
+  .home-needs-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .home-needs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 0.75rem 1.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-needs-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .home-needs-list .ui-icon {
+    color: var(--brand-primary);
+  }
+
+  .home-story-placeholder {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 1rem;
+  }
+
+  .home-story-placeholder > .ui-icon {
+    color: var(--brand-primary);
+  }
+
+  .home-story-placeholder > div {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .home-consent-notice {
+    grid-column: 2;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-weight: 700;
+  }
+
+  .home-partners-empty,
+  .home-news-empty {
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-card-token);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .home-news-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.875rem;
+  }
+
+  .home-news-card__date {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .home-final-cta {
+    background: var(--brand-primary);
+    color: var(--surface-card);
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+
+  .home-final-cta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .home-final-cta__eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-accent);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .home-final-cta h2 {
+    max-width: 16ch;
+    color: inherit;
+    font-size: var(--type-2xl);
+  }
+
+  .home-final-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .home-final-cta .ui-button--secondary {
+    border-color: var(--surface-card);
+    color: var(--surface-card);
+  }
+
+  .home-final-cta .ui-button--secondary:hover {
+    background: color-mix(in srgb, var(--surface-card) 14%, transparent);
+  }
+
+  @media (max-width: 48rem) {
+    .home-about {
+      grid-template-columns: 1fr;
+    }
+
+    .home-about__decoration {
+      min-height: 10rem;
+    }
+  }
+
+  @media (max-width: 24rem) {
+    .home-hero-actions,
+    .home-final-cta__actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .home-hero-actions .ui-button,
+    .home-final-cta__actions .ui-button {
+      width: 100%;
+    }
+
+    .home-needs-card {
+      align-items: stretch;
+    }
+  }
+</style>
