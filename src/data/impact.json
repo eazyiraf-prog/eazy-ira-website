@@ -1,0 +1,25 @@
+{
+  "founding": {
+    "month": "May",
+    "year": 2025,
+    "founders": 11
+  },
+  "childrenCurrentlyServed": {
+    "value": null,
+    "status": "confirm"
+  },
+  "weeklyGatherings": {
+    "startMonth": "May",
+    "startYear": 2025,
+    "consecutiveCount": null,
+    "status": "confirm"
+  },
+  "schoolMaterials": {
+    "childrenCovered": null,
+    "academicYears": ["2025-2026", "2026-2027"],
+    "status": "confirm"
+  },
+  "publicSpeakingAcademy": {
+    "sessions": 8
+  }
+}
