@@ -1,0 +1,41 @@
+---
+import AboutPage from "../../components/AboutPage.astro";
+import Section from "../../components/ui/Section.astro";
+---
+
+<AboutPage
+  title="Safeguarding"
+  description="Our child safeguarding commitment and reporting contact."
+  activePath="/about/safeguarding"
+>
+  <Section
+    eyebrow="Our commitment"
+    heading="Children's safety and dignity come first"
+    intro="EAZY-IRA Charity Foundation is committed to treating every child with care, respect, and dignity."
+  >
+    <div class="safeguarding-copy">
+      <p>
+        We do not publish personal details of children. We use photographs or
+        videos featuring children only after guardian consent has been recorded.
+        Until then, we use placeholder imagery.
+      </p>
+      <p>
+        If you have a safeguarding concern, please contact:
+        <strong>[reporting contact to be supplied]</strong>
+      </p>
+    </div>
+  </Section>
+</AboutPage>
+
+<style>
+  .safeguarding-copy {
+    display: grid;
+    max-width: 52rem;
+    gap: 1.25rem;
+  }
+
+  .safeguarding-copy strong {
+    display: block;
+    margin-top: 0.5rem;
+  }
+</style>

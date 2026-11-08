@@ -1,0 +1,37 @@
+---
+import AboutPage from "../../components/AboutPage.astro";
+import TeamProfileCard from "../../components/TeamProfileCard.astro";
+import Section from "../../components/ui/Section.astro";
+import team from "../../data/team.json";
+---
+
+<AboutPage
+  title="Our Team"
+  description="Meet the team behind EAZY-IRA Charity Foundation."
+  activePath="/about/team"
+>
+  <Section
+    eyebrow="The people behind the work"
+    heading="A youth-led team"
+    intro="Team profile details are being prepared. Names, roles, photographs, and biographies will be added when supplied and approved."
+  >
+    <ul class="team-grid">
+      {team.map((member) => (
+        <li>
+          <TeamProfileCard {...member} />
+        </li>
+      ))}
+    </ul>
+  </Section>
+</AboutPage>
+
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

@@ -1,8 +1,68 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import AboutPage from "../components/AboutPage.astro";
+import Button from "../components/ui/Button.astro";
+import Card from "../components/ui/Card.astro";
+import Section from "../components/ui/Section.astro";
+import impact from "../data/impact.json";
+import site from "../data/site.json";
 ---
 
-<BaseLayout title="About" description="About EAZY-IRA Charity Foundation.">
-  <PagePlaceholder title="About" />
-</BaseLayout>
+<AboutPage
+  title="About EAZY-IRA"
+  description="Our story, purpose, and community-rooted work in Masoro, Kigali, Rwanda."
+  activePath="/about"
+>
+  <Section
+    eyebrow="Our story"
+    heading="A gathering that began with a simple act of care"
+    intro="EAZY-IRA Charity Foundation grew from young volunteers' commitment to children and community."
+  >
+    <div class="about-story">
+      <p>
+        In {impact.foundedMonth} {impact.foundedYear}, {impact.founders}{" "}
+        university student volunteers started a weekly children's gathering in
+        Masoro, Kigali. They shared a meal and taught moral values, positive
+        attitudes, and politeness.
+      </p>
+      <p>
+        The gathering grew into a wider child-development effort, rooted in the
+        community and focused on education, nutrition, spiritual and moral
+        development, mentorship, and community support. Today, EAZY-IRA Charity
+        Foundation continues that work through fellowship, education support,
+        and outreach to families.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="What we do"
+    heading="Care that supports a child's whole development"
+    intro="Our work brings learning, encouragement, and practical community care together."
+  >
+    <Card class="about-summary">
+      <p>
+        We are a youth-led, community-rooted initiative in {site.location}.
+        Through a Christian, Sabbath-based fellowship, we support children's
+        education, nutrition, spiritual and moral development, mentorship, and
+        community support.
+      </p>
+      <Button variant="secondary" href="/about/vision-mission">
+        Read our vision &amp; mission
+      </Button>
+    </Card>
+  </Section>
+</AboutPage>
+
+<style>
+  .about-story {
+    display: grid;
+    max-width: 54rem;
+    gap: 1.25rem;
+  }
+
+  .about-summary {
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+  }
+</style>

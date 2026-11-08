@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "./ui/Container.astro";
+import nav from "../data/nav.json";
+
+interface Props {
+  title: string;
+  description: string;
+  activePath: string;
+}
+
+const { title, description, activePath } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="about-page-header">
+    <Container>
+      <p class="about-page-header__eyebrow">About the foundation</p>
+      <h1>{title}</h1>
+      <nav class="about-subnav" aria-label="About pages">
+        <ul>
+          {nav.about.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={activePath === item.href ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </Container>
+  </header>
+  <div class="about-page-content">
+    <Container>
+      <slot />
+    </Container>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page-header {
+    padding-block: clamp(3rem, 7vw, 5rem) 1.5rem;
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 7%,
+      var(--surface-page)
+    );
+  }
+
+  .about-page-header__eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .about-page-header h1 {
+    max-width: 20ch;
+    font-size: var(--type-3xl);
+  }
+
+  .about-subnav {
+    margin-top: 2rem;
+    border-bottom: 1px solid var(--border-subtle);
+    overflow-x: auto;
+  }
+
+  .about-subnav ul {
+    display: flex;
+    width: max-content;
+    max-width: 100%;
+    gap: clamp(1rem, 3vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-subnav a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .about-subnav a[aria-current="page"] {
+    border-bottom-color: var(--brand-primary);
+    color: var(--brand-primary);
+  }
+
+  .about-page-content {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-section);
+  }
+
+  @media (max-width: 23rem) {
+    .about-page-header h1 {
+      font-size: var(--type-2xl);
+    }
+
+    .about-subnav ul {
+      gap: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+import Card from "./ui/Card.astro";
+
+interface Props {
+  name: string;
+  role: string;
+  photo: string;
+  bio: string;
+}
+
+const { name, role, photo, bio } = Astro.props;
+---
+
+<Card class="team-profile-card">
+  <div class="team-profile-card__photo" role="img" aria-label={photo}>
+    <span>
+      Photo
+      <br />
+      to be supplied
+    </span>
+  </div>
+  <h2>{name}</h2>
+  <p class="team-profile-card__role">{role}</p>
+  <p>{bio}</p>
+</Card>
+
+<style>
+  .team-profile-card {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+  }
+
+  .team-profile-card__photo {
+    display: grid;
+    min-height: 12rem;
+    place-items: center;
+    border-radius: calc(var(--radius-card-token) * 0.65);
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 9%,
+      var(--surface-page)
+    );
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .team-profile-card h2 {
+    font-family: var(--font-sans);
+    font-size: var(--type-lg);
+    font-weight: 700;
+  }
+
+  .team-profile-card__role {
+    color: var(--brand-primary);
+    font-weight: 700;
+  }
+</style>

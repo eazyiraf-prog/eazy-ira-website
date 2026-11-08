@@ -1,0 +1,46 @@
+---
+import AboutPage from "../../components/AboutPage.astro";
+import Card from "../../components/ui/Card.astro";
+import Section from "../../components/ui/Section.astro";
+---
+
+<AboutPage
+  title="Vision & Mission"
+  description="The vision and mission of EAZY-IRA Charity Foundation."
+  activePath="/about/vision-mission"
+>
+  <Section
+    eyebrow="Our direction"
+    heading="A hopeful future for every child"
+    intro="We believe children and communities thrive when care, learning, and opportunity grow together."
+  >
+    <div class="vision-mission-grid">
+      <Card>
+        <p class="ui-section__eyebrow">Our vision</p>
+        <h2>
+          A community where every child can grow with hope, dignity, and
+          opportunity.
+        </h2>
+      </Card>
+      <Card>
+        <p class="ui-section__eyebrow">Our mission</p>
+        <h2>
+          To support children's development through education, nutrition,
+          spiritual and moral growth, mentorship, and community care.
+        </h2>
+      </Card>
+    </div>
+  </Section>
+</AboutPage>
+
+<style>
+  .vision-mission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  .vision-mission-grid h2 {
+    font-size: var(--type-xl);
+  }
+</style>

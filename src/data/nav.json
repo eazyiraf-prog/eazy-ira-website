@@ -10,9 +10,16 @@
     { "label": "News", "href": "/news" },
     { "label": "Contact", "href": "/contact" }
   ],
+  "about": [
+    { "label": "Overview", "href": "/about" },
+    { "label": "Vision & Mission", "href": "/about/vision-mission" },
+    { "label": "Team", "href": "/about/team" },
+    { "label": "Governance", "href": "/about/governance" },
+    { "label": "Safeguarding", "href": "/about/safeguarding" }
+  ],
   "legal": [
     { "label": "Privacy", "href": "/legal/privacy" },
     { "label": "Terms", "href": "/legal/terms" },
-    { "label": "Safeguarding", "href": "/legal/safeguarding" }
+    { "label": "Safeguarding", "href": "/about/safeguarding" }
   ]
 }
