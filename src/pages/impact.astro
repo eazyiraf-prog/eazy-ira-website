@@ -1,11 +1,310 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import ImpactCounters from "../components/ImpactCounters.astro";
+import Card from "../components/ui/Card.astro";
+import Section from "../components/ui/Section.astro";
+import achievements from "../data/achievements.json";
+import impact from "../data/impact.json";
+import timeline from "../data/timeline.json";
+
+const counters = [
+  {
+    value: impact.childrenServed.value,
+    label: "Children currently served",
+    needsConfirmation: impact.childrenServed.needsConfirmation,
+  },
+  {
+    value: impact.weeklyGatherings.value,
+    label: "Weekly gatherings held",
+    needsConfirmation: impact.weeklyGatherings.needsConfirmation,
+  },
+  {
+    value: impact.childrenWithSchoolMaterials.value,
+    label: "Children with school materials and uniforms",
+    needsConfirmation: impact.childrenWithSchoolMaterials.needsConfirmation,
+  },
+  {
+    value: impact.publicSpeakingAcademy.sessions,
+    label: "Public Speaking Academy sessions",
+    needsConfirmation: false,
+  },
+];
+
+const chartStats = [
+  {
+    label: "Children served",
+    value: impact.childrenServed.value,
+    needsConfirmation: impact.childrenServed.needsConfirmation,
+    note: "A single current total is available; no time series is recorded.",
+  },
+  {
+    label: "Gatherings held",
+    value: impact.weeklyGatherings.value,
+    needsConfirmation: impact.weeklyGatherings.needsConfirmation,
+    note: impact.weeklyGatherings.note,
+  },
+  {
+    label: "Items distributed",
+    value: impact.itemsDistributed.value,
+    needsConfirmation: impact.itemsDistributed.needsConfirmation,
+    note: impact.itemsDistributed.note,
+  },
+];
+
+const milestoneDates: Record<string, string> = {
+  founded: `${impact.foundedMonth} ${impact.foundedYear}`,
+  firstSchoolYear: impact.childrenWithSchoolMaterials.academicYears[0],
+  currentSchoolYear: impact.childrenWithSchoolMaterials.academicYears[1],
+  present: impact.lastUpdated.needsConfirmation
+    ? "Present — update date to be confirmed"
+    : `Updated ${impact.lastUpdated.value}`,
+};
+
+const dataUpdated = impact.lastUpdated.needsConfirmation
+  ? "[date to be confirmed]"
+  : impact.lastUpdated.value;
 ---
 
 <BaseLayout
   title="Impact"
-  description="The impact of EAZY-IRA Charity Foundation."
+  description="Explore the progress and impact of EAZY-IRA Charity Foundation."
 >
-  <PagePlaceholder title="Impact" />
+  <header class="impact-hero">
+    <div class="impact-container">
+      <p class="impact-eyebrow">Our impact</p>
+      <h1>Progress rooted in care</h1>
+      <p>
+        A transparent snapshot of EAZY-IRA Charity Foundation's work and the
+        information still being confirmed.
+      </p>
+    </div>
+  </header>
+
+  <Section
+    eyebrow="At a glance"
+    heading="Our impact in numbers"
+    intro="Figures marked as needing confirmation are pending verification."
+  >
+    <ImpactCounters counters={counters} />
+  </Section>
+
+  <Section
+    eyebrow="Our journey"
+    heading={`${impact.foundedMonth} ${impact.foundedYear} to present`}
+    intro="Key milestones are shown with verified dates where available. Other milestones remain clearly marked for confirmation."
+  >
+    <ol class="impact-timeline">
+      {timeline.map((milestone) => (
+        <li class="impact-timeline__item">
+          <Card class="impact-timeline__card">
+            <p class="impact-timeline__date">
+              {milestoneDates[milestone.dateSource] ??
+                "[date to be confirmed]"}
+            </p>
+            <h3>{milestone.title}</h3>
+            <p>{milestone.description}</p>
+            {milestone.needsConfirmation && (
+              <span class="impact-confirmation">Needs confirmation</span>
+            )}
+          </Card>
+        </li>
+      ))}
+    </ol>
+  </Section>
+
+  <Section
+    eyebrow="Learning and progress"
+    heading={`${impact.childrenWithSchoolMaterials.academicYears[1]} School Year Achievements`}
+    intro={
+      impact.childrenWithSchoolMaterials.needsConfirmation
+        ? "The school year shown in the heading and these achievement details need confirmation."
+        : "Achievements are listed as confirmed only when supporting details have been verified."
+    }
+  >
+    <ul class="impact-achievements">
+      {achievements.map((achievement) => (
+        <li>
+          <Card class="impact-achievement">
+            <h3>{achievement.title}</h3>
+            <p>{achievement.description}</p>
+          </Card>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section
+    eyebrow="Data snapshot"
+    heading="What we can report"
+    intro="Only totals available in the impact data are shown. Historical series are not yet available for charting."
+  >
+    <div class="impact-stat-grid">
+      {chartStats.map((stat) => (
+        <Card class="impact-stat">
+          <h3>{stat.label}</h3>
+          <dl>
+            <div>
+              <dt>Reported total</dt>
+              <dd>
+                {stat.value === null ? "[to be confirmed]" : stat.value}
+              </dd>
+            </div>
+          </dl>
+          <p>{stat.note}</p>
+          {stat.needsConfirmation && (
+            <span class="impact-confirmation">Needs confirmation</span>
+          )}
+        </Card>
+      ))}
+    </div>
+    <p class="impact-chart-alternative">
+      Text alternative: children served, gatherings held, and items distributed
+      are listed above as accessible text totals; confirmed historical data
+      points are not available.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Transparency"
+    heading="How we count"
+    id="methodology"
+  >
+    <div class="impact-methodology">
+      <p>
+        Attendance at gatherings is counted using attendance registers.
+        Confirmed counts for children served and items distributed should be
+        reconciled with foundation records before publication.
+      </p>
+      <p>
+        <strong>Data last updated:</strong> {dataUpdated}
+        {impact.lastUpdated.needsConfirmation && " — needs confirmation"}
+      </p>
+    </div>
+  </Section>
 </BaseLayout>
+
+<style>
+  .impact-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .impact-hero {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 8%,
+      var(--surface-page)
+    );
+  }
+
+  .impact-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .impact-hero h1 {
+    max-width: 18ch;
+    font-size: var(--type-3xl);
+  }
+
+  .impact-hero > div > p:last-child {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+    font-size: var(--type-lg);
+  }
+
+  .impact-timeline,
+  .impact-achievements {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .impact-timeline__card,
+  .impact-achievement {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .impact-timeline__date,
+  .impact-confirmation {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-weight: 700;
+  }
+
+  .impact-timeline__card h3,
+  .impact-achievement h3,
+  .impact-stat h3 {
+    font-family: var(--font-sans);
+    font-size: var(--type-lg);
+    font-weight: 700;
+  }
+
+  .impact-timeline__card > p:last-child,
+  .impact-achievement > p {
+    color: var(--text-muted);
+  }
+
+  .impact-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  .impact-stat {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+  }
+
+  .impact-stat dl,
+  .impact-stat dl > div {
+    margin: 0;
+  }
+
+  .impact-stat dt {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .impact-stat dd {
+    color: var(--brand-primary);
+    font-size: var(--type-xl);
+    font-weight: 700;
+  }
+
+  .impact-stat > p,
+  .impact-chart-alternative {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .impact-chart-alternative {
+    margin-top: 1.25rem;
+  }
+
+  .impact-methodology {
+    display: grid;
+    gap: 1rem;
+    max-width: 52rem;
+  }
+
+  @media (min-width: 48rem) {
+    .impact-timeline,
+    .impact-achievements {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

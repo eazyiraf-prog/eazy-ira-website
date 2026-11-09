@@ -1,0 +1,24 @@
+[
+  {
+    "dateSource": "founded",
+    "title": "EAZY-IRA Charity Foundation founded",
+    "description": "A youth-led, community-rooted initiative began in Masoro, Kigali, Rwanda."
+  },
+  {
+    "dateSource": "firstSchoolYear",
+    "title": "School support",
+    "description": "[Milestones and achievements for this school year to be confirmed.]",
+    "needsConfirmation": true
+  },
+  {
+    "dateSource": "currentSchoolYear",
+    "title": "School support",
+    "description": "[Milestones and achievements for this school year to be confirmed.]",
+    "needsConfirmation": true
+  },
+  {
+    "dateSource": "present",
+    "title": "Further milestones",
+    "description": "[Add verified milestones and dates as they are confirmed.]"
+  }
+]
