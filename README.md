@@ -37,6 +37,8 @@ Preview the production build locally:
 npm run preview
 ```
 
+Production guard: `npm run build` validates when `NODE_ENV=production`, `CONTEXT=production` or `CONTEXT=deploy-preview`, or `CI=true`; `npm run build:prod` always validates before building.
+
 ## Lint and format
 
 Check JavaScript, TypeScript, and Astro files with ESLint:

@@ -1,0 +1,94 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Checkbox from "../components/forms/Checkbox.astro";
+import EmailField from "../components/forms/EmailField.astro";
+import FormShell from "../components/forms/FormShell.astro";
+import Select from "../components/forms/Select.astro";
+import TextArea from "../components/forms/TextArea.astro";
+import TextField from "../components/forms/TextField.astro";
+import Section from "../components/ui/Section.astro";
+---
+
+<BaseLayout
+  title="Partner"
+  description="Explore partnership with EAZY-IRA Charity Foundation."
+>
+  <Section
+    eyebrow="Work together"
+    heading="Partner with EAZY-IRA"
+    intro="We welcome partnership conversations with churches, businesses, NGOs, and professionals who share a commitment to supporting children and families."
+  >
+    <p class="partnership-download">
+      <a
+        href="/documents/partnership-development-vision-placeholder.pdf"
+        download
+      >
+        Download the Partnership &amp; Development Vision (placeholder PDF)
+      </a>
+    </p>
+  </Section>
+
+  <Section eyebrow="Start a conversation" heading="Partnership enquiry">
+    <FormShell name="partnership-enquiry" submitLabel="Send enquiry">
+      <TextField
+        id="partner-organisation"
+        name="organisation"
+        label="Organisation"
+        hint="Enter the name of your church, business, NGO, or organisation."
+        required
+      />
+      <TextField
+        id="partner-contact"
+        name="contact-person"
+        label="Contact person"
+        hint="Tell us who we should contact about this enquiry."
+        autocomplete="name"
+        required
+      />
+      <EmailField
+        id="partner-email"
+        name="email"
+        label="Email"
+        hint="We will use this to respond to your enquiry."
+        required
+      />
+      <TextField
+        id="partner-phone"
+        name="phone"
+        label="Phone (optional)"
+        hint="Include a country code if you would like us to call."
+        type="tel"
+        autocomplete="tel"
+      />
+      <Select
+        id="partner-type"
+        name="partnership-type"
+        label="Partnership type"
+        hint="Choose the kind of partnership you would like to discuss."
+        required
+        options={[
+          { value: "church", label: "Church" },
+          { value: "business", label: "Business" },
+          { value: "ngo", label: "NGO" },
+          { value: "professional", label: "Professional" },
+        ]}
+      />
+      <TextArea
+        id="partner-message"
+        name="message"
+        label="Message"
+        hint="Share a little about the partnership you have in mind."
+        required
+      />
+      <Checkbox
+        id="partner-consent"
+        name="consent"
+        hint="We use this information to respond to your partnership enquiry."
+        required
+      >
+        I agree that EAZY-IRA may use this information to respond to my enquiry
+        under its <a href="/legal/privacy">Privacy Policy</a>.
+      </Checkbox>
+    </FormShell>
+  </Section>
+</BaseLayout>

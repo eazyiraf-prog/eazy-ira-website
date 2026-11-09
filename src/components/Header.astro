@@ -1,5 +1,5 @@
 ---
-import Button from "./ui/Button.astro";
+import DonationButton from "./DonationButton.astro";
 import Container from "./ui/Container.astro";
 import nav from "../data/nav.json";
 import site from "../data/site.json";
@@ -72,9 +72,7 @@ const { lang = "en" } = Astro.props;
             </span>
           ))}
         </div>
-        <Button href="/get-involved" variant="donate">
-          Donate
-        </Button>
+        <DonationButton />
       </div>
     </div>
   </Container>

@@ -24,9 +24,64 @@
       "needsConfirmation": true
     }
   },
-  "donationUrl": {
-    "value": null,
-    "needsConfirmation": true
+  "donation": {
+    "primaryMethod": "mtn-momo",
+    "fundraiserOrganizer": "This fundraiser is organised by a friend of the Foundation in the USA, and funds are passed to the Foundation. We publish how every gift is spent on our Transparency page.",
+    "methods": [
+      {
+        "id": "mtn-momo",
+        "label": "MTN Mobile Money",
+        "type": "mobile-money",
+        "details": {
+          "payCode": "1446124"
+        },
+        "instructions": "Dial *182*8*1*1446124*AMOUNT# (replace AMOUNT with the amount in RWF), then follow the prompts on your phone. The name shown will be our treasurer, who holds the account on behalf of EAZY-IRA Charity Foundation. We publish how every gift is spent on our Transparency page.",
+        "enabled": true,
+        "needsConfirmation": true
+      },
+      {
+        "id": "online-fundraiser",
+        "label": "Give online (GoFundMe)",
+        "type": "link",
+        "url": "[to be supplied]",
+        "instructions": "Give through our online fundraiser.",
+        "enabled": false,
+        "needsConfirmation": true
+      },
+      {
+        "id": "airtel-money",
+        "label": "Airtel Money",
+        "type": "mobile-money",
+        "details": {
+          "payCode": "[to be supplied]"
+        },
+        "instructions": "[instructions to be supplied]",
+        "enabled": false,
+        "needsConfirmation": true
+      },
+      {
+        "id": "bank-transfer",
+        "label": "Bank transfer",
+        "type": "bank-transfer",
+        "details": {
+          "accountDetails": "[to be supplied]"
+        },
+        "instructions": "[instructions to be supplied]",
+        "enabled": false,
+        "needsConfirmation": true
+      },
+      {
+        "id": "card-donations",
+        "label": "Card donations",
+        "type": "card",
+        "details": {
+          "providerDetails": "[to be supplied]"
+        },
+        "instructions": "[instructions to be supplied]",
+        "enabled": false,
+        "needsConfirmation": true
+      }
+    ]
   },
   "registrationDetails": {
     "value": null,

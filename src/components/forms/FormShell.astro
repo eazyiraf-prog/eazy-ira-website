@@ -1,0 +1,38 @@
+---
+import Button from "../ui/Button.astro";
+
+interface Props {
+  name: string;
+  submitLabel?: string;
+  class?: string;
+}
+
+const { name, submitLabel = "Send", class: className } = Astro.props;
+---
+
+<form
+  name={name}
+  method="POST"
+  action="/thank-you"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  data-netlify-form
+  class:list={["form-shell", className]}
+>
+  <input type="hidden" name="form-name" value={name} />
+  <div class="form-honeypot" aria-hidden="true" inert>
+    <label>
+      Leave this field empty
+      <input name="bot-field" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+  <slot />
+  <p class="form-submit-error" role="alert" data-submit-error hidden>
+    Your message could not be sent right now. Please try again.
+  </p>
+  <Button type="submit" variant="primary">{submitLabel}</Button>
+</form>
+
+<script>
+  import "../../scripts/forms.js";
+</script>

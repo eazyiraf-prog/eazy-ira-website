@@ -1,6 +1,8 @@
 ---
-import Button from "./ui/Button.astro";
 import Container from "./ui/Container.astro";
+import Checkbox from "./forms/Checkbox.astro";
+import EmailField from "./forms/EmailField.astro";
+import FormShell from "./forms/FormShell.astro";
 import impact from "../data/impact.json";
 import nav from "../data/nav.json";
 import site from "../data/site.json";
@@ -43,36 +45,24 @@ import site from "../data/site.json";
       <div class="site-footer__signup">
         <h2>Stay connected</h2>
         <p>Sign up for occasional foundation updates.</p>
-        <form
-          name="newsletter"
-          method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-        >
-          <input type="hidden" name="form-name" value="newsletter" />
-          <p class="form-honeypot">
-            <label>
-              Leave this field empty: <input name="bot-field" />
-            </label>
-          </p>
-          <label for="newsletter-email">Email address</label>
-          <input
+        <FormShell name="newsletter" submitLabel="Sign up">
+          <EmailField
             id="newsletter-email"
             name="email"
-            type="email"
-            autocomplete="email"
+            label="Email address"
+            hint="We will use this address to send occasional foundation updates."
             required
           />
-          <label class="site-footer__consent">
-            <input name="consent" type="checkbox" value="yes" required />
-            <span>
-              I agree to receive email updates and understand I can unsubscribe.
-            </span>
-          </label>
-          <Button type="submit" variant="secondary">
-            Sign up
-          </Button>
-        </form>
+          <Checkbox
+            id="newsletter-consent"
+            name="consent"
+            hint="You can unsubscribe from updates at any time."
+            required
+          >
+            I agree to receive updates. Read our
+            <a href="/legal/privacy">Privacy Policy</a>.
+          </Checkbox>
+        </FormShell>
       </div>
 
       <div class="site-footer__details">

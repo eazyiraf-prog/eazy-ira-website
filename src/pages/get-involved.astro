@@ -1,11 +1,53 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import Card from "../components/ui/Card.astro";
+import Section from "../components/ui/Section.astro";
+
+const pathways = [
+  {
+    title: "Donate",
+    description: "Help provide practical support for children and families.",
+    href: "/donate",
+    link: "Explore donation options",
+  },
+  {
+    title: "Partner",
+    description: "Work with us through your organisation or professional skills.",
+    href: "/partner",
+    link: "Explore partnership",
+  },
+  {
+    title: "Volunteer",
+    description: "Offer your time and skills to support our community work.",
+    href: "/volunteer",
+    link: "Explore volunteering",
+  },
+  {
+    title: "Pray With Us",
+    description: "Share a prayer request or join our prayer partners.",
+    href: "/pray",
+    link: "Explore prayer",
+  },
+];
 ---
 
 <BaseLayout
   title="Get Involved"
   description="Get involved with EAZY-IRA Charity Foundation."
 >
-  <PagePlaceholder title="Get Involved" />
+  <Section
+    eyebrow="Join the work"
+    heading="Get involved"
+    intro="There are different ways to stand with children and families in our community."
+  >
+    <div class="involvement-grid">
+      {pathways.map((pathway) => (
+        <Card class="involvement-card">
+          <h2>{pathway.title}</h2>
+          <p>{pathway.description}</p>
+          <a href={pathway.href}>{pathway.link}</a>
+        </Card>
+      ))}
+    </div>
+  </Section>
 </BaseLayout>

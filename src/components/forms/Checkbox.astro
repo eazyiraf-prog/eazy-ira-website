@@ -1,0 +1,41 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  hint: string;
+  required?: boolean;
+  checked?: boolean;
+  value?: string;
+}
+
+const {
+  id,
+  name,
+  hint,
+  required = false,
+  checked = false,
+  value = "yes",
+} = Astro.props;
+---
+
+<div class="form-field form-field--checkbox">
+  <div class="form-checkbox-line">
+    <input
+      id={id}
+      name={name}
+      type="checkbox"
+      value={value}
+      required={required}
+      checked={checked}
+      aria-describedby={`${id}-hint ${id}-error`}
+      data-error-id={`${id}-error`}
+    />
+    <label for={id}>
+      <slot />
+      {required && <span class="form-required" aria-hidden="true">*</span>}
+      {required && <span class="form-visually-hidden"> required</span>}
+    </label>
+  </div>
+  <span class="form-hint" id={`${id}-hint`}>{hint}</span>
+  <span class="form-error" id={`${id}-error`} hidden></span>
+</div>

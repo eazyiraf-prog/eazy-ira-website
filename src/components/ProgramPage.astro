@@ -1,10 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import DonationButton from "./DonationButton.astro";
 import Button from "./ui/Button.astro";
 import Card from "./ui/Card.astro";
 import Section from "./ui/Section.astro";
 import impact from "../data/impact.json";
-import site from "../data/site.json";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -14,8 +14,6 @@ interface Props {
 
 const { program, relatedPrograms } = Astro.props;
 const { data } = program;
-const donationHref = site.donationUrl.value || "/get-involved";
-
 const metrics = {
   childrenServed: {
     label: "Children currently served",
@@ -138,9 +136,7 @@ const metrics = {
           <li>{item}</li>
         ))}
       </ul>
-      <Button variant="donate" href={donationHref}>
-        Give Hope
-      </Button>
+      <DonationButton label="Give Hope" />
     </div>
   </Section>
 

@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroSlider from "../components/HeroSlider.astro";
 import ImpactCounters from "../components/ImpactCounters.astro";
+import DonationButton from "../components/DonationButton.astro";
 import Button from "../components/ui/Button.astro";
 import Card from "../components/ui/Card.astro";
 import Icon from "../components/ui/Icon.astro";
@@ -39,7 +40,6 @@ const needs = [
   "Hygiene items",
   "Uniforms",
 ];
-const donationHref = site.donationUrl.value || "/get-involved#current-needs";
 ---
 
 <BaseLayout
@@ -52,10 +52,8 @@ const donationHref = site.donationUrl.value || "/get-involved#current-needs";
   <div class="home-hero-followup">
     <div class="home-container home-hero-followup__inner">
       <div class="home-hero-actions" aria-label="Ways to support">
-        <Button variant="donate" href={donationHref}>
-          Give Hope
-        </Button>
-        <Button variant="secondary" href="/contact">
+        <DonationButton label="Give Hope" />
+        <Button variant="secondary" href="/partner">
           Partner With Us
         </Button>
       </div>
@@ -204,9 +202,7 @@ const donationHref = site.donationUrl.value || "/get-involved#current-needs";
           ))}
         </ul>
       </div>
-      <Button variant="donate" href={donationHref}>
-        Give Hope
-      </Button>
+      <DonationButton label="Give Hope" />
     </Card>
   </Section>
 
@@ -284,13 +280,11 @@ const donationHref = site.donationUrl.value || "/get-involved#current-needs";
         <h2 id="home-final-heading">Love in action starts with us.</h2>
       </div>
       <div class="home-final-cta__actions">
-        <Button variant="donate" href={donationHref}>
-          Donate
-        </Button>
-        <Button variant="secondary" href="/get-involved#volunteer">
+        <DonationButton />
+        <Button variant="secondary" href="/volunteer">
           Volunteer
         </Button>
-        <Button variant="secondary" href="/contact">
+        <Button variant="secondary" href="/partner">
           Partner
         </Button>
       </div>

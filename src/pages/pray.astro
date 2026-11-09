@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Checkbox from "../components/forms/Checkbox.astro";
+import EmailField from "../components/forms/EmailField.astro";
+import FormShell from "../components/forms/FormShell.astro";
+import TextArea from "../components/forms/TextArea.astro";
+import TextField from "../components/forms/TextField.astro";
+import Section from "../components/ui/Section.astro";
+---
+
+<BaseLayout
+  title="Pray With Us"
+  description="Share a prayer request or become a prayer partner with EAZY-IRA Charity Foundation."
+>
+  <Section
+    eyebrow="Prayer and encouragement"
+    heading="Pray with us"
+    intro="You can share a prayer request with the team or let us know that you would like to pray alongside the Foundation."
+  >
+    <p class="prayer-safety-note">
+      Please do not include children's names or any information that could
+      identify a child in your request.
+    </p>
+  </Section>
+
+  <Section eyebrow="Share with the prayer team" heading="Prayer request">
+    <FormShell name="prayer-request" submitLabel="Send prayer request">
+      <TextField
+        id="prayer-first-name"
+        name="first-name"
+        label="First name (optional)"
+        hint="You may leave this blank."
+        autocomplete="given-name"
+      />
+      <TextArea
+        id="prayer-request-text"
+        name="request"
+        label="Prayer request"
+        hint="Please do not include children's names or information about children."
+        required
+      />
+      <Checkbox
+        id="prayer-private"
+        name="private-to-prayer-team"
+        hint="When selected, the request is for the prayer team only."
+        checked
+      >
+        Keep my request private to the prayer team
+      </Checkbox>
+      <EmailField
+        id="prayer-email"
+        name="email"
+        label="Email for a reply (optional)"
+        hint="Leave this blank if you do not need a reply."
+      />
+      <Checkbox
+        id="prayer-consent"
+        name="consent"
+        hint="We use this information to receive your request and, if provided, reply."
+        required
+      >
+        I agree that EAZY-IRA may use this information as described in its
+        <a href="/legal/privacy">Privacy Policy</a>.
+      </Checkbox>
+    </FormShell>
+  </Section>
+
+  <Section eyebrow="Join us in prayer" heading="Prayer partner">
+    <p class="prayer-partner-intro">
+      Let us know you would like to be a prayer partner. An email address is
+      optional if you would like the team to follow up.
+    </p>
+    <FormShell name="prayer-partner" submitLabel="Sign up as a prayer partner">
+      <Checkbox
+        id="prayer-partner-opt-in"
+        name="prayer-partner-opt-in"
+        hint="Select this to let us know you would like to be a prayer partner."
+        required
+      >
+        I would like to be a prayer partner
+      </Checkbox>
+      <EmailField
+        id="prayer-partner-email"
+        name="email"
+        label="Email (optional)"
+        hint="We will only use this to follow up about prayer partnership."
+      />
+      <Checkbox
+        id="prayer-partner-consent"
+        name="consent"
+        hint="We use this information to record your interest and respond if requested."
+        required
+      >
+        I agree that EAZY-IRA may use this information as described in its
+        <a href="/legal/privacy">Privacy Policy</a>.
+      </Checkbox>
+    </FormShell>
+  </Section>
+</BaseLayout>

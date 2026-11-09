@@ -1,0 +1,29 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  hint: string;
+  required?: boolean;
+  rows?: number;
+}
+
+const { id, name, label, hint, required = false, rows = 5 } = Astro.props;
+---
+
+<div class="form-field">
+  <label for={id}>
+    {label}
+    {required && <span class="form-required" aria-hidden="true">*</span>}
+    {required && <span class="form-visually-hidden"> required</span>}
+  </label>
+  <textarea
+    id={id}
+    name={name}
+    rows={rows}
+    required={required}
+    aria-describedby={`${id}-hint ${id}-error`}
+    data-error-id={`${id}-error`}></textarea>
+  <span class="form-hint" id={`${id}-hint`}>{hint}</span>
+  <span class="form-error" id={`${id}-error`} hidden></span>
+</div>

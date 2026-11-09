@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/validate-donation.js",
     "build": "astro build",
+    "build:prod": "node scripts/validate-donation.js --production && astro build",
     "preview": "astro preview",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write ."

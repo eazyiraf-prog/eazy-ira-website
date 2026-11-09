@@ -1,0 +1,164 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../components/ui/Card.astro";
+import Section from "../components/ui/Section.astro";
+import site from "../data/site.json";
+
+const donation = site.donation;
+const enabledMethods = donation.methods
+  .filter((method) => method.enabled)
+  .sort((first, second) =>
+    first.id === donation.primaryMethod
+      ? -1
+      : second.id === donation.primaryMethod
+        ? 1
+        : 0,
+  );
+const helpfulPaths = [
+  { label: "Volunteer", href: "/volunteer" },
+  { label: "Partner", href: "/partner" },
+  { label: "Pray With Us", href: "/pray" },
+];
+---
+
+<BaseLayout
+  title="Donate"
+  description="Learn how to support EAZY-IRA Charity Foundation and the practical needs of children and families."
+>
+  <Section
+    eyebrow="Give with care"
+    heading="Support practical care and learning"
+    intro="Gifts help provide meals at weekly gatherings, school shoes, school feeding fees, uniforms, and hygiene items such as soap."
+  >
+    {enabledMethods.length ? (
+      <div class="donation-methods">
+        {enabledMethods.map((method) => (
+          <Card class="donation-method">
+            <h2>{method.label}</h2>
+            {method.id === "mtn-momo" && method.details?.payCode && (
+              <div class="donation-pay-code">
+                <p class="donation-pay-code__label">MTN Mobile Money pay code</p>
+                <p class="donation-pay-code__number" data-pay-code>
+                  {method.details.payCode}
+                </p>
+                <button
+                  type="button"
+                  class="ui-button ui-button--secondary"
+                  data-copy-code={method.details.payCode}
+                >
+                  Copy code
+                </button>
+                <span
+                  class="donation-copy-status"
+                  aria-live="polite"
+                  data-copy-status
+                ></span>
+              </div>
+            )}
+            {method.instructions && <p>{method.instructions}</p>}
+            {method.id === "mtn-momo" && (
+              <p class="donation-treasurer-note">
+                The name shown at payment is our treasurer, who holds the
+                account on behalf of EAZY-IRA Charity Foundation.
+              </p>
+            )}
+            {method.id === "online-fundraiser" && (
+              <p class="donation-organizer-note">
+                {donation.fundraiserOrganizer}
+              </p>
+            )}
+            {method.details &&
+              Object.entries(method.details)
+                .filter(([key]) => key !== "payCode")
+                .map(([key, value]) => (
+                  <p class="donation-detail">
+                    <strong>
+                      {key
+                        .replace(/[A-Z]/g, (letter) => ` ${letter}`)
+                        .replace(/^./, (letter) => letter.toUpperCase())}
+                      :
+                    </strong>{" "}
+                    {value}
+                  </p>
+                ))}
+            {method.type === "link" && method.url && (
+              <a
+                class="ui-button ui-button--donate"
+                href={method.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Continue to fundraiser
+                <span class="form-visually-hidden">
+                  {" "}(opens in a new tab)
+                </span>
+              </a>
+            )}
+          </Card>
+        ))}
+      </div>
+    ) : (
+      <Card class="donation-coming-soon">
+        <h2>Donation options are coming soon</h2>
+        <p>
+          Please <a href="/contact">contact us</a> if you would like to learn
+          more about supporting the Foundation.
+        </p>
+      </Card>
+    )}
+  </Section>
+
+  <Section eyebrow="Accountability" heading="Your privacy and trust matter">
+    <div class="donation-reassurance">
+      <a href="/transparency">See how gifts are spent</a>
+      <p>
+        We never ask for card numbers or PINs by message or email. Only use
+        payment details shown here.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Other ways to help"
+    heading="Give your time, skills, or support"
+  >
+    <nav class="donation-other-ways" aria-label="Other ways to help">
+      {helpfulPaths.map((path) => <a href={path.href}>{path.label}</a>)}
+    </nav>
+  </Section>
+</BaseLayout>
+
+<script>
+  const copyButtons = document.querySelectorAll<HTMLButtonElement>(
+    "[data-copy-code]",
+  );
+
+  for (const button of copyButtons) {
+    button.addEventListener("click", async () => {
+      const code = button.dataset.copyCode;
+      const status = button.parentElement?.querySelector<HTMLElement>(
+        "[data-copy-status]",
+      );
+      if (!code || !status) return;
+
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch {
+        const temporaryInput = document.createElement("textarea");
+        temporaryInput.value = code;
+        temporaryInput.setAttribute("readonly", "");
+        temporaryInput.className = "form-visually-hidden";
+        document.body.append(temporaryInput);
+        temporaryInput.select();
+        const copied = document.execCommand("copy");
+        temporaryInput.remove();
+        if (!copied) {
+          status.textContent = "Could not copy the code. Please copy it manually.";
+          return;
+        }
+      }
+
+      status.textContent = "Copied";
+    });
+  }
+</script>

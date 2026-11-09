@@ -1,0 +1,38 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  hint: string;
+  required?: boolean;
+  autocomplete?: string;
+}
+
+const {
+  id,
+  name,
+  label,
+  hint,
+  required = false,
+  autocomplete = "email",
+} = Astro.props;
+---
+
+<div class="form-field">
+  <label for={id}>
+    {label}
+    {required && <span class="form-required" aria-hidden="true">*</span>}
+    {required && <span class="form-visually-hidden"> required</span>}
+  </label>
+  <input
+    id={id}
+    name={name}
+    type="email"
+    required={required}
+    autocomplete={autocomplete}
+    aria-describedby={`${id}-hint ${id}-error`}
+    data-error-id={`${id}-error`}
+  />
+  <span class="form-hint" id={`${id}-hint`}>{hint}</span>
+  <span class="form-error" id={`${id}-error`} hidden></span>
+</div>

@@ -1,0 +1,39 @@
+---
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  hint: string;
+  options: Option[];
+  required?: boolean;
+}
+
+const { id, name, label, hint, options, required = false } = Astro.props;
+---
+
+<div class="form-field">
+  <label for={id}>
+    {label}
+    {required && <span class="form-required" aria-hidden="true">*</span>}
+    {required && <span class="form-visually-hidden"> required</span>}
+  </label>
+  <select
+    id={id}
+    name={name}
+    required={required}
+    aria-describedby={`${id}-hint ${id}-error`}
+    data-error-id={`${id}-error`}
+  >
+    <option value="">Choose an option</option>
+    {options.map((option) => (
+      <option value={option.value}>{option.label}</option>
+    ))}
+  </select>
+  <span class="form-hint" id={`${id}-hint`}>{hint}</span>
+  <span class="form-error" id={`${id}-error`} hidden></span>
+</div>

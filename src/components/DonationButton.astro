@@ -1,0 +1,28 @@
+---
+import Button from "./ui/Button.astro";
+import site from "../data/site.json";
+
+interface Props {
+  label?: string;
+}
+
+const { label = "Donate" } = Astro.props;
+const fundraiser = site.donation.methods.find(
+  (method) => method.id === "online-fundraiser",
+);
+const opensInNewTab = fundraiser?.enabled === true;
+const href =
+  opensInNewTab && fundraiser?.type === "link" && fundraiser.url
+    ? fundraiser.url
+    : "/donate";
+---
+
+<Button
+  variant="donate"
+  href={href}
+  target={opensInNewTab ? "_blank" : undefined}
+  rel={opensInNewTab ? "noopener noreferrer" : undefined}
+>
+  {label}
+  {opensInNewTab && <span class="visually-hidden"> (opens in a new tab)</span>}
+</Button>

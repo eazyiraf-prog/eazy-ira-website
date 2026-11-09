@@ -652,8 +652,257 @@ p {
   accent-color: var(--brand-primary);
 }
 
-.form-honeypot {
+.form-honeypot,
+.form-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  clip-path: inset(50%) !important;
+}
+
+.form-shell {
+  display: grid;
+  width: 100%;
+  max-width: 46rem;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-field > label,
+.form-checkbox-line > label {
+  color: var(--text-primary);
+  font-size: var(--type-sm);
+  font-weight: 700;
+}
+
+.form-required {
+  margin-left: 0.2rem;
+  color: var(--brand-primary);
+}
+
+.form-field input:not([type="checkbox"]),
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  min-height: 2.875rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  background: var(--surface-card);
+  color: var(--text-primary);
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+}
+
+.form-field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible,
+.form-field select:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.form-field [aria-invalid="true"] {
+  border-color: var(--brand-primary);
+}
+
+.form-field--checkbox {
+  gap: 0.35rem;
+}
+
+.form-checkbox-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.form-checkbox-line input {
+  flex: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0.2rem 0 0;
+  accent-color: var(--brand-primary);
+}
+
+.form-checkbox-line > label {
+  font-weight: 500;
+}
+
+.form-checkbox-line a,
+.form-field a {
+  text-underline-offset: 0.2em;
+}
+
+.form-hint,
+.form-error,
+.form-submit-error {
+  font-size: var(--type-sm);
+}
+
+.form-hint {
+  color: var(--text-muted);
+}
+
+.form-error,
+.form-submit-error {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.form-error[hidden],
+.form-submit-error[hidden] {
   display: none;
+}
+
+.form-submit-error {
+  border-left: 4px solid var(--brand-primary);
+  padding: 0.5rem 0.75rem;
+}
+
+.involvement-grid,
+.donation-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1.25rem;
+}
+
+.involvement-card {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 0.8rem;
+}
+
+.involvement-card h2,
+.donation-method h2 {
+  font-size: var(--type-xl);
+}
+
+.involvement-card p,
+.donation-method > p,
+.donation-coming-soon p,
+.donation-reassurance p,
+.partnership-download,
+.safeguarding-note,
+.prayer-safety-note,
+.prayer-partner-intro {
+  color: var(--text-muted);
+}
+
+.involvement-card a,
+.partnership-download a,
+.safeguarding-note a,
+.donation-reassurance > a,
+.donation-other-ways a,
+.thank-you-card a {
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+.donation-method {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.donation-pay-code {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card-token);
+  background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-card));
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.donation-pay-code__label {
+  color: var(--text-muted);
+  font-size: var(--type-sm);
+  font-weight: 700;
+}
+
+.donation-pay-code__number {
+  color: var(--brand-primary);
+  font-size: clamp(2.5rem, 12vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.donation-copy-status {
+  min-height: 1.5em;
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+.donation-treasurer-note,
+.donation-organizer-note {
+  border-left: 4px solid var(--brand-accent);
+  padding-left: 1rem;
+}
+
+.donation-detail {
+  overflow-wrap: anywhere;
+}
+
+.donation-coming-soon {
+  max-width: 48rem;
+}
+
+.donation-coming-soon h2 {
+  margin-bottom: 0.75rem;
+  font-size: var(--type-xl);
+}
+
+.donation-reassurance {
+  display: grid;
+  max-width: 48rem;
+  justify-items: start;
+  gap: 0.75rem;
+}
+
+.donation-other-ways,
+.thank-you-card nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+.volunteer-role-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 0.65rem 1.5rem;
+  margin: 0 0 1.5rem;
+  padding-left: 1.4rem;
+}
+
+.safeguarding-note,
+.prayer-safety-note,
+.prayer-partner-intro {
+  max-width: 48rem;
+}
+
+.prayer-safety-note {
+  border-left: 4px solid var(--brand-accent);
+  padding-left: 1rem;
+}
+
+.thank-you-card {
+  display: grid;
+  justify-items: start;
+  gap: 1.25rem;
 }
 
 .site-footer__bottom {

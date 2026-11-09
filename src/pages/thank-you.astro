@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../components/ui/Card.astro";
+import Section from "../components/ui/Section.astro";
+---
+
+<BaseLayout
+  title="Thank You"
+  description="Thank you for getting in touch with EAZY-IRA Charity Foundation."
+>
+  <Section eyebrow="Message received" heading="Thank you">
+    <Card class="thank-you-card">
+      <p>Thank you for sharing with EAZY-IRA Charity Foundation.</p>
+      <nav aria-label="Next steps">
+        <a href="/">Return home</a>
+        <a href="/donate">Visit the Donate page</a>
+      </nav>
+    </Card>
+  </Section>
+</BaseLayout>
