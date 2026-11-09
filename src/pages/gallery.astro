@@ -1,11 +1,164 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import Card from "../components/ui/Card.astro";
+
+const albums = (await getCollection("albums")).sort(
+  (first, second) => second.data.date.getTime() - first.data.date.getTime(),
+);
 ---
 
 <BaseLayout
   title="Gallery"
-  description="Gallery for EAZY-IRA Charity Foundation."
+  description="Browse photo albums and visual stories from EAZY-IRA Charity Foundation."
 >
-  <PagePlaceholder title="Gallery" />
+  <header class="gallery-hero">
+    <div class="gallery-container">
+      <p class="eyebrow">Gallery</p>
+      <h1>Moments from our community</h1>
+      <p>
+        Browse shared moments from EAZY-IRA Charity Foundation. Images of
+        children are published only when guardian consent is recorded.
+      </p>
+    </div>
+  </header>
+  <section class="gallery-section" aria-labelledby="albums-heading">
+    <div class="gallery-container">
+      <h2 id="albums-heading">Albums</h2>
+      {
+        albums.length ? (
+          <ul class="album-grid">
+            {albums.map((album) => (
+              <li>
+                <Card class="album-card">
+                  <img
+                    src={album.data.images[0].src}
+                    alt={album.data.images[0].alt}
+                    width="1200"
+                    height="700"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <p class="eyebrow">{album.data.category}</p>
+                  {album.data.sample && <p class="sample-label">Sample album</p>}
+                  <h3>{album.data.title}</h3>
+                  <p>
+                    <time datetime={album.data.date.toISOString()}>
+                      {album.data.date.toLocaleDateString("en", {
+                        dateStyle: "long",
+                        timeZone: "UTC",
+                      })}
+                    </time>
+                    {" · "}
+                    {album.data.images.length}{" "}
+                    {album.data.images.length === 1 ? "image" : "images"}
+                  </p>
+                  <a href={`/gallery/${album.id}`}>View album</a>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty-state">There are no albums to share yet.</p>
+        )
+      }
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .gallery-hero {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: color-mix(in srgb, var(--brand-primary) 8%, var(--surface-page));
+  }
+
+  .gallery-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .gallery-hero h1 {
+    max-width: 18ch;
+    font-size: var(--type-3xl);
+  }
+
+  .gallery-hero > div > p:last-child {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+  }
+
+  .gallery-section {
+    padding-block: var(--space-section);
+  }
+
+  .gallery-section h2 {
+    margin-bottom: 2rem;
+    font-size: var(--type-2xl);
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .album-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .album-card > img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 0.75rem;
+    object-fit: cover;
+  }
+
+  .album-card .eyebrow {
+    margin: 0;
+  }
+
+  .album-card h3 {
+    font-size: var(--type-xl);
+  }
+
+  .album-card p:not(.eyebrow, .sample-label) {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .album-card > a {
+    margin-top: 0.25rem;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .sample-label {
+    border-radius: var(--radius-control-token);
+    background: color-mix(in srgb, var(--brand-accent) 28%, var(--surface-page));
+    padding: 0.25rem 0.7rem;
+    font-size: var(--type-xs);
+    font-weight: 700;
+  }
+
+  .empty-state {
+    color: var(--text-muted);
+  }
+</style>

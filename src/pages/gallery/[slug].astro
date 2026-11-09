@@ -1,0 +1,341 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const albums = await getCollection("albums");
+
+  return albums.map((album) => ({
+    params: { slug: album.id },
+    props: { album },
+  }));
+}
+
+const { album } = Astro.props;
+---
+
+<BaseLayout
+  title={`${album.data.title} | Gallery`}
+  description={`Images from the ${album.data.title} album.`}
+>
+  <section class="album-detail">
+    <div class="album-detail__container">
+      <a class="back-link" href="/gallery">Back to gallery</a>
+      <p class="eyebrow">{album.data.category}</p>
+      {album.data.sample && <p class="sample-label">Sample album</p>}
+      <h1>{album.data.title}</h1>
+      <p class="album-date">
+        <time datetime={album.data.date.toISOString()}>
+          {album.data.date.toLocaleDateString("en", {
+            dateStyle: "long",
+            timeZone: "UTC",
+          })}
+        </time>
+      </p>
+      {!album.data.consentConfirmed && (
+        <p class="consent-note">
+          This album contains no child photos without recorded guardian consent.
+        </p>
+      )}
+      <ul class="album-images">
+        {album.data.images.map((image, index) => (
+          <li>
+            <figure>
+              <button
+                class="image-trigger"
+                type="button"
+                aria-label={`View image ${index + 1}: ${image.alt}`}
+                data-lightbox-trigger
+                data-src={image.src}
+                data-alt={image.alt}
+                data-caption={image.caption}
+                data-index={index}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  width="1200"
+                  height="700"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </button>
+              <figcaption>{image.caption}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <dialog
+    class="lightbox"
+    aria-labelledby="lightbox-title"
+    aria-describedby="lightbox-caption"
+    data-lightbox
+  >
+    <div class="lightbox__content">
+      <header class="lightbox__header">
+        <h2 id="lightbox-title">Image viewer</h2>
+        <button class="lightbox__close" type="button" data-lightbox-close>
+          <span aria-hidden="true">×</span>
+          <span class="visually-hidden">Close image viewer</span>
+        </button>
+      </header>
+      <img
+        class="lightbox__image"
+        src={album.data.images[0].src}
+        alt={album.data.images[0].alt}
+        width="1200"
+        height="700"
+        data-lightbox-image
+      />
+      <p id="lightbox-caption" class="lightbox__caption" data-lightbox-caption>
+        {album.data.images[0].caption}
+      </p>
+      <p class="visually-hidden" aria-live="polite" data-lightbox-status></p>
+      <nav class="lightbox__controls" aria-label="Image controls">
+        <button type="button" data-lightbox-previous>Previous image</button>
+        <button type="button" data-lightbox-next>Next image</button>
+      </nav>
+    </div>
+  </dialog>
+</BaseLayout>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]");
+  const image = dialog?.querySelector<HTMLImageElement>("[data-lightbox-image]");
+  const caption = dialog?.querySelector<HTMLElement>(
+    "[data-lightbox-caption]",
+  );
+  const status = dialog?.querySelector<HTMLElement>("[data-lightbox-status]");
+  const triggers = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-lightbox-trigger]"),
+  );
+  const previous = dialog?.querySelector<HTMLButtonElement>(
+    "[data-lightbox-previous]",
+  );
+  const next = dialog?.querySelector<HTMLButtonElement>("[data-lightbox-next]");
+  const close = dialog?.querySelector<HTMLButtonElement>(
+    "[data-lightbox-close]",
+  );
+  let activeIndex = 0;
+  let returnFocusTo: HTMLButtonElement | null = null;
+
+  const showImage = (index: number) => {
+    const trigger = triggers[index];
+    if (!trigger || !image || !caption || !status) return;
+
+    activeIndex = index;
+    image.src = trigger.dataset.src ?? "";
+    image.alt = trigger.dataset.alt ?? "";
+    caption.textContent = trigger.dataset.caption ?? "";
+    status.textContent = `Image ${index + 1} of ${triggers.length}`;
+  };
+
+  triggers.forEach((trigger, index) => {
+    trigger.addEventListener("click", () => {
+      if (!dialog) return;
+      returnFocusTo = trigger;
+      showImage(index);
+      dialog.showModal();
+      close?.focus();
+    });
+  });
+
+  close?.addEventListener("click", () => dialog?.close());
+  previous?.addEventListener("click", () => {
+    showImage((activeIndex - 1 + triggers.length) % triggers.length);
+  });
+  next?.addEventListener("click", () => {
+    showImage((activeIndex + 1) % triggers.length);
+  });
+
+  dialog?.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showImage((activeIndex - 1 + triggers.length) % triggers.length);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showImage((activeIndex + 1) % triggers.length);
+    }
+  });
+
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+
+  dialog?.addEventListener("close", () => {
+    returnFocusTo?.focus();
+    returnFocusTo = null;
+  });
+</script>
+
+<style>
+  .album-detail {
+    padding-block: clamp(3rem, 7vw, 6rem);
+  }
+
+  .album-detail__container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: var(--type-3xl);
+  }
+
+  .sample-label {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-control-token);
+    background: color-mix(in srgb, var(--brand-accent) 28%, var(--surface-page));
+    padding: 0.25rem 0.7rem;
+    font-size: var(--type-xs);
+    font-weight: 700;
+  }
+
+  .album-date,
+  .consent-note {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+
+  .album-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1.25rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  .image-trigger {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-card-token);
+    background: transparent;
+    padding: 0;
+    cursor: zoom-in;
+  }
+
+  .image-trigger img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .lightbox {
+    width: min(94vw, 72rem);
+    max-width: none;
+    max-height: 92dvh;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card-token);
+    background: var(--surface-card);
+    color: var(--text-primary);
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 80%);
+  }
+
+  .lightbox__content {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .lightbox__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .lightbox__header h2 {
+    font-size: var(--type-xl);
+  }
+
+  .lightbox__close {
+    display: grid;
+    width: 2.75rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
+    background: var(--surface-card);
+    color: inherit;
+    font-size: 1.75rem;
+    cursor: pointer;
+  }
+
+  .lightbox__image {
+    display: block;
+    width: 100%;
+    max-height: 68dvh;
+    border-radius: 0.75rem;
+    object-fit: contain;
+  }
+
+  .lightbox__caption {
+    color: var(--text-muted);
+  }
+
+  .lightbox__controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .lightbox__controls button {
+    min-height: 2.75rem;
+    border: 1px solid var(--brand-primary);
+    border-radius: var(--radius-control-token);
+    background: transparent;
+    color: var(--brand-primary);
+    padding: 0.6rem 1rem;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+</style>

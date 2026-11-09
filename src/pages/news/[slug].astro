@@ -1,0 +1,313 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("news", ({ data }) => !data.draft);
+
+  return posts.map((post) => {
+    const sameCategoryPosts = posts
+      .filter(
+        (candidate) =>
+          candidate.id !== post.id &&
+          candidate.data.category === post.data.category,
+      )
+      .sort((first, second) => second.data.date.getTime() - first.data.date.getTime())
+      .slice(0, 3);
+    const relatedPosts =
+      sameCategoryPosts.length > 0
+        ? sameCategoryPosts
+        : posts
+            .filter((candidate) => candidate.id !== post.id)
+            .sort(
+              (first, second) =>
+                second.data.date.getTime() - first.data.date.getTime(),
+            )
+            .slice(0, 3);
+
+    return {
+      params: { slug: post.id },
+      props: { post, relatedPosts },
+    };
+  });
+}
+
+const { post, relatedPosts } = Astro.props;
+const { Content } = await render(post);
+const wordCount = post.body.trim().split(/\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+const canonicalUrl = Astro.site
+  ? new URL(`/news/${post.id}`, Astro.site).href
+  : undefined;
+---
+
+<BaseLayout
+  title={`${post.data.title} | News`}
+  description={post.data.summary}
+  canonical={canonicalUrl}
+  image={Astro.site ? post.data.image.src : undefined}
+>
+  <article class="news-article">
+    <div class="news-article__container">
+      <a class="back-link" href="/news">Back to news</a>
+      <p class="eyebrow">{post.data.category}</p>
+      {post.data.sample && (
+        <p class="sample-label">Sample post — replace before publishing</p>
+      )}
+      <h1>{post.data.title}</h1>
+      <p class="article-meta">
+        <time datetime={post.data.date.toISOString()}>
+          {post.data.date.toLocaleDateString("en", {
+            dateStyle: "long",
+            timeZone: "UTC",
+          })}
+        </time>
+        {" · "}
+        {post.data.author}
+        {" · "}
+        {readingMinutes} min read
+      </p>
+      <img
+        class="article-image"
+        src={post.data.image.src}
+        alt={post.data.image.alt}
+        width="1200"
+        height="700"
+        fetchpriority="high"
+      />
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <section class="share-section" aria-labelledby="share-heading">
+        <h2 id="share-heading">Share this post</h2>
+        <div class="share-links">
+          <button type="button" data-copy-link>Copy link</button>
+          <a
+            href="https://wa.me/"
+            data-share="whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >WhatsApp</a>
+          <a
+            href="https://www.facebook.com/sharer/sharer.php"
+            data-share="facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Facebook</a>
+          <a
+            href="https://twitter.com/intent/tweet"
+            data-share="x"
+            target="_blank"
+            rel="noopener noreferrer"
+          >X</a>
+        </div>
+        <p class="copy-status" aria-live="polite" data-copy-status></p>
+      </section>
+
+      {relatedPosts.length > 0 && (
+        <section class="related-section" aria-labelledby="related-heading">
+          <h2 id="related-heading">Related posts</h2>
+          <ul>
+            {relatedPosts.map((related) => (
+              <li>
+                <a href={`/news/${related.id}`}>{related.data.title}</a>
+                <p>{related.data.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  const copyButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
+  const copyStatus = document.querySelector<HTMLElement>("[data-copy-status]");
+  const articleTitle =
+    document.querySelector<HTMLElement>(".news-article h1")?.textContent ?? "";
+
+  copyButton?.addEventListener("click", async () => {
+    if (!copyStatus) return;
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      copyStatus.textContent = "Link copied to clipboard.";
+    } catch {
+      copyStatus.textContent =
+        "Unable to copy the link. Copy it from your browser's address bar.";
+    }
+  });
+
+  document
+    .querySelectorAll<HTMLAnchorElement>("[data-share]")
+    .forEach((link) => {
+      const shareUrl = new URL(window.location.href);
+      const targetUrl = new URL(link.href);
+      if (link.dataset.share === "whatsapp") {
+        targetUrl.searchParams.set("text", `${articleTitle} ${shareUrl.href}`);
+      } else if (link.dataset.share === "facebook") {
+        targetUrl.searchParams.set("u", shareUrl.href);
+      } else if (link.dataset.share === "x") {
+        targetUrl.searchParams.set("url", shareUrl.href);
+        targetUrl.searchParams.set("text", articleTitle);
+      }
+      link.href = targetUrl.href;
+    });
+</script>
+
+<style>
+  .news-article {
+    padding-block: clamp(3rem, 7vw, 6rem);
+  }
+
+  .news-article__container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 52rem;
+    margin-inline: auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: var(--type-3xl);
+  }
+
+  .sample-label {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-control-token);
+    background: color-mix(in srgb, var(--brand-accent) 28%, var(--surface-page));
+    padding: 0.25rem 0.7rem;
+    font-size: var(--type-xs);
+    font-weight: 700;
+  }
+
+  .article-meta {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+
+  .article-image {
+    display: block;
+    width: 100%;
+    max-height: 34rem;
+    margin-top: 2rem;
+    border-radius: var(--radius-card-token);
+    object-fit: cover;
+  }
+
+  .article-body {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .article-body :global(p),
+  .article-body :global(ul),
+  .article-body :global(ol),
+  .article-body :global(blockquote) {
+    color: var(--text-muted);
+  }
+
+  .article-body :global(h2) {
+    margin-top: 1rem;
+    font-size: var(--type-2xl);
+  }
+
+  .article-body :global(a) {
+    text-underline-offset: 0.2em;
+  }
+
+  .article-body :global(blockquote) {
+    border-left: 4px solid var(--brand-accent);
+    margin: 0;
+    padding: 0.25rem 0 0.25rem 1rem;
+    font-weight: 600;
+  }
+
+  .share-section,
+  .related-section {
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 3rem;
+    padding-top: 2rem;
+  }
+
+  .share-section h2,
+  .related-section h2 {
+    margin-bottom: 1rem;
+    font-size: var(--type-xl);
+  }
+
+  .share-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .share-links a,
+  .share-links button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--brand-primary);
+    border-radius: var(--radius-control-token);
+    background: transparent;
+    color: var(--brand-primary);
+    padding: 0.55rem 1rem;
+    font: inherit;
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .copy-status {
+    min-height: 1.5em;
+    margin-top: 0.75rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .related-section ul {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-section li {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card-token);
+    background: var(--surface-card);
+    padding: 1rem;
+  }
+
+  .related-section li a {
+    font-weight: 700;
+  }
+
+  .related-section li p {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+</style>

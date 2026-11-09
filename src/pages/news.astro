@@ -1,8 +1,354 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+
+const posts = (await getCollection("news", ({ data }) => !data.draft)).sort(
+  (first, second) => second.data.date.getTime() - first.data.date.getTime(),
+);
+const categories = [...new Set(posts.map((post) => post.data.category))].sort();
 ---
 
-<BaseLayout title="News" description="News from EAZY-IRA Charity Foundation.">
-  <PagePlaceholder title="News" />
+<BaseLayout
+  title="News"
+  description="News and updates from EAZY-IRA Charity Foundation."
+>
+  <header class="news-hero">
+    <div class="news-container">
+      <p class="eyebrow">News & updates</p>
+      <h1>Stories from the foundation</h1>
+      <p>
+        Read the latest news and updates from EAZY-IRA Charity Foundation.
+      </p>
+      <a class="rss-link" href="/news/rss.xml">Subscribe via RSS</a>
+    </div>
+  </header>
+
+  <section class="news-section" aria-labelledby="news-heading">
+    <div class="news-container">
+      <div class="news-toolbar">
+        <h2 id="news-heading">Latest posts</h2>
+        <label for="news-category">Filter by category</label>
+        <select id="news-category" data-news-category>
+          <option value="">All categories</option>
+          {categories.map((category) => <option value={category}>{category}</option>)}
+        </select>
+      </div>
+
+      <p class="news-status" role="status" aria-live="polite" data-news-status>
+        Showing {posts.length} {posts.length === 1 ? "post" : "posts"}.
+      </p>
+
+      {posts.length ? (
+        <ul class="news-grid" data-news-list>
+          {posts.map((post) => (
+            <li
+              data-news-card
+              data-category={post.data.category}
+            >
+              <article class="news-card">
+                <img
+                  src={post.data.image.src}
+                  alt={post.data.image.alt}
+                  width="1200"
+                  height="700"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <p class="eyebrow">{post.data.category}</p>
+                {post.data.sample && (
+                  <p class="sample-label">Sample post — replace before publishing</p>
+                )}
+                <h3><a href={`/news/${post.id}`}>{post.data.title}</a></h3>
+                <p class="news-card__summary">{post.data.summary}</p>
+                <p class="news-card__meta">
+                  <time datetime={post.data.date.toISOString()}>
+                    {post.data.date.toLocaleDateString("en", {
+                      dateStyle: "long",
+                      timeZone: "UTC",
+                    })}
+                  </time>
+                  {" · "}
+                  {post.data.author}
+                </p>
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">There are no news posts to share yet.</p>
+      )}
+
+      <nav
+        class="news-pagination"
+        aria-label="News pages"
+        data-news-pagination
+        hidden={posts.length <= 6}
+      >
+        <button type="button" data-news-previous disabled>Previous</button>
+        <span aria-live="polite" data-news-page></span>
+        <button type="button" data-news-next>Next</button>
+      </nav>
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  const categorySelect =
+    document.querySelector<HTMLSelectElement>("[data-news-category]");
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-news-card]"),
+  );
+  const status = document.querySelector<HTMLElement>("[data-news-status]");
+  const pagination = document.querySelector<HTMLElement>(
+    "[data-news-pagination]",
+  );
+  const previous = pagination?.querySelector<HTMLButtonElement>(
+    "[data-news-previous]",
+  );
+  const next = pagination?.querySelector<HTMLButtonElement>("[data-news-next]");
+  const pageLabel = pagination?.querySelector<HTMLElement>("[data-news-page]");
+  const pageSize = 6;
+  let page = 1;
+  let visibleCards = cards;
+
+  const renderPage = () => {
+    const pageCount = Math.max(1, Math.ceil(visibleCards.length / pageSize));
+    page = Math.min(page, pageCount);
+
+    cards.forEach((card) => {
+      const index = visibleCards.indexOf(card);
+      card.hidden = index < 0 || index < (page - 1) * pageSize || index >= page * pageSize;
+    });
+
+    if (status) {
+      status.textContent = `Showing ${visibleCards.length} ${
+        visibleCards.length === 1 ? "post" : "posts"
+      }.`;
+    }
+
+    if (pagination && previous && next && pageLabel) {
+      pagination.hidden = visibleCards.length <= pageSize;
+      previous.disabled = page <= 1;
+      next.disabled = page >= pageCount;
+      pageLabel.textContent = `Page ${page} of ${pageCount}`;
+    }
+  };
+
+  categorySelect?.addEventListener("change", () => {
+    const selected = categorySelect.value;
+    visibleCards = selected
+      ? cards.filter((card) => card.dataset.category === selected)
+      : cards;
+    page = 1;
+    const url = new URL(window.location.href);
+    if (selected) url.searchParams.set("category", selected);
+    else url.searchParams.delete("category");
+    window.history.replaceState({}, "", url);
+    renderPage();
+  });
+
+  previous?.addEventListener("click", () => {
+    page -= 1;
+    renderPage();
+  });
+  next?.addEventListener("click", () => {
+    page += 1;
+    renderPage();
+  });
+
+  if (categorySelect) {
+    const selected = new URLSearchParams(window.location.search).get("category");
+    if (
+      selected &&
+      Array.from(categorySelect.options).some((option) => option.value === selected)
+    ) {
+      categorySelect.value = selected;
+      visibleCards = cards.filter((card) => card.dataset.category === selected);
+    }
+  }
+  renderPage();
+</script>
+
+<style>
+  .news-hero {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: color-mix(in srgb, var(--brand-primary) 8%, var(--surface-page));
+  }
+
+  .news-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .news-hero h1 {
+    max-width: 18ch;
+    font-size: var(--type-3xl);
+  }
+
+  .news-hero > div > p:not(.eyebrow) {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .rss-link {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .news-section {
+    padding-block: var(--space-section);
+  }
+
+  .news-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .news-toolbar h2 {
+    flex: 1 0 100%;
+    font-size: var(--type-2xl);
+  }
+
+  .news-toolbar label {
+    font-size: var(--type-sm);
+    font-weight: 700;
+  }
+
+  .news-toolbar select {
+    min-height: 2.75rem;
+    max-width: 100%;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-control-token);
+    background: var(--surface-card);
+    color: var(--text-primary);
+    padding: 0.55rem 2.5rem 0.55rem 1rem;
+    font: inherit;
+  }
+
+  .news-status {
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .news-grid > li[hidden] {
+    display: none;
+  }
+
+  .news-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.75rem;
+    height: 100%;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card-token);
+    background: var(--surface-card);
+    padding: 1rem;
+    box-shadow: var(--shadow-card-token);
+  }
+
+  .news-card > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 0.75rem;
+    object-fit: cover;
+  }
+
+  .news-card .eyebrow {
+    margin: 0;
+  }
+
+  .news-card h3 {
+    font-size: var(--type-xl);
+  }
+
+  .news-card h3 a {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 0.2em;
+  }
+
+  .news-card h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .news-card__summary,
+  .news-card__meta {
+    color: var(--text-muted);
+  }
+
+  .news-card__meta {
+    font-size: var(--type-sm);
+  }
+
+  .sample-label {
+    border-radius: var(--radius-control-token);
+    background: color-mix(in srgb, var(--brand-accent) 28%, var(--surface-page));
+    padding: 0.25rem 0.7rem;
+    font-size: var(--type-xs);
+    font-weight: 700;
+  }
+
+  .news-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .news-pagination[hidden] {
+    display: none;
+  }
+
+  .news-pagination button {
+    min-height: 2.75rem;
+    border: 1px solid var(--brand-primary);
+    border-radius: var(--radius-control-token);
+    background: transparent;
+    color: var(--brand-primary);
+    padding: 0.55rem 1rem;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .news-pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .news-pagination span {
+    font-size: var(--type-sm);
+  }
+
+  .empty-state {
+    color: var(--text-muted);
+  }
+</style>

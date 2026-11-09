@@ -57,4 +57,78 @@ const reports = defineCollection({
   }),
 });
 
-export const collections = { programs, reports };
+const albums = defineCollection({
+  loader: glob({
+    pattern: "**/*.json",
+    base: "./src/content/albums",
+  }),
+  schema: z
+    .object({
+      title: z.string(),
+      date: z.coerce.date(),
+      category: z.string(),
+      consentConfirmed: z.boolean(),
+      published: z.boolean(),
+      images: z
+        .array(
+          z.object({
+            src: z.string(),
+            alt: z.string(),
+            caption: z.string(),
+            depictsChildren: z.boolean(),
+            consentNotes: z.string(),
+          }),
+        )
+        .min(1),
+      sample: z.boolean().default(false),
+    })
+    .superRefine((album, context) => {
+      album.images.forEach((image, index) => {
+        if (image.depictsChildren && !album.consentConfirmed) {
+          context.addIssue({
+            code: "custom",
+            path: ["consentConfirmed"],
+            message: `Album "${album.title}" includes a child photo, but consentConfirmed is false. Record guardian consent or remove the child photo.`,
+          });
+        }
+
+        if (image.depictsChildren && !image.consentNotes.trim()) {
+          context.addIssue({
+            code: "custom",
+            path: ["images", index, "consentNotes"],
+            message: `Album "${album.title}" image ${index + 1} depicts children but has no consentNotes. Record who gave consent and how, or remove the child photo.`,
+          });
+        }
+
+        if (album.published && !image.alt.trim()) {
+          context.addIssue({
+            code: "custom",
+            path: ["images", index, "alt"],
+            message: `Album "${album.title}" is published, but image ${index + 1} has no alt text. Add descriptive alt text before publishing.`,
+          });
+        }
+      });
+    }),
+});
+
+const news = defineCollection({
+  loader: glob({
+    pattern: "**/*.md",
+    base: "./src/content/news",
+  }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    category: z.string(),
+    summary: z.string(),
+    image: z.object({
+      src: z.string(),
+      alt: z.string().min(1),
+    }),
+    author: z.string(),
+    draft: z.boolean().default(false),
+    sample: z.boolean().default(false),
+  }),
+});
+
+export const collections = { programs, reports, albums, news };

@@ -1,0 +1,17 @@
+{
+  "title": "Sample album: Community moments",
+  "date": "2026-11-09",
+  "category": "Sample",
+  "consentConfirmed": false,
+  "published": true,
+  "sample": true,
+  "images": [
+    {
+      "src": "/images/design-placeholder.svg",
+      "alt": "Illustrated placeholder image for a community album",
+      "caption": "Sample image placeholder — replace with an approved image.",
+      "depictsChildren": false,
+      "consentNotes": ""
+    }
+  ]
+}
