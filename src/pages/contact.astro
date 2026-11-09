@@ -1,8 +1,122 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import Checkbox from "../components/forms/Checkbox.astro";
+import EmailField from "../components/forms/EmailField.astro";
+import FormShell from "../components/forms/FormShell.astro";
+import TextArea from "../components/forms/TextArea.astro";
+import TextField from "../components/forms/TextField.astro";
+import Section from "../components/ui/Section.astro";
+import site from "../data/site.json";
 ---
 
-<BaseLayout title="Contact" description="Contact EAZY-IRA Charity Foundation.">
-  <PagePlaceholder title="Contact" />
+<BaseLayout
+  title="Contact"
+  description="Contact EAZY-IRA Charity Foundation in Masoro, Kigali, Rwanda."
+>
+  <Section
+    id="contact"
+    headingLevel="h1"
+    eyebrow="Get in touch"
+    heading="Contact EAZY-IRA"
+    intro="Questions, ideas, or a message for the Foundation? Use the form below to get in touch."
+  >
+    <div class="contact-details">
+      <p><strong>Location:</strong> {site.location}</p>
+      <p>
+        <strong>Email:</strong>{" "}
+        {site.email.needsConfirmation
+          ? "[to be confirmed]"
+          : site.email.value}
+      </p>
+      <p>
+        <strong>Phone:</strong>{" "}
+        {site.phone.needsConfirmation
+          ? "[to be confirmed]"
+          : site.phone.value}
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Our location" heading="Find us in Masoro, Kigali">
+    <div class="map-placeholder" data-map-placeholder>
+      <p>
+        The map is not loaded until you choose to connect to Google Maps.
+        Google may receive your browser request when the map is loaded.
+      </p>
+      <button class="ui-button ui-button--secondary" type="button" data-load-map>
+        Load map for Masoro, Kigali
+      </button>
+    </div>
+  </Section>
+
+  <Section eyebrow="Send a message" heading="Contact form">
+    <FormShell name="contact" submitLabel="Send message">
+      <TextField
+        id="contact-name"
+        name="name"
+        label="Name"
+        hint="Enter your name."
+        autocomplete="name"
+        required
+      />
+      <EmailField
+        id="contact-email"
+        name="email"
+        label="Email"
+        hint="We will use this address to respond to your message."
+        required
+      />
+      <TextField
+        id="contact-phone"
+        name="phone"
+        label="Phone (optional)"
+        hint="Include a country code if you would like us to call."
+        type="tel"
+        autocomplete="tel"
+      />
+      <TextField
+        id="contact-subject"
+        name="subject"
+        label="Subject"
+        hint="Briefly describe the reason for your message."
+        required
+      />
+      <TextArea
+        id="contact-message"
+        name="message"
+        label="Message"
+        hint="Please do not include sensitive information."
+        required
+      />
+      <Checkbox
+        id="contact-consent"
+        name="consent"
+        hint="We use this information to respond to your message."
+        required
+      >
+        I agree that EAZY-IRA may use this information to respond to my message
+        under its <a href="/legal/privacy">Privacy Policy</a>.
+      </Checkbox>
+    </FormShell>
+  </Section>
 </BaseLayout>
+
+<script>
+  const mapPlaceholder = document.querySelector<HTMLElement>(
+    "[data-map-placeholder]",
+  );
+  const loadMapButton = mapPlaceholder?.querySelector<HTMLButtonElement>(
+    "[data-load-map]",
+  );
+
+  loadMapButton?.addEventListener("click", () => {
+    if (!mapPlaceholder) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.title = "Map showing Masoro, Kigali, Rwanda";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer";
+    iframe.src = `https://www.google.com/maps?q=${encodeURIComponent("Masoro, Kigali, Rwanda")}&output=embed`;
+    mapPlaceholder.replaceChildren(iframe);
+  });
+</script>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+import Container from "../components/ui/Container.astro";
+import SiteSearch from "../components/SiteSearch.astro";
 ---
 
 <BaseLayout
@@ -8,5 +9,21 @@ import PagePlaceholder from "../components/PagePlaceholder.astro";
   description="The requested page could not be found."
   robots="noindex, nofollow"
 >
-  <PagePlaceholder title="Page not found" />
+  <section class="not-found-page">
+    <Container>
+      <p class="ui-section__eyebrow">404 error</p>
+      <h1>We could not find that page</h1>
+      <p>
+        The address may be incorrect, or the page may have moved. Search the
+        site or use one of these helpful links.
+      </p>
+      <SiteSearch id="not-found-search" />
+      <nav aria-label="Helpful links">
+        <a href="/">Home</a>
+        <a href="/about">About the Foundation</a>
+        <a href="/programs">Our programs</a>
+        <a href="/contact">Contact us</a>
+      </nav>
+    </Container>
+  </section>
 </BaseLayout>

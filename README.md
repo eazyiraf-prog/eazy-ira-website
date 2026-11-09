@@ -25,7 +25,7 @@ npm run dev
 
 ## Build and preview
 
-Create the production site in `dist/`:
+Create the production site in `dist/` and generate the Pagefind search index:
 
 ```sh
 npm run build
@@ -60,7 +60,10 @@ Connect the repository to Netlify and use the following build settings:
 - Build command: `npm run build`
 - Publish directory: `dist`
 
-The site uses Astro's static output. Netlify Forms can be added to form markup as those pages are implemented.
+The site uses Astro's static output and Pagefind for site-wide search. The
+build creates the search index in `dist/pagefind/`. Forms use Netlify Forms.
+The Contact page's map is not requested from Google Maps unless a visitor
+chooses to load it.
 
 ## Gallery and news content
 

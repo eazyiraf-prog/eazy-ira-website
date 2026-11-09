@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LegalDraftNotice from "../../components/LegalDraftNotice.astro";
+import Section from "../../components/ui/Section.astro";
+---
+
+<BaseLayout
+  title="Donation Policy"
+  description="Draft information about how gifts to EAZY-IRA Charity Foundation are received and reported."
+>
+  <Section
+    id="donation-policy"
+    headingLevel="h1"
+    eyebrow="Legal information"
+    heading="Donation policy"
+    intro="A plain-language draft about the ways gifts are received and how spending is reported."
+  >
+    <article class="legal-content">
+      <LegalDraftNotice />
+      <h2>How gifts are received</h2>
+      <p>
+        Gifts are made through third-party services: MTN Mobile Money and an
+        online fundraiser organised by a friend of the Foundation. The
+        fundraiser's organiser passes funds to the Foundation. Payment handling
+        is provided by those third parties, not by a card payment form on this
+        website.
+      </p>
+      <p>
+        We publish how gifts are spent on the
+        <a href="/transparency">Transparency page</a>.
+      </p>
+
+      <h2>Details to confirm</h2>
+      <ul>
+        <li>Online fundraiser link and platform details: [to be confirmed]</li>
+        <li>Third-party fees, if any: [to be confirmed]</li>
+        <li>Donation receipts: [to be confirmed]</li>
+        <li>Refund process: [to be confirmed]</li>
+        <li>Questions about gifts: [to be confirmed]</li>
+      </ul>
+    </article>
+  </Section>
+</BaseLayout>

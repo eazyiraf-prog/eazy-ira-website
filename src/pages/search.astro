@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import SiteSearch from "../components/SiteSearch.astro";
+---
+
+<BaseLayout
+  title="Search"
+  description="Search the EAZY-IRA Charity Foundation website."
+>
+  <section class="search-page">
+    <Container>
+      <h1>Search the site</h1>
+      <SiteSearch id="page-search" />
+      <p class="search-status" role="status" aria-live="polite" data-search-status>
+        Enter a word or phrase to search the site.
+      </p>
+      <ol class="search-results" data-search-results></ol>
+    </Container>
+  </section>
+</BaseLayout>
+
+<script>
+  interface PagefindResultData {
+    url: string;
+    meta: { title?: string };
+    excerpt: string;
+  }
+
+  interface PagefindApi {
+    search(
+      query: string,
+    ): Promise<{
+      results: Array<{ data(): Promise<PagefindResultData> }>;
+    }>;
+  }
+
+  const searchForm = document.querySelector<HTMLFormElement>(
+    "#page-search-form",
+  );
+  const searchInput =
+    searchForm?.querySelector<HTMLInputElement>('input[name="q"]');
+  const status = document.querySelector<HTMLElement>("[data-search-status]");
+  const resultsList = document.querySelector<HTMLOListElement>(
+    "[data-search-results]",
+  );
+
+  if (searchForm && searchInput && status && resultsList) {
+    const query = new URLSearchParams(window.location.search)
+      .get("q")
+      ?.trim();
+
+    if (query) {
+      searchInput.value = query;
+      status.textContent = "Searching…";
+
+      try {
+        const pagefindUrl = new URL(
+          "/pagefind/pagefind.js",
+          window.location.origin,
+        );
+        const pagefind = (await import(
+          /* @vite-ignore */ pagefindUrl.href
+        )) as PagefindApi;
+        const response = await pagefind.search(query);
+        const results = await Promise.all(
+          response.results.map((result) => result.data()),
+        );
+
+        for (const result of results) {
+          const item = document.createElement("li");
+          const heading = document.createElement("h2");
+          const link = document.createElement("a");
+          const excerpt = document.createElement("p");
+
+          link.href = result.url;
+          link.textContent = result.meta.title || "Untitled page";
+          excerpt.textContent = new DOMParser().parseFromString(
+            result.excerpt,
+            "text/html",
+          ).body.textContent;
+          heading.append(link);
+          item.append(heading, excerpt);
+          resultsList.append(item);
+        }
+
+        status.textContent = results.length
+          ? `${results.length} ${results.length === 1 ? "result" : "results"} for “${query}”.`
+          : `No results found for “${query}”.`;
+      } catch (error) {
+        console.error("Unable to load site search.", error);
+        status.textContent =
+          "Search is temporarily unavailable. Please try again later.";
+      }
+    }
+  }
+</script>
