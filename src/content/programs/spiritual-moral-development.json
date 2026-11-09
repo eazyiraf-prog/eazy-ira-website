@@ -1,0 +1,26 @@
+{
+  "title": "Spiritual & Moral Development",
+  "category": "Spiritual and moral development",
+  "summary": "Christian, Sabbath-based fellowship includes teaching on values and positive attitudes.",
+  "heroText": "Encouragement, fellowship, and values are part of children's growth.",
+  "need": "Children benefit from encouragement and guidance as they develop positive attitudes and moral values.",
+  "whatWeDo": [
+    "Gather for Christian, Sabbath-based fellowship.",
+    "Teach moral values, positive attitudes, and politeness.",
+    "Include New Life in Christ in the spiritual-development program."
+  ],
+  "howItWorks": [
+    "Teaching and fellowship take place as part of the weekly children's gathering.",
+    "Additional details about New Life in Christ activities: [to be supplied]."
+  ],
+  "results": ["weeklyGatherings", "gatheringStart"],
+  "howToHelp": [
+    "Support the weekly gathering and shared meals.",
+    "Partner with the foundation to support children's development."
+  ],
+  "relatedSlugs": [
+    "weekly-gathering-nutrition",
+    "family-outreach",
+    "public-speaking-academy"
+  ]
+}

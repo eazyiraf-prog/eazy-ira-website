@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import ProgramPage from "../../components/ProgramPage.astro";
+
+export async function getStaticPaths() {
+  const programs = await getCollection("programs");
+
+  return programs.map((program) => ({
+    params: { slug: program.id },
+    props: {
+      program,
+      relatedPrograms: program.data.relatedSlugs
+        .map((slug) => programs.find((candidate) => candidate.id === slug))
+        .filter((related) => related !== undefined),
+    },
+  }));
+}
+---
+
+<ProgramPage {...Astro.props} />

@@ -1,0 +1,26 @@
+{
+  "title": "Weekly Gathering & Nutrition",
+  "category": "Nutrition and community",
+  "summary": "A weekly children's gathering brings shared meals and teaching together in Masoro.",
+  "heroText": "A welcoming space to learn, share a meal, and grow together.",
+  "need": "Children benefit from dependable opportunities to gather, share a meal, and learn in a caring community.",
+  "whatWeDo": [
+    "Hold a weekly children's gathering in Masoro.",
+    "Share a meal together.",
+    "Teach moral values, positive attitudes, and politeness."
+  ],
+  "howItWorks": [
+    "Children come together for fellowship, a shared meal, and teaching.",
+    "The gathering takes place weekly; its start date is shown in results below."
+  ],
+  "results": ["weeklyGatherings", "gatheringStart"],
+  "howToHelp": [
+    "Support meals for the weekly gathering.",
+    "Help provide school shoes, school feeding fees, uniforms, and hygiene items."
+  ],
+  "relatedSlugs": [
+    "education-support",
+    "spiritual-moral-development",
+    "family-outreach"
+  ]
+}

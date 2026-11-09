@@ -1,0 +1,291 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "./ui/Button.astro";
+import Card from "./ui/Card.astro";
+import Section from "./ui/Section.astro";
+import impact from "../data/impact.json";
+import site from "../data/site.json";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  program: CollectionEntry<"programs">;
+  relatedPrograms: CollectionEntry<"programs">[];
+}
+
+const { program, relatedPrograms } = Astro.props;
+const { data } = program;
+const donationHref = site.donationUrl.value || "/get-involved";
+
+const metrics = {
+  childrenServed: {
+    label: "Children currently served",
+    value: impact.childrenServed.value,
+    needsConfirmation: impact.childrenServed.needsConfirmation,
+  },
+  weeklyGatherings: {
+    label: "Weekly gatherings to date",
+    value: impact.weeklyGatherings.value,
+    needsConfirmation: impact.weeklyGatherings.needsConfirmation,
+  },
+  gatheringStart: {
+    label: "Weekly gathering began",
+    value: `${impact.weeklyGatherings.startMonth} ${impact.weeklyGatherings.startYear}`,
+    needsConfirmation: false,
+  },
+  schoolMaterials: {
+    label: "Children with school materials and uniforms",
+    value: impact.childrenWithSchoolMaterials.value,
+    needsConfirmation: impact.childrenWithSchoolMaterials.needsConfirmation,
+  },
+  schoolYears: {
+    label: "Academic years represented",
+    value: impact.childrenWithSchoolMaterials.academicYears.join(", "),
+    needsConfirmation: impact.childrenWithSchoolMaterials.needsConfirmation,
+  },
+  firstSchool: {
+    label: "School access",
+    value: "Some children supported to attend school for the first time",
+    needsConfirmation: false,
+  },
+  familyOutreach: {
+    label: "Family outreach",
+    value:
+      "Home visits include parents, prayer, educational guidance, and encouragement",
+    needsConfirmation: false,
+  },
+  academySessions: {
+    label: "Structured sessions",
+    value: impact.publicSpeakingAcademy.sessions,
+    needsConfirmation: false,
+  },
+};
+---
+
+<BaseLayout title={data.title} description={data.summary}>
+  <header class="program-hero">
+    <div class="program-container">
+      <a class="program-back-link" href="/programs">
+        All programs
+      </a>
+      <p class="program-eyebrow">{data.category}</p>
+      <h1>{data.title}</h1>
+      <p class="program-hero__text">{data.heroText}</p>
+      <Button variant="primary" href="#how-to-help">
+        How you can help
+      </Button>
+    </div>
+  </header>
+
+  <Section eyebrow="Program context" heading="The need">
+    <p class="program-copy">{data.need}</p>
+  </Section>
+
+  <Section eyebrow="Our response" heading="What we do">
+    <ul class="program-list">
+      {data.whatWeDo.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section eyebrow="Our approach" heading="How it works">
+    <ul class="program-list">
+      {data.howItWorks.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+    {data.enrolmentInfo && (
+      <Card class="program-placeholder">
+        <h3>Enrolment information</h3>
+        <p>{data.enrolmentInfo}</p>
+      </Card>
+    )}
+    {data.courseOutline && (
+      <p class="program-download">
+        <a href={data.courseOutline} download>
+          Download course outline placeholder
+        </a>
+      </p>
+    )}
+  </Section>
+
+  <Section eyebrow="Reported outcomes" heading="Results so far">
+    <div class="program-results">
+      {data.results.map((key) => {
+        const metric = metrics[key];
+        return (
+          <Card class="program-result">
+            <h3>{metric.label}</h3>
+            <p>{metric.value === null ? "[to be confirmed]" : metric.value}</p>
+            {metric.needsConfirmation && (
+              <span class="program-confirmation">Needs confirmation</span>
+            )}
+          </Card>
+        );
+      })}
+    </div>
+  </Section>
+
+  <Section
+    id="how-to-help"
+    eyebrow="Get involved"
+    heading="How you can help"
+    intro="Support can help sustain practical care and learning opportunities."
+  >
+    <div class="program-help">
+      <ul class="program-list">
+        {data.howToHelp.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+      <Button variant="donate" href={donationHref}>
+        Give Hope
+      </Button>
+    </div>
+  </Section>
+
+  <Section eyebrow="Explore more" heading="Related programs">
+    <div class="program-related">
+      {relatedPrograms.map((related) => (
+        <Card class="program-related-card">
+          <p class="program-eyebrow">{related.data.category}</p>
+          <h3>{related.data.title}</h3>
+          <p>{related.data.summary}</p>
+          <a href={`/programs/${related.id}`}>Learn about this program</a>
+        </Card>
+      ))}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .program-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .program-hero {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 8%,
+      var(--surface-page)
+    );
+  }
+
+  .program-back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .program-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .program-hero h1 {
+    max-width: 18ch;
+    font-size: var(--type-3xl);
+  }
+
+  .program-hero__text {
+    max-width: 44rem;
+    margin-block: 1.25rem 2rem;
+    color: var(--text-muted);
+    font-size: var(--type-lg);
+  }
+
+  .program-copy,
+  .program-list {
+    max-width: 52rem;
+  }
+
+  .program-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding-left: 1.4rem;
+  }
+
+  .program-list li {
+    padding-left: 0.35rem;
+  }
+
+  .program-results,
+  .program-related {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  .program-result h3,
+  .program-related-card h3,
+  .program-placeholder h3 {
+    font-family: var(--font-sans);
+    font-size: var(--type-lg);
+    font-weight: 700;
+  }
+
+  .program-result p {
+    margin-top: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-lg);
+    font-weight: 700;
+  }
+
+  .program-confirmation {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    font-weight: 700;
+  }
+
+  .program-help {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .program-help .program-list {
+    flex: 1 1 30rem;
+  }
+
+  .program-placeholder {
+    margin-top: 1.5rem;
+  }
+
+  .program-placeholder p {
+    margin-top: 0.5rem;
+  }
+
+  .program-download {
+    margin-top: 1.25rem;
+  }
+
+  .program-download a,
+  .program-related-card > a {
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+
+  .program-related-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.75rem;
+  }
+
+  .program-related-card .program-eyebrow {
+    margin-bottom: 0;
+  }
+</style>

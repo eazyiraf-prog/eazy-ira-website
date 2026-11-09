@@ -1,0 +1,25 @@
+{
+  "title": "Education Support",
+  "category": "Education",
+  "summary": "School materials and uniforms help children take part in education.",
+  "heroText": "Practical support can help open the door to learning.",
+  "need": "School materials and uniforms are among the practical supports children need to participate in education.",
+  "whatWeDo": [
+    "Provide school bags, notebooks, pens, and uniforms.",
+    "Support children's access to school; some children have attended school for the first time with this support."
+  ],
+  "howItWorks": [
+    "School materials and uniforms have been provided across the academic years recorded in the foundation's impact data.",
+    "Details about future selection and distribution arrangements: [to be confirmed]."
+  ],
+  "results": ["schoolMaterials", "schoolYears", "firstSchool"],
+  "howToHelp": [
+    "Help provide school shoes.",
+    "Support uniforms, school materials, and school feeding fees."
+  ],
+  "relatedSlugs": [
+    "weekly-gathering-nutrition",
+    "family-outreach",
+    "spiritual-moral-development"
+  ]
+}

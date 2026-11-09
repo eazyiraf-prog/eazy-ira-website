@@ -1,0 +1,118 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Card from "../../components/ui/Card.astro";
+import Section from "../../components/ui/Section.astro";
+
+const programs = await getCollection("programs");
+---
+
+<BaseLayout
+  title="Programs"
+  description="Explore the child-development programs of EAZY-IRA Charity Foundation."
+>
+  <header class="programs-overview-hero">
+    <div class="programs-overview-container">
+      <p class="program-eyebrow">Our programs</p>
+      <h1>Care, learning, and community</h1>
+      <p>
+        Our programs support children's education, nutrition, spiritual and
+        moral development, mentorship, and community support in Masoro, Kigali.
+      </p>
+    </div>
+  </header>
+
+  <Section
+    eyebrow="Explore our work"
+    heading="Programs rooted in care"
+    intro="Learn about the ways we gather, support learning, and connect with families."
+  >
+    <ul class="program-overview-grid">
+      {programs.map((program) => (
+        <li>
+          <Card class="program-overview-card">
+            <p class="program-eyebrow">{program.data.category}</p>
+            <h2>{program.data.title}</h2>
+            <p>{program.data.summary}</p>
+            <a href={`/programs/${program.id}`}>
+              Explore program
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </Card>
+        </li>
+      ))}
+    </ul>
+  </Section>
+</BaseLayout>
+
+<style>
+  .programs-overview-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .programs-overview-hero {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    background: color-mix(
+      in srgb,
+      var(--brand-primary) 8%,
+      var(--surface-page)
+    );
+  }
+
+  .programs-overview-hero h1 {
+    max-width: 18ch;
+    font-size: var(--type-3xl);
+  }
+
+  .programs-overview-hero > div > p:last-child {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+    font-size: var(--type-lg);
+  }
+
+  .program-eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .program-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .program-overview-card {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .program-overview-card .program-eyebrow {
+    margin-bottom: 0;
+  }
+
+  .program-overview-card h2 {
+    font-size: var(--type-xl);
+  }
+
+  .program-overview-card > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+</style>

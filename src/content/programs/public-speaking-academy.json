@@ -1,0 +1,27 @@
+{
+  "title": "EAZY-IRA Public Speaking Academy",
+  "category": "Mentorship and communication",
+  "summary": "Structured public speaking sessions take place in English, French, and Kinyarwanda.",
+  "heroText": "A space to practise public speaking in three languages.",
+  "need": "The academy provides structured sessions for public speaking and communication practice.",
+  "whatWeDo": [
+    "Offer structured public speaking sessions.",
+    "Use English, French, and Kinyarwanda."
+  ],
+  "howItWorks": [
+    "The academy is organized as a series of structured sessions.",
+    "Session schedule, enrolment eligibility, and application details: [to be supplied]."
+  ],
+  "results": ["academySessions"],
+  "howToHelp": [
+    "Partner with the foundation to support the academy.",
+    "Contact the foundation for information when enrolment details are available."
+  ],
+  "relatedSlugs": [
+    "spiritual-moral-development",
+    "education-support",
+    "family-outreach"
+  ],
+  "enrolmentInfo": "[Enrolment information to be supplied.]",
+  "courseOutline": "/documents/public-speaking-course-outline-placeholder.txt"
+}
