@@ -1,11 +1,285 @@
 ---
+import { getCollection } from "astro:content";
+import { stat } from "node:fs/promises";
+import { join } from "node:path";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PagePlaceholder from "../components/PagePlaceholder.astro";
+
+const reports = await getCollection("reports");
+const documents = [
+  {
+    title: "Partnership & Development Vision",
+    filename: "partnership-development-vision-placeholder.pdf",
+    status: "Placeholder — verified document pending",
+  },
+  {
+    title: "Safeguarding policy",
+    filename: "safeguarding-policy-placeholder.pdf",
+    status: "Placeholder — approved policy pending",
+  },
+  {
+    title: "Registration documents",
+    filename: "registration-documents-placeholder.pdf",
+    status: "Placeholder — documents pending",
+  },
+];
+
+const documentFiles = await Promise.all(
+  documents.map(async (document) => {
+    const path = join(process.cwd(), "public", "documents", document.filename);
+    const { size } = await stat(path);
+
+    return {
+      ...document,
+      size: size < 1024 ? `${size} bytes` : `${(size / 1024).toFixed(1)} KB`,
+      href: `/documents/${document.filename}`,
+    };
+  }),
+);
 ---
 
 <BaseLayout
   title="Transparency"
-  description="Transparency at EAZY-IRA Charity Foundation."
+  description="Donation reports, downloadable documents, and information about how EAZY-IRA Charity Foundation funds are used."
 >
-  <PagePlaceholder title="Transparency" />
+  <section class="transparency-hero">
+    <div class="transparency-container">
+      <p class="eyebrow">Accountability</p>
+      <h1>Transparency</h1>
+      <p class="intro">
+        Review published donation reports and the documents available from
+        EAZY-IRA Charity Foundation. Items marked as placeholders are not
+        official or verified records.
+      </p>
+    </div>
+  </section>
+
+  <section class="transparency-section" aria-labelledby="reports-heading">
+    <div class="transparency-container">
+      <header class="section-header">
+        <p class="eyebrow">Financial reports</p>
+        <h2 id="reports-heading">Donation reports</h2>
+        <p>Each report lists the amount received and its recorded expenses.</p>
+      </header>
+      {
+        reports.length ? (
+          <ul class="report-list">
+            {reports.map((report) => (
+              <li>
+                <a href={`/transparency/reports/${report.id}`}>
+                  <span>{report.data.title}</span>
+                  <span class="report-date">{report.data.date}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No reports have been published yet.</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section
+    class="transparency-section transparency-section--tinted"
+    aria-labelledby="documents-heading"
+  >
+    <div class="transparency-container">
+      <header class="section-header">
+        <p class="eyebrow">Public documents</p>
+        <h2 id="documents-heading">Documents library</h2>
+        <p>
+          Download the available PDFs. Placeholder files are clearly identified
+          and are not official documents.
+        </p>
+      </header>
+      <ul class="document-list">
+        {
+          documentFiles.map((document) => (
+            <li>
+              <div>
+                <h3>{document.title}</h3>
+                <p>{document.status}</p>
+                <p class="file-size">PDF · {document.size}</p>
+              </div>
+              <a href={document.href} download>
+                Download PDF
+                <span class="visually-hidden">: {document.title}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="transparency-section" aria-labelledby="funds-heading">
+    <div class="transparency-container">
+      <header class="section-header">
+        <p class="eyebrow">Spending</p>
+        <h2 id="funds-heading">How funds are used and who approves spending</h2>
+      </header>
+      <div class="funds-placeholders">
+        <p>
+          <strong>How funds are used:</strong> [to be confirmed — publish the
+          verified spending categories and process.]
+        </p>
+        <p>
+          <strong>Who approves spending:</strong> [to be confirmed — publish
+          the verified approval roles and process.]
+        </p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .transparency-hero {
+    padding-block: clamp(4rem, 9vw, 7rem);
+    background: var(--surface-card);
+  }
+
+  .transparency-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.75rem;
+    color: var(--brand-primary);
+    font-size: var(--type-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: var(--type-3xl);
+  }
+
+  h2 {
+    font-size: var(--type-2xl);
+  }
+
+  .intro {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+  }
+
+  .transparency-section {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .transparency-section--tinted {
+    background: color-mix(in srgb, var(--brand-primary) 6%, var(--surface-page));
+  }
+
+  .section-header {
+    max-width: 46rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-header > p:last-child {
+    margin-top: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .report-list,
+  .document-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .report-list li,
+  .document-list li {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card-token);
+    background: var(--surface-card);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .report-list li + li,
+  .document-list li + li {
+    margin-top: 1rem;
+  }
+
+  .report-list a {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    font-weight: 700;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.2em;
+  }
+
+  .report-date,
+  .file-size {
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+    font-weight: 400;
+  }
+
+  .document-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+
+  .document-list h3 {
+    font-family: inherit;
+    font-size: var(--type-lg);
+  }
+
+  .document-list p {
+    margin-top: 0.35rem;
+    color: var(--text-muted);
+    font-size: var(--type-sm);
+  }
+
+  .document-list .file-size {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .document-list a {
+    display: inline-flex;
+    min-height: 2.875rem;
+    align-items: center;
+    border: 1px solid var(--brand-primary);
+    border-radius: var(--radius-control-token);
+    padding: 0.6rem 1rem;
+    font-size: var(--type-sm);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .document-list a:hover {
+    background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  }
+
+  .funds-placeholders {
+    display: grid;
+    max-width: 54rem;
+    gap: 1rem;
+  }
+
+  .funds-placeholders p {
+    border-left: 4px solid var(--brand-accent);
+    background: var(--surface-card);
+    padding: 1rem 1.25rem;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+</style>

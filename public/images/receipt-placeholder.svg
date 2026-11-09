@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title description">
+  <title id="title">Receipt image placeholder</title>
+  <desc id="description">A neutral placeholder indicating that the receipt image has not been supplied.</desc>
+  <rect width="640" height="360" fill="#f3f0e8"/>
+  <rect x="1" y="1" width="638" height="358" rx="18" fill="none" stroke="#9ca9a2" stroke-dasharray="10 8" stroke-width="2"/>
+  <path d="M288 115h64v84h-64zM300 135h40m-40 16h40m-40 16h27" fill="none" stroke="#155c54" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+  <text x="320" y="242" fill="#34413b" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Receipt image placeholder</text>
+</svg>

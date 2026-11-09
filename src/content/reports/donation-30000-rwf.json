@@ -1,0 +1,28 @@
+{
+  "title": "Community donation report",
+  "date": "[confirm]",
+  "type": "donation-report",
+  "amountReceivedRWF": 30000,
+  "donorPermissionConfirmed": false,
+  "items": [
+    {
+      "item": "Transport to Central Rwanda Field Office",
+      "quantity": "[confirm]",
+      "costRWF": 6300,
+      "receiptImage": "/images/receipt-placeholder.svg"
+    },
+    {
+      "item": "Cooking oil",
+      "quantity": "5L",
+      "costRWF": 14000,
+      "receiptImage": "/images/receipt-placeholder.svg"
+    },
+    {
+      "item": "Food items (vegetables, charcoal, chilies, tomatoes)",
+      "quantity": "[confirm]",
+      "costRWF": 9700,
+      "receiptImage": "/images/receipt-placeholder.svg"
+    }
+  ],
+  "notes": "Donor name is not published. Date and quantities marked [confirm] need verification. Receipt images are placeholders."
+}

@@ -33,4 +33,28 @@ const programs = defineCollection({
   }),
 });
 
-export const collections = { programs };
+const reports = defineCollection({
+  loader: glob({
+    pattern: "**/*.json",
+    base: "./src/content/reports",
+  }),
+  schema: z.object({
+    title: z.string(),
+    date: z.string(),
+    type: z.enum(["donation-report", "quarterly", "annual"]),
+    amountReceivedRWF: z.number().nonnegative(),
+    donorDisplayName: z.string().optional(),
+    donorPermissionConfirmed: z.boolean().default(false),
+    items: z.array(
+      z.object({
+        item: z.string(),
+        quantity: z.string(),
+        costRWF: z.number().nonnegative(),
+        receiptImage: z.string().optional(),
+      }),
+    ),
+    notes: z.string(),
+  }),
+});
+
+export const collections = { programs, reports };
