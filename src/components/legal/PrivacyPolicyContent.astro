@@ -1,0 +1,94 @@
+---
+import LegalDraftNotice from "../LegalDraftNotice.astro";
+import Section from "../ui/Section.astro";
+import site from "../../data/site.json";
+
+---
+
+<Section
+  id="privacy-policy"
+  headingLevel="h1"
+  eyebrow="Legal information"
+  heading="Privacy policy"
+  intro="This draft explains what information the forms on this website ask for and how it is used."
+>
+  <article class="legal-content">
+    <LegalDraftNotice />
+    <p>
+      This website has forms for the purposes below. Please do not include
+      information about children that could identify them in a prayer request.
+    </p>
+
+    <h2>Information from forms</h2>
+    <ul>
+      <li>
+        <strong>Newsletter:</strong> your email address and consent, so the
+        Foundation can send occasional updates.
+      </li>
+      <li>
+        <strong>Contact:</strong> your name, email, optional phone number,
+        subject, and message, so the Foundation can respond to your message.
+      </li>
+      <li>
+        <strong>Partnership enquiry:</strong> organisation, contact person,
+        email, optional phone number, partnership type, message, and consent, so
+        the Foundation can review and respond to the enquiry.
+      </li>
+      <li>
+        <strong>Volunteer application:</strong> name, email, phone number, role
+        interest, availability, short message, and consent, so the Foundation
+        can review and follow up about the application.
+      </li>
+      <li>
+        <strong>Prayer request:</strong> an optional first name, prayer
+        request, optional email, privacy preference, and consent, so the
+        Foundation can receive the request and reply if requested.
+      </li>
+      <li>
+        <strong>Prayer partner:</strong> your indication of interest, optional
+        email, and consent, so the Foundation can record your interest and
+        follow up if requested.
+      </li>
+    </ul>
+
+    <h2>How form submissions are handled</h2>
+    <p>
+      Form submissions are stored through Netlify Forms and emailed to the
+      Foundation's team for the purposes described above. The team notification
+      email address is [to be confirmed].
+    </p>
+    <p>
+      How long submissions are kept: [to be confirmed]. Who on the team can
+      access submissions: [to be confirmed]. The Foundation's privacy contact:
+      [to be confirmed].
+    </p>
+
+    <h2>Donations and third-party services</h2>
+    <p>
+      Donations are made through third parties: the online fundraiser organised
+      by a friend of the Foundation, and MTN Mobile Money. We do not collect
+      card numbers or PINs on this website. The fundraiser platform's details
+      and privacy information: [to be confirmed].
+    </p>
+
+    <h2>Map and cookies</h2>
+    <p>
+      No analytics tools are currently installed. The map on the Contact page
+      does not contact Google Maps unless you choose to load it. If you do,
+      your browser makes a request to Google Maps, which may handle information
+      under its own terms. Further details: [to be confirmed]. The choice is
+      not saved between visits.
+    </p>
+    <p>
+      There is no general cookie or consent banner because this site does not
+      use analytics, and the map asks before it loads. Review of any third-party
+      service requirements: [to be confirmed].
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Privacy questions: [to be confirmed]. Foundation email:
+      {site.email.needsConfirmation ? "[to be confirmed]" : site.email.value}.
+    </p>
+  </article>
+</Section>

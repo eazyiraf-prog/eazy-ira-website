@@ -1,4 +1,6 @@
 ---
+import { t, type Locale } from "../../i18n";
+
 interface Option {
   value: string;
   label: string;
@@ -11,16 +13,17 @@ interface Props {
   hint: string;
   options: Option[];
   required?: boolean;
+  lang?: Locale;
 }
 
-const { id, name, label, hint, options, required = false } = Astro.props;
+const { id, name, label, hint, options, required = false, lang = "en" } = Astro.props;
 ---
 
 <div class="form-field">
   <label for={id}>
     {label}
     {required && <span class="form-required" aria-hidden="true">*</span>}
-    {required && <span class="form-visually-hidden"> required</span>}
+    {required && <span class="form-visually-hidden"> {t("formRequired", lang)}</span>}
   </label>
   <select
     id={id}
@@ -28,8 +31,11 @@ const { id, name, label, hint, options, required = false } = Astro.props;
     required={required}
     aria-describedby={`${id}-hint ${id}-error`}
     data-error-id={`${id}-error`}
+    data-required-error={t("formRequiredError", lang)}
+    data-type-error={t("formEmailError", lang)}
+    data-generic-error={t("formGenericError", lang)}
   >
-    <option value="">Choose an option</option>
+    <option value="">{t("formChooseOption", lang)}</option>
     {options.map((option) => (
       <option value={option.value}>{option.label}</option>
     ))}

@@ -1,0 +1,163 @@
+---
+import Container from "./ui/Container.astro";
+import SiteSearch from "./SiteSearch.astro";
+import { t, type Locale } from "../i18n";
+
+interface Props {
+  lang?: Locale;
+  fallbackPaths?: string[];
+}
+
+const { lang = "en", fallbackPaths = [] } = Astro.props;
+---
+
+<section class="search-page">
+  <Container>
+    <h1>{t("searchPageTitle", lang)}</h1>
+    <SiteSearch id="page-search" lang={lang} />
+    <p
+      class="search-status"
+      role="status"
+      aria-live="polite"
+      data-search-status
+      data-fallback-paths={JSON.stringify(fallbackPaths)}
+      data-prompt={t("searchPrompt", lang)}
+      data-searching={t("searching", lang)}
+      data-result-one={t("searchResultOne", lang, {
+        count: "{count}",
+        query: "{query}",
+      })}
+      data-result-many={t("searchResultMany", lang, {
+        count: "{count}",
+        query: "{query}",
+      })}
+      data-no-results={t("searchNoResults", lang, { query: "{query}" })}
+      data-unavailable={t("searchUnavailable", lang)}
+      data-untitled={t("untitledPage", lang)}
+    >
+      {t("searchPrompt", lang)}
+    </p>
+    <ol class="search-results" data-search-results></ol>
+  </Container>
+</section>
+
+<script>
+  interface PagefindResultData {
+    url: string;
+    meta: { title?: string };
+    excerpt: string;
+  }
+
+  interface PagefindApi {
+    destroy(): Promise<void>;
+    init(): Promise<void>;
+    search(
+      query: string,
+    ): Promise<{
+      results: Array<{ data(): Promise<PagefindResultData> }>;
+    }>;
+  }
+
+  const searchForm = document.querySelector<HTMLFormElement>(
+    "#page-search-form",
+  );
+  const searchInput =
+    searchForm?.querySelector<HTMLInputElement>('input[name="q"]');
+  const status = document.querySelector<HTMLElement>("[data-search-status]");
+  const resultsList = document.querySelector<HTMLOListElement>(
+    "[data-search-results]",
+  );
+
+  if (searchForm && searchInput && status && resultsList) {
+    const query = new URLSearchParams(window.location.search)
+      .get("q")
+      ?.trim();
+
+    if (query) {
+      searchInput.value = query;
+      status.textContent = status.dataset.searching ?? "";
+
+      try {
+        const pageLanguage = document.documentElement.lang;
+        const fallbackPaths = new Set(
+          JSON.parse(status.dataset.fallbackPaths ?? "[]") as string[],
+        );
+        const pagefindUrl = new URL(
+          "/pagefind/pagefind.js",
+          window.location.origin,
+        );
+        const pagefind = (await import(
+          /* @vite-ignore */ pagefindUrl.href
+        )) as PagefindApi;
+        const response = await pagefind.search(query);
+        const currentLanguageResults = await Promise.all(
+          response.results.map((result) => result.data()),
+        );
+        const fallbackResults: PagefindResultData[] = [];
+
+        if (pageLanguage !== "en" && fallbackPaths.size) {
+          await pagefind.destroy();
+          document.documentElement.lang = "en";
+
+          try {
+            const englishResponse = await pagefind.search(query);
+            const englishResults = await Promise.all(
+              englishResponse.results.map((result) => result.data()),
+            );
+
+            for (const result of englishResults) {
+              const path = new URL(
+                result.url,
+                window.location.origin,
+              ).pathname.replace(/^\/|\/$/g, "");
+              if (fallbackPaths.has(path)) fallbackResults.push(result);
+            }
+          } catch (error) {
+            console.error("Unable to load English fallback search results.", error);
+          } finally {
+            await pagefind.destroy();
+            document.documentElement.lang = pageLanguage;
+            await pagefind.init();
+          }
+        }
+
+        const results = [...currentLanguageResults, ...fallbackResults];
+
+        for (const result of results) {
+          const item = document.createElement("li");
+          const heading = document.createElement("h2");
+          const link = document.createElement("a");
+          const excerpt = document.createElement("p");
+
+          link.href = result.url;
+          link.textContent = result.meta.title || status.dataset.untitled || "";
+          excerpt.textContent = new DOMParser().parseFromString(
+            result.excerpt,
+            "text/html",
+          ).body.textContent;
+          heading.append(link);
+          item.append(heading, excerpt);
+          resultsList.append(item);
+        }
+
+        if (results.length) {
+          const format =
+            results.length === 1
+              ? status.dataset.resultOne
+              : status.dataset.resultMany;
+          status.textContent = (format ?? "")
+            .replace("{count}", String(results.length))
+            .replace("{query}", query);
+        } else {
+          status.textContent = (status.dataset.noResults ?? "").replace(
+            "{query}",
+            query,
+          );
+        }
+      } catch (error) {
+        console.error("Unable to load site search.", error);
+        status.textContent = status.dataset.unavailable ?? "";
+      }
+    }
+  }
+</script>

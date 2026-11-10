@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import TermsContent from "../../../components/legal/TermsContent.astro";
+import LegalEnglishNotice from "../../../components/legal/LegalEnglishNotice.astro";
+import { localizedPath, type Locale } from "../../../i18n";
+
+export function getStaticPaths() {
+  return ["fr", "rw"].map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<BaseLayout
+  title="Terms"
+  description="Draft terms for using the EAZY-IRA Charity Foundation website."
+  lang={lang}
+  canonical={new URL(localizedPath("/legal/terms", "en"), Astro.site ?? Astro.url).href}
+  pagefindIgnore
+>
+  <LegalEnglishNotice lang={lang} />
+  <TermsContent lang={lang} />
+</BaseLayout>

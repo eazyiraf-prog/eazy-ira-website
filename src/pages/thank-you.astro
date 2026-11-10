@@ -2,18 +2,19 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/ui/Card.astro";
 import Section from "../components/ui/Section.astro";
+import { localizedPath, t } from "../i18n";
 ---
 
 <BaseLayout
-  title="Thank You"
+  title={t("thankYouTitle")}
   description="Thank you for getting in touch with EAZY-IRA Charity Foundation."
 >
-  <Section eyebrow="Message received" heading="Thank you">
+  <Section eyebrow={t("messageReceived")} heading={t("thankYou")}>
     <Card class="thank-you-card">
-      <p>Thank you for sharing with EAZY-IRA Charity Foundation.</p>
-      <nav aria-label="Next steps">
-        <a href="/">Return home</a>
-        <a href="/donate">Visit the Donate page</a>
+      <p>{t("thankYouBody")}</p>
+      <nav aria-label={t("nextSteps")}>
+        <a href={localizedPath("/", "en")}>{t("returnHome")}</a>
+        <a href={localizedPath("/donate", "en")}>{t("visitDonate")}</a>
       </nav>
     </Card>
   </Section>

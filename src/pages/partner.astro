@@ -7,6 +7,7 @@ import Select from "../components/forms/Select.astro";
 import TextArea from "../components/forms/TextArea.astro";
 import TextField from "../components/forms/TextField.astro";
 import Section from "../components/ui/Section.astro";
+import { t } from "../i18n";
 ---
 
 <BaseLayout
@@ -23,71 +24,71 @@ import Section from "../components/ui/Section.astro";
         href="/documents/partnership-development-vision-placeholder.pdf"
         download
       >
-        Download the Partnership &amp; Development Vision (placeholder PDF)
+        {t("downloadPartnershipVision")}
       </a>
     </p>
   </Section>
 
   <Section eyebrow="Start a conversation" heading="Partnership enquiry">
-    <FormShell name="partnership-enquiry" submitLabel="Send enquiry">
+    <FormShell name="partnership-enquiry" submitLabel={t("sendEnquiry")}>
       <TextField
         id="partner-organisation"
         name="organisation"
-        label="Organisation"
-        hint="Enter the name of your church, business, NGO, or organisation."
+        label={t("fieldOrganisation")}
+        hint={t("partnerOrganisationHint")}
         required
       />
       <TextField
         id="partner-contact"
         name="contact-person"
-        label="Contact person"
-        hint="Tell us who we should contact about this enquiry."
+        label={t("fieldContactPerson")}
+        hint={t("partnerContactHint")}
         autocomplete="name"
         required
       />
       <EmailField
         id="partner-email"
         name="email"
-        label="Email"
-        hint="We will use this to respond to your enquiry."
+        label={t("fieldEmail")}
+        hint={t("partnerEmailHint")}
         required
       />
       <TextField
         id="partner-phone"
         name="phone"
-        label="Phone (optional)"
-        hint="Include a country code if you would like us to call."
+        label={t("fieldPhoneOptional")}
+        hint={t("contactPhoneHint")}
         type="tel"
         autocomplete="tel"
       />
       <Select
         id="partner-type"
         name="partnership-type"
-        label="Partnership type"
-        hint="Choose the kind of partnership you would like to discuss."
+        label={t("fieldPartnershipType")}
+        hint={t("partnerTypeHint")}
         required
         options={[
-          { value: "church", label: "Church" },
-          { value: "business", label: "Business" },
-          { value: "ngo", label: "NGO" },
-          { value: "professional", label: "Professional" },
+          { value: "church", label: t("church") },
+          { value: "business", label: t("business") },
+          { value: "ngo", label: t("ngo") },
+          { value: "professional", label: t("professional") },
         ]}
       />
       <TextArea
         id="partner-message"
         name="message"
-        label="Message"
-        hint="Share a little about the partnership you have in mind."
+        label={t("fieldMessage")}
+        hint={t("partnerMessageHint")}
         required
       />
       <Checkbox
         id="partner-consent"
         name="consent"
-        hint="We use this information to respond to your partnership enquiry."
+        hint={t("partnerConsentHint")}
         required
       >
-        I agree that EAZY-IRA may use this information to respond to my enquiry
-        under its <a href="/legal/privacy">Privacy Policy</a>.
+        {t("partnerConsentIntro")}{" "}
+        <a href="/legal/privacy">{t("privacyPolicy")}</a>.
       </Checkbox>
     </FormShell>
   </Section>

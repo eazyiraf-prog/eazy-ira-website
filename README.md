@@ -37,6 +37,18 @@ Preview the production build locally:
 npm run preview
 ```
 
+## Languages
+
+English is served at the site root; French and Kinyarwanda are served under
+`/fr` and `/rw`. The home, About overview, and Donate pages have localized
+content. Other pages show an English fallback notice, while legal content and
+donation/payment instructions remain in English with a notice. French and
+Kinyarwanda entries in `src/i18n/fr.json` and `src/i18n/rw.json` are marked
+`needsNativeReview: true` until checked by a native speaker.
+
+The selected language is remembered in the browser. `npm run build` checks
+that every key in `src/i18n/en.json` exists in both translated dictionaries.
+
 Production guard: `npm run build` validates when `NODE_ENV=production`, `CONTEXT=production` or `CONTEXT=deploy-preview`, or `CI=true`; `npm run build:prod` always validates before building.
 
 ## Lint and format

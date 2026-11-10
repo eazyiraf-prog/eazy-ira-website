@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SearchPage from "../../components/SearchPage.astro";
+import { t, type Locale } from "../../i18n";
+import { getFallbackPagePaths } from "../../i18n/fallback-paths";
+
+export async function getStaticPaths() {
+  const fallbackPaths = await getFallbackPagePaths();
+  return ["fr", "rw"].map((lang) => ({
+    params: { lang },
+    props: { fallbackPaths },
+  }));
+}
+
+const lang = Astro.params.lang as Locale;
+const { fallbackPaths } = Astro.props;
+---
+
+<BaseLayout
+  title={t("searchPageTitle", lang)}
+  description={t("searchPrompt", lang)}
+  lang={lang}
+>
+  <SearchPage lang={lang} fallbackPaths={fallbackPaths} />
+</BaseLayout>

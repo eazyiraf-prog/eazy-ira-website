@@ -1,4 +1,6 @@
 ---
+import { t, type Locale } from "../../i18n";
+
 interface Props {
   id: string;
   name: string;
@@ -6,6 +8,7 @@ interface Props {
   required?: boolean;
   checked?: boolean;
   value?: string;
+  lang?: Locale;
 }
 
 const {
@@ -15,6 +18,7 @@ const {
   required = false,
   checked = false,
   value = "yes",
+  lang = "en",
 } = Astro.props;
 ---
 
@@ -29,11 +33,14 @@ const {
       checked={checked}
       aria-describedby={`${id}-hint ${id}-error`}
       data-error-id={`${id}-error`}
+      data-required-error={t("formRequiredError", lang)}
+      data-type-error={t("formEmailError", lang)}
+      data-generic-error={t("formGenericError", lang)}
     />
     <label for={id}>
       <slot />
       {required && <span class="form-required" aria-hidden="true">*</span>}
-      {required && <span class="form-visually-hidden"> required</span>}
+      {required && <span class="form-visually-hidden"> {t("formRequired", lang)}</span>}
     </label>
   </div>
   <span class="form-hint" id={`${id}-hint`}>{hint}</span>

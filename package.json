@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/validate-donation.js",
+    "prebuild": "node scripts/validate-donation.js && node scripts/check-i18n.js",
     "build": "astro build && pagefind --site dist",
-    "build:prod": "node scripts/validate-donation.js --production && astro build && pagefind --site dist",
+    "build:prod": "node scripts/validate-donation.js --production && node scripts/check-i18n.js && astro build && pagefind --site dist",
     "preview": "astro preview",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write ."

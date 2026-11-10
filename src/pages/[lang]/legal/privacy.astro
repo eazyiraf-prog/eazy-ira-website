@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PrivacyPolicyContent from "../../../components/legal/PrivacyPolicyContent.astro";
+import LegalEnglishNotice from "../../../components/legal/LegalEnglishNotice.astro";
+import { type Locale } from "../../../i18n";
+import { localizedPath } from "../../../i18n";
+
+export function getStaticPaths() {
+  return ["fr", "rw"].map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<BaseLayout
+  title="Privacy"
+  description="Draft privacy information for EAZY-IRA Charity Foundation."
+  lang={lang}
+  canonical={new URL(localizedPath("/legal/privacy", "en"), Astro.site ?? Astro.url).href}
+  pagefindIgnore
+>
+  <LegalEnglishNotice lang={lang} />
+  <PrivacyPolicyContent />
+</BaseLayout>

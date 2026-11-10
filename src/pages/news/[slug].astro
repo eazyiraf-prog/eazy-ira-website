@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { t } from "../../i18n";
 
 export async function getStaticPaths() {
   const posts = await getCollection("news", ({ data }) => !data.draft);
@@ -49,10 +50,10 @@ const canonicalUrl = Astro.site
 >
   <article class="news-article">
     <div class="news-article__container">
-      <a class="back-link" href="/news">Back to news</a>
+      <a class="back-link" href="/news">{t("backToNews")}</a>
       <p class="eyebrow">{post.data.category}</p>
       {post.data.sample && (
-        <p class="sample-label">Sample post — replace before publishing</p>
+        <p class="sample-label">{t("samplePublicationNote")}</p>
       )}
       <h1>{post.data.title}</h1>
       <p class="article-meta">
@@ -65,7 +66,7 @@ const canonicalUrl = Astro.site
         {" · "}
         {post.data.author}
         {" · "}
-        {readingMinutes} min read
+        {t("minuteRead", "en", { count: readingMinutes })}
       </p>
       <img
         class="article-image"
@@ -80,9 +81,16 @@ const canonicalUrl = Astro.site
       </div>
 
       <section class="share-section" aria-labelledby="share-heading">
-        <h2 id="share-heading">Share this post</h2>
+        <h2 id="share-heading">{t("sharePost")}</h2>
         <div class="share-links">
-          <button type="button" data-copy-link>Copy link</button>
+          <button
+            type="button"
+            data-copy-link
+            data-copied={t("linkCopied")}
+            data-copy-failed={t("copyLinkFailed")}
+          >
+            {t("copyLink")}
+          </button>
           <a
             href="https://wa.me/"
             data-share="whatsapp"
@@ -107,7 +115,7 @@ const canonicalUrl = Astro.site
 
       {relatedPosts.length > 0 && (
         <section class="related-section" aria-labelledby="related-heading">
-          <h2 id="related-heading">Related posts</h2>
+          <h2 id="related-heading">{t("relatedPosts")}</h2>
           <ul>
             {relatedPosts.map((related) => (
               <li>
@@ -133,10 +141,9 @@ const canonicalUrl = Astro.site
 
     try {
       await navigator.clipboard.writeText(window.location.href);
-      copyStatus.textContent = "Link copied to clipboard.";
+      copyStatus.textContent = copyButton.dataset.copied ?? "";
     } catch {
-      copyStatus.textContent =
-        "Unable to copy the link. Copy it from your browser's address bar.";
+      copyStatus.textContent = copyButton.dataset.copyFailed ?? "";
     }
   });
 

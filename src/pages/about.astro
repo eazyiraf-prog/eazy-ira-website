@@ -5,49 +5,44 @@ import Card from "../components/ui/Card.astro";
 import Section from "../components/ui/Section.astro";
 import impact from "../data/impact.json";
 import site from "../data/site.json";
+import { t } from "../i18n";
 ---
 
 <AboutPage
-  title="About EAZY-IRA"
-  description="Our story, purpose, and community-rooted work in Masoro, Kigali, Rwanda."
+  title={t("aboutTitle")}
+  description={t("aboutDescription")}
   activePath="/about"
 >
   <Section
-    eyebrow="Our story"
-    heading="A gathering that began with a simple act of care"
-    intro="EAZY-IRA Charity Foundation grew from young volunteers' commitment to children and community."
+    eyebrow={t("ourStory")}
+    heading={t("storyHeading")}
+    intro={t("storyIntroAbout")}
   >
     <div class="about-story">
       <p>
-        In {impact.foundedMonth} {impact.foundedYear}, {impact.founders}{" "}
-        university student volunteers started a weekly children's gathering in
-        Masoro, Kigali. They shared a meal and taught moral values, positive
-        attitudes, and politeness.
+        {t("aboutStoryFirst", "en", {
+          month: impact.foundedMonth,
+          year: impact.foundedYear,
+          founders: impact.founders,
+        })}
       </p>
       <p>
-        The gathering grew into a wider child-development effort, rooted in the
-        community and focused on education, nutrition, spiritual and moral
-        development, mentorship, and community support. Today, EAZY-IRA Charity
-        Foundation continues that work through fellowship, education support,
-        and outreach to families.
+        {t("aboutStorySecond")}
       </p>
     </div>
   </Section>
 
   <Section
-    eyebrow="What we do"
-    heading="Care that supports a child's whole development"
-    intro="Our work brings learning, encouragement, and practical community care together."
+    eyebrow={t("whatWeDo")}
+    heading={t("wholeDevelopment")}
+    intro={t("whatWeDoIntro")}
   >
     <Card class="about-summary">
       <p>
-        We are a youth-led, community-rooted initiative in {site.location}.
-        Through a Christian, Sabbath-based fellowship, we support children's
-        education, nutrition, spiritual and moral development, mentorship, and
-        community support.
+        {t("aboutSummary", "en", { location: site.location })}
       </p>
       <Button variant="secondary" href="/about/vision-mission">
-        Read our vision &amp; mission
+        {t("readVision")}
       </Button>
     </Card>
   </Section>

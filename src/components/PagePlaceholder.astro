@@ -1,16 +1,18 @@
 ---
 import Container from "./ui/Container.astro";
+import { t, type Locale } from "../i18n";
 
 interface Props {
   title: string;
+  lang?: Locale;
 }
 
-const { title } = Astro.props;
+const { title, lang = "en" } = Astro.props;
 ---
 
 <section class="page-placeholder">
   <Container>
     <h1>{title}</h1>
-    <p>This page is being prepared. Please check back soon.</p>
+    <p>{t("pageBeingPrepared", lang)}</p>
   </Container>
 </section>

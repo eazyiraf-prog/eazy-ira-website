@@ -1,19 +1,22 @@
 ---
 import Button from "../ui/Button.astro";
+import { t, type Locale } from "../../i18n";
+import { localizedPath } from "../../i18n";
 
 interface Props {
   name: string;
   submitLabel?: string;
   class?: string;
+  lang?: Locale;
 }
 
-const { name, submitLabel = "Send", class: className } = Astro.props;
+const { name, submitLabel, class: className, lang = "en" } = Astro.props;
 ---
 
 <form
   name={name}
   method="POST"
-  action="/thank-you"
+  action={localizedPath("/thank-you", lang)}
   data-netlify="true"
   netlify-honeypot="bot-field"
   data-netlify-form
@@ -22,15 +25,21 @@ const { name, submitLabel = "Send", class: className } = Astro.props;
   <input type="hidden" name="form-name" value={name} />
   <div class="form-honeypot" aria-hidden="true" inert>
     <label>
-      Leave this field empty
+      {t("formLeaveEmpty", lang)}
       <input name="bot-field" tabindex="-1" autocomplete="off" />
     </label>
   </div>
   <slot />
-  <p class="form-submit-error" role="alert" data-submit-error hidden>
-    Your message could not be sent right now. Please try again.
+  <p
+    class="form-submit-error"
+    role="alert"
+    data-submit-error
+    data-error-message={t("formSubmitError", lang)}
+    hidden
+  >
+    {t("formSubmitError", lang)}
   </p>
-  <Button type="submit" variant="primary">{submitLabel}</Button>
+  <Button type="submit" variant="primary">{submitLabel ?? t("send", lang)}</Button>
 </form>
 
 <script>

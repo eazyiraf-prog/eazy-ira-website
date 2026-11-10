@@ -1,19 +1,22 @@
 ---
+import { localizedPath, t, type Locale } from "../i18n";
+
 interface Props {
   id: string;
+  lang?: Locale;
 }
 
-const { id } = Astro.props;
+const { id, lang = "en" } = Astro.props;
 ---
 
-<form id={`${id}-form`} class="site-search" action="/search" role="search">
-  <label class="form-visually-hidden" for={id}>Search this site</label>
+<form id={`${id}-form`} class="site-search" action={localizedPath("/search", lang)} role="search">
+  <label class="form-visually-hidden" for={id}>{t("searchLabel", lang)}</label>
   <input
     id={id}
     name="q"
     type="search"
-    placeholder="Search"
+    placeholder={t("searchPlaceholder", lang)}
     enterkeyhint="search"
   />
-  <button type="submit">Search</button>
+  <button type="submit">{t("search", lang)}</button>
 </form>

@@ -1,4 +1,6 @@
 ---
+import { t, type Locale } from "../../i18n";
+
 interface Props {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ interface Props {
   type?: "text" | "tel";
   required?: boolean;
   autocomplete?: string;
+  lang?: Locale;
 }
 
 const {
@@ -17,6 +20,7 @@ const {
   type = "text",
   required = false,
   autocomplete,
+  lang = "en",
 } = Astro.props;
 ---
 
@@ -24,7 +28,7 @@ const {
   <label for={id}>
     {label}
     {required && <span class="form-required" aria-hidden="true">*</span>}
-    {required && <span class="form-visually-hidden"> required</span>}
+    {required && <span class="form-visually-hidden"> {t("formRequired", lang)}</span>}
   </label>
   <input
     id={id}
@@ -34,6 +38,9 @@ const {
     autocomplete={autocomplete}
     aria-describedby={`${id}-hint ${id}-error`}
     data-error-id={`${id}-error`}
+    data-required-error={t("formRequiredError", lang)}
+    data-type-error={t("formEmailError", lang)}
+    data-generic-error={t("formGenericError", lang)}
   />
   <span class="form-hint" id={`${id}-hint`}>{hint}</span>
   <span class="form-error" id={`${id}-error`} hidden></span>

@@ -2,27 +2,25 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/ui/Container.astro";
 import SiteSearch from "../components/SiteSearch.astro";
+import { t } from "../i18n";
 ---
 
 <BaseLayout
-  title="Page not found"
-  description="The requested page could not be found."
+  title={t("notFoundTitle")}
+  description={t("notFoundBody")}
   robots="noindex, nofollow"
 >
   <section class="not-found-page">
     <Container>
-      <p class="ui-section__eyebrow">404 error</p>
-      <h1>We could not find that page</h1>
-      <p>
-        The address may be incorrect, or the page may have moved. Search the
-        site or use one of these helpful links.
-      </p>
+      <p class="ui-section__eyebrow">{t("notFoundTitle")}</p>
+      <h1>{t("notFoundHeading")}</h1>
+      <p>{t("notFoundBody")}</p>
       <SiteSearch id="not-found-search" />
-      <nav aria-label="Helpful links">
-        <a href="/">Home</a>
-        <a href="/about">About the Foundation</a>
-        <a href="/programs">Our programs</a>
-        <a href="/contact">Contact us</a>
+      <nav aria-label={t("helpfulLinks")}>
+        <a href="/">{t("home")}</a>
+        <a href="/about">{t("aboutFoundation")}</a>
+        <a href="/programs">{t("programs")}</a>
+        <a href="/contact">{t("contactUsTitle")}</a>
       </nav>
     </Container>
   </section>

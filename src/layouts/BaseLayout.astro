@@ -3,14 +3,16 @@ import SEO from "../components/SEO.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
+import { localizedPath, t, type Locale } from "../i18n";
 
 interface Props {
   title: string;
   description: string;
-  lang?: string;
+  lang?: Locale;
   canonical?: string;
   robots?: string;
   image?: string;
+  pagefindIgnore?: boolean;
 }
 
 const {
@@ -20,7 +22,11 @@ const {
   canonical,
   robots,
   image,
+  pagefindIgnore = false,
 } = Astro.props;
+const pagePath = Astro.url.pathname;
+const siteOrigin = Astro.site ?? Astro.url;
+const locales: Locale[] = ["en", "fr", "rw"];
 ---
 
 <!doctype html>
@@ -38,15 +44,41 @@ const {
     >
       <slot name="hreflang" slot="hreflang" />
     </SEO>
+    {
+      locales.map((locale) => (
+        <link
+          rel="alternate"
+          hreflang={locale}
+          href={new URL(localizedPath(pagePath, locale), siteOrigin).href}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localizedPath(pagePath, "en"), siteOrigin).href}
+    />
   </head>
   <body>
     <a class="skip-link" href="#main-content">
-      Skip to main content
+      {t("skipMain", lang)}
     </a>
     <Header lang={lang} />
-    <main id="main-content" tabindex="-1" data-pagefind-body>
+    {
+      lang !== "en" && (
+        <p class="translation-review-notice" role="note">
+          {t("translationReviewNotice", lang)}
+        </p>
+      )
+    }
+    <main
+      id="main-content"
+      tabindex="-1"
+      data-pagefind-body
+      data-pagefind-ignore={pagefindIgnore ? true : undefined}
+    >
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
   </body>
 </html>

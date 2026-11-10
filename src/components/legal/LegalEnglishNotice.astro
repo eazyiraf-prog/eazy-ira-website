@@ -1,0 +1,11 @@
+---
+import { t, type Locale } from "../../i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+---
+
+<p class="translation-review-notice" role="note">{t("legalEnglishNotice", lang)}</p>

@@ -3,6 +3,20 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import Button from "./ui/Button.astro";
 import slides from "../data/hero-slides.json";
+import { localizedPath, t, type Locale } from "../i18n";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const slideKeys: Record<string, [string, string, string, string, string]> = {
+  "love-in-action": ["heroPurpose", "heroLoveHeadline", "heroLoveText", "heroLearn", "placeholderArtworkAlt"],
+  "weekly-gathering": ["heroWeeklyEyebrow", "heroWeeklyHeadline", "heroWeeklyText", "heroExplorePrograms", "placeholderArtworkAlt"],
+  "education-support": ["heroEducationEyebrow", "heroEducationHeadline", "heroEducationText", "heroSeeImpact", "placeholderArtworkAlt"],
+  "family-outreach": ["heroFamilyEyebrow", "heroFamilyHeadline", "heroFamilyText", "heroMeetFoundation", "placeholderArtworkAlt"],
+  "public-speaking-academy": ["heroAcademyEyebrow", "heroAcademyHeadline", "heroAcademyText", "heroDiscoverAcademy", "placeholderArtworkAlt"],
+};
 
 const childConsentViolation = slides.find(
   (slide) => slide.containsChildren && !slide.consentConfirmed,
@@ -22,18 +36,30 @@ const videoIsAvailable = (src: string) =>
 <section
   class="hero-slider"
   role="region"
-  aria-roledescription="carousel"
-  aria-label="Featured stories"
+  aria-roledescription={t("heroCarousel", lang)}
+  aria-label={t("heroCarousel", lang)}
   data-hero-slider
+  data-status-format={t("slideStatus", lang, { number: "{number}", total: "{total}", headline: "{headline}" })}
+  data-play-label={t("play", lang)}
+  data-pause-label={t("pause", lang)}
+  data-play-aria={t("playSlideshow", lang)}
+  data-pause-aria={t("pauseSlideshow", lang)}
 >
   <div class="hero-slider__slides">
     {slides.map((slide, index) => (
+      (() => {
+        const [eyebrowKey, headlineKey, textKey, buttonKey, altKey] = slideKeys[slide.id];
+        const eyebrow = t(eyebrowKey, lang);
+        const headline = t(headlineKey, lang);
+        const text = t(textKey, lang);
+        const alt = t(altKey, lang);
+        return (
       <article
         class="hero-slider__slide"
         id={`hero-slide-${slide.id}`}
         role="group"
-        aria-roledescription="slide"
-        aria-label={`${index + 1} of ${slides.length}`}
+        aria-roledescription={t("heroSlide", lang)}
+        aria-label={t("slideStatus", lang, { number: index + 1, total: slides.length, headline })}
         aria-hidden={index !== 0 ? "true" : "false"}
         inert={index !== 0}
         data-slide
@@ -45,7 +71,7 @@ const videoIsAvailable = (src: string) =>
           src={slide.src}
           srcset="/images/hero-placeholder-640.svg 640w, /images/design-placeholder.svg 1200w, /images/hero-placeholder-1920.svg 1920w"
           sizes="100vw"
-          alt={slide.alt}
+          alt={alt}
           width="1200"
           height="700"
           loading={index === 0 ? "eager" : "lazy"}
@@ -60,7 +86,7 @@ const videoIsAvailable = (src: string) =>
             playsinline
             preload="none"
             poster={slide.poster}
-            aria-label={slide.alt}
+            aria-label={alt}
             data-video
             data-video-src={videoIsAvailable(slide.src) ? slide.src : undefined}
             data-video-poster={slide.poster}
@@ -68,51 +94,56 @@ const videoIsAvailable = (src: string) =>
         )}
         <div class="hero-slider__scrim" aria-hidden="true" />
         <div class="hero-slider__content">
-          <p class="hero-slider__eyebrow">{slide.eyebrow}</p>
-          <h2 class="hero-slider__headline">{slide.headline}</h2>
-          <p class="hero-slider__text">{slide.text}</p>
+          <p class="hero-slider__eyebrow">{eyebrow}</p>
+          <h2 class="hero-slider__headline">{headline}</h2>
+          <p class="hero-slider__text">{text}</p>
           <div class="hero-slider__actions">
-            <Button variant="primary" href={slide.buttonHref}>
-              {slide.buttonLabel}
+            <Button variant="primary" href={localizedPath(slide.buttonHref, lang)}>
+              {t(buttonKey, lang)}
             </Button>
             <Button
               variant="secondary"
-              href="/about"
+              href={localizedPath("/about", lang)}
               class="hero-slider__secondary-link"
             >
-              Discover the foundation
+              {t("discoverFoundation", lang)}
             </Button>
           </div>
           {slide.type === "video" && (
             <p class="hero-slider__video-alternative">
-              Video description: {slide.alt} {slide.text}
+              {t("videoDescription", lang)} {alt} {text}
             </p>
           )}
         </div>
       </article>
+        );
+      })()
     ))}
   </div>
 
   <div
     class="hero-slider__controls"
     role="group"
-    aria-label="Carousel controls"
+    aria-label={t("carouselControls", lang)}
   >
     <button
       class="hero-slider__control"
       type="button"
       data-previous
-      aria-label="Previous slide"
+      aria-label={t("previousSlide", lang)}
     >
       <span aria-hidden="true">&larr;</span>
     </button>
-    <div class="hero-slider__dots" role="group" aria-label="Choose a slide">
+    <div class="hero-slider__dots" role="group" aria-label={t("chooseSlide", lang)}>
       {slides.map((slide, index) => (
         <button
           class="hero-slider__dot"
           type="button"
           data-go-to={index}
-          aria-label={`Go to slide ${index + 1}: ${slide.headline}`}
+          aria-label={t("goToSlide", lang, {
+            number: index + 1,
+            headline: t(slideKeys[slide.id][1], lang),
+          })}
           aria-current={index === 0 ? "true" : undefined}
         />
       ))}
@@ -121,7 +152,7 @@ const videoIsAvailable = (src: string) =>
       class="hero-slider__control"
       type="button"
       data-next
-      aria-label="Next slide"
+      aria-label={t("nextSlide", lang)}
     >
       <span aria-hidden="true">&rarr;</span>
     </button>
@@ -129,10 +160,10 @@ const videoIsAvailable = (src: string) =>
       class="hero-slider__control hero-slider__toggle"
       type="button"
       data-toggle
-      aria-label="Pause slideshow"
+      aria-label={t("pauseSlideshow", lang)}
       aria-pressed="false"
     >
-      Pause
+      {t("pause", lang)}
     </button>
   </div>
   <p
@@ -141,7 +172,11 @@ const videoIsAvailable = (src: string) =>
     aria-atomic="true"
     data-status
   >
-    Slide 1 of {slides.length}: {slides[0].headline}
+    {t("slideStatus", lang, {
+      number: 1,
+      total: slides.length,
+      headline: t(slideKeys[slides[0].id][1], lang),
+    })}
   </p>
 </section>
 

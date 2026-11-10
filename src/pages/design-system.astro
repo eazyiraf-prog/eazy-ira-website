@@ -9,10 +9,11 @@ import Image from "../components/ui/Image.astro";
 import Section from "../components/ui/Section.astro";
 import HeroSlider from "../components/HeroSlider.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { t } from "../i18n";
 ---
 
 <BaseLayout
-  title="Design System"
+  title={t("designSystemTitle")}
   description="Private visual reference for the EAZY-IRA Charity Foundation design system."
   robots="noindex, nofollow"
 >
@@ -115,11 +116,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     intro="Four clear action styles, including a distinct donation action."
   >
     <div class="design-stack">
-      <Button variant="primary">Primary action</Button>
-      <Button variant="secondary">Secondary action</Button>
-      <Button variant="ghost">Ghost action</Button>
+      <Button variant="primary">{t("primaryAction")}</Button>
+      <Button variant="secondary">{t("secondaryAction")}</Button>
+      <Button variant="ghost">{t("ghostAction")}</Button>
       <DonationButton />
-      <Button disabled>Disabled</Button>
+      <Button disabled>{t("disabledAction")}</Button>
     </div>
   </Section>
 

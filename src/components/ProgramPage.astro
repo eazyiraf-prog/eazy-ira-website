@@ -6,6 +6,7 @@ import Card from "./ui/Card.astro";
 import Section from "./ui/Section.astro";
 import impact from "../data/impact.json";
 import type { CollectionEntry } from "astro:content";
+import { t } from "../i18n";
 
 interface Props {
   program: CollectionEntry<"programs">;
@@ -16,43 +17,42 @@ const { program, relatedPrograms } = Astro.props;
 const { data } = program;
 const metrics = {
   childrenServed: {
-    label: "Children currently served",
+    label: t("childrenCurrentlyServed"),
     value: impact.childrenServed.value,
     needsConfirmation: impact.childrenServed.needsConfirmation,
   },
   weeklyGatherings: {
-    label: "Weekly gatherings to date",
+    label: t("weeklyGatheringsToDate"),
     value: impact.weeklyGatherings.value,
     needsConfirmation: impact.weeklyGatherings.needsConfirmation,
   },
   gatheringStart: {
-    label: "Weekly gathering began",
+    label: t("weeklyGatheringBegan"),
     value: `${impact.weeklyGatherings.startMonth} ${impact.weeklyGatherings.startYear}`,
     needsConfirmation: false,
   },
   schoolMaterials: {
-    label: "Children with school materials and uniforms",
+    label: t("childrenSchoolMaterials"),
     value: impact.childrenWithSchoolMaterials.value,
     needsConfirmation: impact.childrenWithSchoolMaterials.needsConfirmation,
   },
   schoolYears: {
-    label: "Academic years represented",
+    label: t("academicYears"),
     value: impact.childrenWithSchoolMaterials.academicYears.join(", "),
     needsConfirmation: impact.childrenWithSchoolMaterials.needsConfirmation,
   },
   firstSchool: {
-    label: "School access",
-    value: "Some children supported to attend school for the first time",
+    label: t("schoolAccess"),
+    value: t("firstSchoolAttendance"),
     needsConfirmation: false,
   },
   familyOutreach: {
-    label: "Family outreach",
-    value:
-      "Home visits include parents, prayer, educational guidance, and encouragement",
+    label: t("familyOutreach"),
+    value: t("homeVisitDetails"),
     needsConfirmation: false,
   },
   academySessions: {
-    label: "Structured sessions",
+    label: t("structuredSessions"),
     value: impact.publicSpeakingAcademy.sessions,
     needsConfirmation: false,
   },
@@ -63,22 +63,22 @@ const metrics = {
   <header class="program-hero">
     <div class="program-container">
       <a class="program-back-link" href="/programs">
-        All programs
+        {t("allPrograms")}
       </a>
       <p class="program-eyebrow">{data.category}</p>
       <h1>{data.title}</h1>
       <p class="program-hero__text">{data.heroText}</p>
       <Button variant="primary" href="#how-to-help">
-        How you can help
+        {t("howYouCanHelp")}
       </Button>
     </div>
   </header>
 
-  <Section eyebrow="Program context" heading="The need">
+  <Section eyebrow={t("programContext")} heading={t("need")}>
     <p class="program-copy">{data.need}</p>
   </Section>
 
-  <Section eyebrow="Our response" heading="What we do">
+  <Section eyebrow={t("ourResponse")} heading={t("whatWeDo")}>
     <ul class="program-list">
       {data.whatWeDo.map((item) => (
         <li>{item}</li>
@@ -86,7 +86,7 @@ const metrics = {
     </ul>
   </Section>
 
-  <Section eyebrow="Our approach" heading="How it works">
+  <Section eyebrow={t("ourApproach")} heading={t("howItWorks")}>
     <ul class="program-list">
       {data.howItWorks.map((item) => (
         <li>{item}</li>
@@ -94,29 +94,31 @@ const metrics = {
     </ul>
     {data.enrolmentInfo && (
       <Card class="program-placeholder">
-        <h3>Enrolment information</h3>
+        <h3>{t("enrolmentInformation")}</h3>
         <p>{data.enrolmentInfo}</p>
       </Card>
     )}
     {data.courseOutline && (
       <p class="program-download">
         <a href={data.courseOutline} download>
-          Download course outline placeholder
+          {t("downloadCourseOutline")}
         </a>
       </p>
     )}
   </Section>
 
-  <Section eyebrow="Reported outcomes" heading="Results so far">
+  <Section eyebrow={t("reportedOutcomes")} heading={t("resultsSoFar")}>
     <div class="program-results">
       {data.results.map((key) => {
         const metric = metrics[key];
         return (
           <Card class="program-result">
             <h3>{metric.label}</h3>
-            <p>{metric.value === null ? "[to be confirmed]" : metric.value}</p>
+            <p>
+              {metric.value === null ? `[${t("toBeConfirmed")}]` : metric.value}
+            </p>
             {metric.needsConfirmation && (
-              <span class="program-confirmation">Needs confirmation</span>
+              <span class="program-confirmation">{t("needsConfirmation")}</span>
             )}
           </Card>
         );
@@ -126,9 +128,9 @@ const metrics = {
 
   <Section
     id="how-to-help"
-    eyebrow="Get involved"
-    heading="How you can help"
-    intro="Support can help sustain practical care and learning opportunities."
+    eyebrow={t("getInvolved")}
+    heading={t("howYouCanHelp")}
+    intro={t("supportSustain")}
   >
     <div class="program-help">
       <ul class="program-list">
@@ -136,18 +138,18 @@ const metrics = {
           <li>{item}</li>
         ))}
       </ul>
-      <DonationButton label="Give Hope" />
+      <DonationButton label={t("giveHope")} />
     </div>
   </Section>
 
-  <Section eyebrow="Explore more" heading="Related programs">
+  <Section eyebrow={t("exploreMore")} heading={t("relatedPrograms")}>
     <div class="program-related">
       {relatedPrograms.map((related) => (
         <Card class="program-related-card">
           <p class="program-eyebrow">{related.data.category}</p>
           <h3>{related.data.title}</h3>
           <p>{related.data.summary}</p>
-          <a href={`/programs/${related.id}`}>Learn about this program</a>
+          <a href={`/programs/${related.id}`}>{t("learnProgram")}</a>
         </Card>
       ))}
     </div>

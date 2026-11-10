@@ -7,6 +7,13 @@ export default defineConfig({
     process.env.PUBLIC_SITE_URL ??
     process.env.URL ??
     process.env.DEPLOY_PRIME_URL,
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "fr", "rw"],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

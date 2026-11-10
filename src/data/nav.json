@@ -1,26 +1,26 @@
 {
   "primary": [
-    { "label": "Home", "href": "/" },
-    { "label": "About", "href": "/about" },
-    { "label": "Programs", "href": "/programs" },
-    { "label": "Impact", "href": "/impact" },
-    { "label": "Transparency", "href": "/transparency" },
-    { "label": "Gallery", "href": "/gallery" },
-    { "label": "Get Involved", "href": "/get-involved" },
-    { "label": "News", "href": "/news" },
-    { "label": "Contact", "href": "/contact" }
+    { "labelKey": "home", "href": "/" },
+    { "labelKey": "about", "href": "/about" },
+    { "labelKey": "programs", "href": "/programs" },
+    { "labelKey": "impact", "href": "/impact" },
+    { "labelKey": "transparency", "href": "/transparency" },
+    { "labelKey": "gallery", "href": "/gallery" },
+    { "labelKey": "getInvolved", "href": "/get-involved" },
+    { "labelKey": "news", "href": "/news" },
+    { "labelKey": "contact", "href": "/contact" }
   ],
   "about": [
-    { "label": "Overview", "href": "/about" },
-    { "label": "Vision & Mission", "href": "/about/vision-mission" },
-    { "label": "Team", "href": "/about/team" },
-    { "label": "Governance", "href": "/about/governance" },
-    { "label": "Safeguarding", "href": "/about/safeguarding" }
+    { "labelKey": "aboutOverview", "href": "/about" },
+    { "labelKey": "visionMission", "href": "/about/vision-mission" },
+    { "labelKey": "team", "href": "/about/team" },
+    { "labelKey": "governance", "href": "/about/governance" },
+    { "labelKey": "safeguarding", "href": "/about/safeguarding" }
   ],
   "legal": [
-    { "label": "Privacy", "href": "/legal/privacy" },
-    { "label": "Terms", "href": "/legal/terms" },
-    { "label": "Donation Policy", "href": "/legal/donation-policy" },
-    { "label": "Safeguarding", "href": "/about/safeguarding" }
+    { "labelKey": "privacy", "href": "/legal/privacy" },
+    { "labelKey": "terms", "href": "/legal/terms" },
+    { "labelKey": "donationPolicy", "href": "/legal/donation-policy" },
+    { "labelKey": "safeguarding", "href": "/about/safeguarding" }
   ]
 }

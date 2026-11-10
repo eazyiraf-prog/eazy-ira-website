@@ -1,0 +1,55 @@
+---
+import AboutPage from "../../components/AboutPage.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import Section from "../../components/ui/Section.astro";
+import impact from "../../data/impact.json";
+import site from "../../data/site.json";
+import { localizedPath, t, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return ["fr", "rw"].map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<AboutPage
+  title={t("aboutTitle", lang)}
+  description={t("aboutDescription", lang)}
+  activePath="/about"
+  lang={lang}
+>
+  <Section
+    eyebrow={t("ourStory", lang)}
+    heading={t("storyHeading", lang)}
+    intro={t("storyIntroAbout", lang)}
+  >
+    <div class="about-story">
+      <p>
+        {t("aboutStoryFirst", lang, {
+          month: impact.foundedMonth,
+          year: impact.foundedYear,
+          founders: impact.founders,
+        })}
+      </p>
+      <p>{t("aboutStorySecond", lang)}</p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow={t("whatWeDo", lang)}
+    heading={t("wholeDevelopment", lang)}
+    intro={t("whatWeDoIntro", lang)}
+  >
+    <Card class="about-summary">
+      <p>{t("aboutSummary", lang, { location: site.location })}</p>
+      <Button
+        variant="secondary"
+        href={localizedPath("/about/vision-mission", lang)}
+      >
+        {t("readVision", lang)}
+      </Button>
+    </Card>
+  </Section>
+</AboutPage>

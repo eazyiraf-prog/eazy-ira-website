@@ -1,0 +1,168 @@
+---
+import Card from "./ui/Card.astro";
+import Section from "./ui/Section.astro";
+import site from "../data/site.json";
+import { localizedPath, t, type Locale } from "../i18n";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const donation = site.donation;
+const enabledMethods = donation.methods
+  .filter((method) => method.enabled)
+  .sort((first, second) =>
+    first.id === donation.primaryMethod
+      ? -1
+      : second.id === donation.primaryMethod
+        ? 1
+        : 0,
+  );
+const helpfulPaths = [
+  { label: t("volunteer", lang), href: "/volunteer" },
+  { label: t("partner", lang), href: "/partner" },
+  { label: t("prayWithUs", lang), href: "/pray" },
+];
+---
+
+<Section
+  eyebrow={t("giveWithCare", lang)}
+  heading={t("supportCareLearning", lang)}
+  intro={t("donationIntro", lang)}
+>
+  {enabledMethods.length ? (
+    <div class="donation-methods">
+      {enabledMethods.map((method) => (
+        <Card class="donation-method">
+          <h2>{method.label}</h2>
+          {(method.id === "mtn-momo" || method.id === "online-fundraiser") && (
+              <p class="donation-language-notice" role="note">
+                {method.id === "mtn-momo"
+                  ? t("momoEnglishNotice", lang)
+                  : t("fundraiserEnglishNotice", lang)}
+              </p>
+            )}
+          {method.id === "mtn-momo" && method.details?.payCode && (
+            <div class="donation-pay-code">
+              <p class="donation-pay-code__label">{t("momoPayCode", lang)}</p>
+              <p class="donation-pay-code__number" data-pay-code>
+                {method.details.payCode}
+              </p>
+              <button
+                type="button"
+                class="ui-button ui-button--secondary"
+                data-copy-code={method.details.payCode}
+                data-copy-failed={t("copyFailed", lang)}
+                data-copied={t("copied", lang)}
+              >
+                {t("copyCode", lang)}
+              </button>
+              <span
+                class="donation-copy-status"
+                aria-live="polite"
+                data-copy-status
+              ></span>
+            </div>
+          )}
+          {method.instructions && <p>{method.instructions}</p>}
+          {method.id === "mtn-momo" && (
+            <p class="donation-treasurer-note">{t("treasurerNote", "en")}</p>
+          )}
+          {method.id === "online-fundraiser" && (
+            <>
+              <p class="donation-organizer-note">
+                {donation.fundraiserOrganizer}
+              </p>
+            </>
+          )}
+          {method.details &&
+            Object.entries(method.details)
+              .filter(([key]) => key !== "payCode")
+              .map(([key, value]) => (
+                <p class="donation-detail">
+                  <strong>
+                    {key
+                      .replace(/[A-Z]/g, (letter) => ` ${letter}`)
+                      .replace(/^./, (letter) => letter.toUpperCase())}
+                    :
+                  </strong>{" "}
+                  {value}
+                </p>
+              ))}
+          {method.type === "link" && method.url && (
+            <a
+              class="ui-button ui-button--donate"
+              href={method.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("continueFundraiser", lang)}
+              <span class="form-visually-hidden">
+                {" "}{t("opensNewTab", lang)}
+              </span>
+            </a>
+          )}
+        </Card>
+      ))}
+    </div>
+  ) : (
+    <Card class="donation-coming-soon">
+      <h2>{t("donationOptionsSoon", lang)}</h2>
+      <p>
+        <a href={localizedPath("/contact", lang)}>{t("contactUs", lang)}</a>{" "}
+        {t("supportFoundation", lang)}
+      </p>
+    </Card>
+  )}
+</Section>
+
+<Section eyebrow={t("accountability", lang)} heading={t("privacyTrust", lang)}>
+  <div class="donation-reassurance">
+    <a href={localizedPath("/transparency", lang)}>{t("giftsSpent", lang)}</a>
+    <p>{t("paymentSafety", lang)}</p>
+  </div>
+</Section>
+
+<Section eyebrow={t("otherWays", lang)} heading={t("giveTimeSkills", lang)}>
+  <nav class="donation-other-ways" aria-label={t("otherWays", lang)}>
+    {helpfulPaths.map((path) => (
+      <a href={localizedPath(path.href, lang)}>{path.label}</a>
+    ))}
+  </nav>
+</Section>
+
+<script>
+  const copyButtons = document.querySelectorAll<HTMLButtonElement>(
+    "[data-copy-code]",
+  );
+
+  for (const button of copyButtons) {
+    button.addEventListener("click", async () => {
+      const code = button.dataset.copyCode;
+      const status = button.parentElement?.querySelector<HTMLElement>(
+        "[data-copy-status]",
+      );
+      if (!code || !status) return;
+
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch {
+        const temporaryInput = document.createElement("textarea");
+        temporaryInput.value = code;
+        temporaryInput.setAttribute("readonly", "");
+        temporaryInput.className = "form-visually-hidden";
+        document.body.append(temporaryInput);
+        temporaryInput.select();
+        const copied = document.execCommand("copy");
+        temporaryInput.remove();
+        if (!copied) {
+          status.textContent = button.dataset.copyFailed ?? "";
+          return;
+        }
+      }
+
+      status.textContent = button.dataset.copied ?? "";
+    });
+  }
+</script>

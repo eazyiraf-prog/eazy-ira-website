@@ -6,24 +6,31 @@ import FormShell from "./forms/FormShell.astro";
 import impact from "../data/impact.json";
 import nav from "../data/nav.json";
 import site from "../data/site.json";
+import { localizedPath, t, type Locale } from "../i18n";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
 ---
 
 <footer class="site-footer">
   <Container wide>
     <div class="site-footer__main">
       <div class="site-footer__identity">
-        <a class="site-footer__brand" href="/">
+        <a class="site-footer__brand" href={localizedPath("/", lang)}>
           {site.name}
         </a>
         <p>{site.tagline}</p>
         <p>{site.location}</p>
-        <ul class="site-socials" aria-label="Social media">
+        <ul class="site-socials" aria-label={t("footerSocial", lang)}>
           {Object.entries(site.socials).map(([platform, contact]) => (
             <li>
               <span>
                 {platform}:{" "}
                 {contact.needsConfirmation
-                  ? "link to be confirmed"
+                  ? t("linkToConfirm", lang)
                   : contact.value}
               </span>
             </li>
@@ -31,52 +38,54 @@ import site from "../data/site.json";
         </ul>
       </div>
 
-      <nav class="site-footer__sitemap" aria-label="Footer navigation">
-        <h2>Explore</h2>
+      <nav class="site-footer__sitemap" aria-label={t("footerNavigation", lang)}>
+        <h2>{t("explore", lang)}</h2>
         <ul>
           {nav.primary.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a href={localizedPath(item.href, lang)}>{t(item.labelKey, lang)}</a>
             </li>
           ))}
         </ul>
       </nav>
 
       <div class="site-footer__signup">
-        <h2>Stay connected</h2>
-        <p>Sign up for occasional foundation updates.</p>
-        <FormShell name="newsletter" submitLabel="Sign up">
+        <h2>{t("stayConnected", lang)}</h2>
+        <p>{t("newsletterIntro", lang)}</p>
+        <FormShell name="newsletter" submitLabel={t("signUp", lang)} lang={lang}>
           <EmailField
             id="newsletter-email"
             name="email"
-            label="Email address"
-            hint="We will use this address to send occasional foundation updates."
+            label={t("emailAddress", lang)}
+            hint={t("newsletterHint", lang)}
+            lang={lang}
             required
           />
           <Checkbox
             id="newsletter-consent"
             name="consent"
-            hint="You can unsubscribe from updates at any time."
+            hint={t("unsubscribeHint", lang)}
+            lang={lang}
             required
           >
-            I agree to receive updates. Read our
-            <a href="/legal/privacy">Privacy Policy</a>.
+            {t("newsletterConsent", lang)}{" "}
+            <a href={localizedPath("/legal/privacy", lang)}>{t("privacyPolicy", lang)}</a>.
           </Checkbox>
         </FormShell>
       </div>
 
       <div class="site-footer__details">
-        <h2>Organization details</h2>
+        <h2>{t("organizationDetails", lang)}</h2>
         <p>
-          Registration details:{" "}
+          {t("registrationDetails", lang)}{" "}
           {site.registrationDetails.needsConfirmation
-            ? "to be confirmed"
+            ? t("toBeConfirmed", lang)
             : site.registrationDetails.value}
         </p>
         <p>
-          Last updated:{" "}
+          {t("lastUpdated", lang)}{" "}
           {impact.lastUpdated.needsConfirmation
-            ? "date to be confirmed"
+            ? t("dateToBeConfirmed", lang)
             : impact.lastUpdated.value}
         </p>
       </div>
@@ -84,11 +93,11 @@ import site from "../data/site.json";
 
     <div class="site-footer__bottom">
       <p>© {site.name}</p>
-      <nav aria-label="Legal links">
+      <nav aria-label={t("legalLinks", lang)}>
         <ul>
           {nav.legal.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a href={localizedPath(item.href, lang)}>{t(item.labelKey, lang)}</a>
             </li>
           ))}
         </ul>

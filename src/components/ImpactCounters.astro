@@ -1,5 +1,6 @@
 ---
 import Card from "./ui/Card.astro";
+import { t, type Locale } from "../i18n";
 
 interface Counter {
   value: number | null;
@@ -9,9 +10,10 @@ interface Counter {
 
 interface Props {
   counters: Counter[];
+  lang?: Locale;
 }
 
-const { counters } = Astro.props;
+const { counters, lang = "en" } = Astro.props;
 ---
 
 <ul class="impact-counter-grid">
@@ -20,14 +22,14 @@ const { counters } = Astro.props;
       <Card class="impact-counter-card">
         <p class="impact-counter-card__label">{counter.label}</p>
         <p class="impact-counter-card__value">
-          {counter.value === null ? "[to be confirmed]" : (
+          {counter.value === null ? t("toBeConfirmed", lang) : (
             <span data-count-up data-target={counter.value}>
               {counter.value}
             </span>
           )}
         </p>
         {counter.needsConfirmation && (
-          <span class="impact-counter-confirmation">Needs confirmation</span>
+          <span class="impact-counter-confirmation">{t("needsConfirmation", lang)}</span>
         )}
       </Card>
     </li>

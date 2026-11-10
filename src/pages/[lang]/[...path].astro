@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import { localizedPath, t, type Locale } from "../../i18n";
+import { getFallbackPagePaths } from "../../i18n/fallback-paths";
+
+export async function getStaticPaths() {
+  const fallbackPaths = await getFallbackPagePaths();
+  return ["fr", "rw"].flatMap((lang) =>
+    fallbackPaths
+      .filter((path) => !path.startsWith("legal/"))
+      .map((path) => ({ params: { lang, path } })),
+  );
+}
+
+const lang = Astro.params.lang as Locale;
+const englishPath = `/${Astro.params.path}`;
+const isLegal = englishPath.startsWith("/legal/");
+const title = t("fallbackPageTitle", lang);
+---
+
+<BaseLayout
+  title={title}
+  description={t("fallbackPageBody", lang)}
+  lang={lang}
+  canonical={new URL(localizedPath(englishPath, "en"), Astro.site ?? Astro.url).href}
+  pagefindIgnore
+>
+  <section class="localized-fallback">
+    <Container>
+      <h1>{title}</h1>
+      <p>
+        {isLegal
+          ? t("legalEnglishNotice", lang)
+          : t("englishFallbackNotice", lang)}
+      </p>
+      <p>{t("fallbackPageBody", lang)}</p>
+      <a
+        class="ui-button ui-button--primary"
+        href={localizedPath(englishPath, "en")}
+        data-language-link
+        lang="en"
+      >
+        {t("englishPageLink", lang)}
+      </a>
+    </Container>
+  </section>
+</BaseLayout>

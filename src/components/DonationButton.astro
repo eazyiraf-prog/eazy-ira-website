@@ -1,12 +1,14 @@
 ---
 import Button from "./ui/Button.astro";
 import site from "../data/site.json";
+import { localizedPath, t, type Locale } from "../i18n";
 
 interface Props {
   label?: string;
+  lang?: Locale;
 }
 
-const { label = "Donate" } = Astro.props;
+const { label, lang = "en" } = Astro.props;
 const fundraiser = site.donation.methods.find(
   (method) => method.id === "online-fundraiser",
 );
@@ -14,7 +16,7 @@ const opensInNewTab = fundraiser?.enabled === true;
 const href =
   opensInNewTab && fundraiser?.type === "link" && fundraiser.url
     ? fundraiser.url
-    : "/donate";
+    : localizedPath("/donate", lang);
 ---
 
 <Button
@@ -23,6 +25,6 @@ const href =
   target={opensInNewTab ? "_blank" : undefined}
   rel={opensInNewTab ? "noopener noreferrer" : undefined}
 >
-  {label}
-  {opensInNewTab && <span class="visually-hidden"> (opens in a new tab)</span>}
+  {label ?? t("donate", lang)}
+  {opensInNewTab && <span class="visually-hidden"> {t("opensNewTab", lang)}</span>}
 </Button>

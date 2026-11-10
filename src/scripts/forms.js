@@ -21,10 +21,10 @@ for (const form of forms) {
 
       if (!control.validity.valid) {
         error.textContent = control.validity.valueMissing
-          ? "Please complete this field."
+          ? control.dataset.requiredError
           : control.validity.typeMismatch
-            ? "Please enter a valid email address."
-            : "Please check this field and try again.";
+            ? control.dataset.typeError
+            : control.dataset.genericError;
         error.hidden = false;
         control.setAttribute("aria-invalid", "true");
         firstInvalid ??= control;
@@ -53,7 +53,7 @@ for (const form of forms) {
       if (!response.ok) {
         throw new Error(`Form submission failed with status ${response.status}`);
       }
-      window.location.assign("/thank-you");
+      window.location.assign(form.action);
     } catch (error) {
       console.error("Unable to submit Netlify form.", error);
       if (submitError) submitError.hidden = false;

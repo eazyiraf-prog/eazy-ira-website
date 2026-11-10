@@ -7,14 +7,15 @@ import Select from "../components/forms/Select.astro";
 import TextArea from "../components/forms/TextArea.astro";
 import TextField from "../components/forms/TextField.astro";
 import Section from "../components/ui/Section.astro";
+import { t } from "../i18n";
 
 const roles = [
-  "Mentors",
-  "Teachers",
-  "Cooks and meal helpers",
-  "Event helpers",
-  "Media and photography",
-  "Professional skills",
+  { labelKey: "roleMentors", originalLabel: "Mentors" },
+  { labelKey: "roleTeachers", originalLabel: "Teachers" },
+  { labelKey: "roleMealHelpers", originalLabel: "Cooks and meal helpers" },
+  { labelKey: "roleEventHelpers", originalLabel: "Event helpers" },
+  { labelKey: "roleMedia", originalLabel: "Media and photography" },
+  { labelKey: "roleProfessionalSkills", originalLabel: "Professional skills" },
 ];
 ---
 
@@ -28,7 +29,7 @@ const roles = [
     intro="Volunteers can support the Foundation in a range of practical and professional roles."
   >
     <ul class="volunteer-role-list">
-      {roles.map((role) => <li>{role}</li>)}
+      {roles.map((role) => <li>{t(role.labelKey)}</li>)}
     </ul>
     <p class="safeguarding-note">
       All volunteers who work with children agree to our
@@ -38,27 +39,30 @@ const roles = [
   </Section>
 
   <Section eyebrow="Apply to volunteer" heading="Volunteer application">
-    <FormShell name="volunteer-application" submitLabel="Send application">
+    <FormShell
+      name="volunteer-application"
+      submitLabel={t("sendApplication")}
+    >
       <TextField
         id="volunteer-name"
         name="full-name"
-        label="Full name"
-        hint="Enter your name."
+        label={t("fieldFullName")}
+        hint={t("contactNameHint")}
         autocomplete="name"
         required
       />
       <EmailField
         id="volunteer-email"
         name="email"
-        label="Email"
-        hint="We will use this to follow up about your application."
+        label={t("fieldEmail")}
+        hint={t("volunteerEmailHint")}
         required
       />
       <TextField
         id="volunteer-phone"
         name="phone"
-        label="Phone"
-        hint="Include a country code."
+        label={t("fieldPhone")}
+        hint={t("volunteerPhoneHint")}
         type="tel"
         autocomplete="tel"
         required
@@ -66,36 +70,36 @@ const roles = [
       <Select
         id="volunteer-role"
         name="role-interest"
-        label="Role interest"
-        hint="Choose the role you are most interested in."
+        label={t("fieldRoleInterest")}
+        hint={t("volunteerRoleHint")}
         required
         options={roles.map((role) => ({
-          value: role.toLowerCase().replaceAll(" ", "-"),
-          label: role,
+          value: role.originalLabel.toLowerCase().replaceAll(" ", "-"),
+          label: t(role.labelKey),
         }))}
       />
       <TextField
         id="volunteer-availability"
         name="availability"
-        label="Availability"
-        hint="Share when you may be available."
+        label={t("fieldAvailability")}
+        hint={t("volunteerAvailabilityHint")}
         required
       />
       <TextArea
         id="volunteer-message"
         name="message"
-        label="Short message"
-        hint="Tell us briefly about your interest in volunteering."
+        label={t("fieldShortMessage")}
+        hint={t("volunteerMessageHint")}
         required
       />
       <Checkbox
         id="volunteer-consent"
         name="consent"
-        hint="We use this information to review and respond to your application."
+        hint={t("volunteerConsentHint")}
         required
       >
-        I agree that EAZY-IRA may use this information to respond to my
-        application under its <a href="/legal/privacy">Privacy Policy</a>.
+        {t("volunteerConsentIntro")}{" "}
+        <a href="/legal/privacy">{t("privacyPolicy")}</a>.
       </Checkbox>
     </FormShell>
   </Section>

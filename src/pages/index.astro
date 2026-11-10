@@ -11,6 +11,7 @@ import Image from "../components/ui/Image.astro";
 import Section from "../components/ui/Section.astro";
 import impact from "../data/impact.json";
 import site from "../data/site.json";
+import { t } from "../i18n";
 
 const newsPosts = (await getCollection("news", ({ data }) => !data.draft))
   .sort((first, second) => second.data.date.getTime() - first.data.date.getTime())
@@ -19,55 +20,55 @@ const newsPosts = (await getCollection("news", ({ data }) => !data.draft))
 const counters = [
   {
     value: impact.childrenServed.value,
-    label: "Children currently served",
+    label: t("childrenCurrentlyServed"),
     needsConfirmation: impact.childrenServed.needsConfirmation,
   },
   {
     value: impact.founders,
-    label: "University student founders",
+    label: t("universityFounders"),
     needsConfirmation: false,
   },
   {
     value: impact.publicSpeakingAcademy.sessions,
-    label: "Public Speaking Academy sessions",
+    label: t("academySessions"),
     needsConfirmation: false,
   },
 ].filter((counter) => counter.value !== null);
 
 const needs = [
-  "School shoes",
-  "Weekly gathering meals",
-  "Hygiene items",
-  "Uniforms",
+  "schoolShoes",
+  "weeklyMeals",
+  "hygieneItems",
+  "uniforms",
 ];
 ---
 
 <BaseLayout
-  title="Home"
-  description="EAZY-IRA Charity Foundation is a youth-led, community-rooted initiative supporting children and families in Masoro, Kigali, Rwanda."
+  title={t("homeTitle")}
+  description={t("homeDescription")}
 >
   <h1 class="home-visually-hidden">{site.tagline}</h1>
   <HeroSlider />
 
   <div class="home-hero-followup">
     <div class="home-container home-hero-followup__inner">
-      <div class="home-hero-actions" aria-label="Ways to support">
-        <DonationButton label="Give Hope" />
+      <div class="home-hero-actions" aria-label={t("waysToSupport")}>
+        <DonationButton label={t("giveHope")} />
         <Button variant="secondary" href="/partner">
-          Partner With Us
+          {t("partnerWithUs")}
         </Button>
       </div>
-      <ul class="home-trust-strip" aria-label="About the foundation">
-        <li>Youth-led</li>
+      <ul class="home-trust-strip" aria-label={t("foundationAbout")}>
+        <li>{t("youthLed")}</li>
         <li>{site.location}</li>
         <li>
-          Serving {impact.childrenServed.value} children
+          {t("servingChildren", "en", { count: impact.childrenServed.value })}
           {impact.childrenServed.needsConfirmation && (
-            <span class="home-confirmation">Needs confirmation</span>
+            <span class="home-confirmation">{t("needsConfirmation")}</span>
           )}
         </li>
         <li>
-          Since {impact.foundedMonth} {impact.foundedYear}
+          {t("since", "en", { month: impact.foundedMonth, year: impact.foundedYear })}
         </li>
       </ul>
     </div>
@@ -75,86 +76,77 @@ const needs = [
 
   <Section
     id="impact"
-    eyebrow="Our impact"
-    heading="Small acts, lasting hope"
-    intro="A snapshot of the people and learning that shape our work."
+    eyebrow={t("ourImpact")}
+    heading={t("smallActsHope")}
+    intro={t("impactIntro")}
   >
-    <ImpactCounters counters={counters} />
+    <ImpactCounters counters={counters} lang="en" />
   </Section>
 
   <Section
     id="who-we-are"
-    eyebrow="Who we are"
-    heading="Rooted in community"
+    eyebrow={t("whoWeAre")}
+    heading={t("rootedCommunity")}
     class="home-about-section"
   >
     <div class="home-about">
       <div class="home-about__copy">
         <p>
-          EAZY-IRA Charity Foundation is a youth-led, community-rooted
-          initiative in {site.location}. Founded in {impact.foundedMonth}{" "}
-          {impact.foundedYear} by {impact.founders} university student
-          volunteers, we support children's education, nutrition, spiritual and
-          moral development, mentorship, and community support. Our Christian,
-          Sabbath-based fellowship brings children together for teaching,
-          encouragement, and shared meals.
+          {t("homeAboutText", "en", {
+            location: site.location,
+            month: impact.foundedMonth,
+            year: impact.foundedYear,
+            founders: impact.founders,
+          })}
         </p>
         <Button variant="secondary" href="/about">
-          More about us
+          {t("moreAboutUs")}
         </Button>
       </div>
       <div class="home-about__decoration" aria-hidden="true">
         <Icon name="heart" size={44} />
-        <p>Love in action, rooted in community.</p>
+        <p>{t("loveInAction")}</p>
       </div>
     </div>
   </Section>
 
   <Section
     id="pillars"
-    eyebrow="What guides us"
-    heading="Four pillars of care"
-    intro="Our programs respond to children's learning, wellbeing, and belonging."
+    eyebrow={t("whatGuidesUs")}
+    heading={t("fourPillars")}
+    intro={t("pillarsIntro")}
   >
     <div class="home-pillar-grid">
       <Card class="home-pillar-card">
         <Icon name="book" size={32} />
-        <h3>Education</h3>
-        <p>
-          School materials and encouragement help children take part in
-          learning.
-        </p>
-        <a href="/programs" aria-label="Explore education programs">
-          Explore education <Icon name="arrow-right" size={18} />
+        <h3>{t("education")}</h3>
+        <p>{t("educationDescription")}</p>
+        <a href="/programs" aria-label={t("exploreEducation")}>
+          {t("exploreEducation")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
       <Card class="home-pillar-card">
         <Icon name="sun" size={32} />
-        <h3>Nutrition</h3>
-        <p>Shared meals are part of the children's weekly gathering.</p>
-        <a href="/programs" aria-label="Explore nutrition programs">
-          Explore nutrition <Icon name="arrow-right" size={18} />
+        <h3>{t("nutrition")}</h3>
+        <p>{t("nutritionDescription")}</p>
+        <a href="/programs" aria-label={t("exploreNutrition")}>
+          {t("exploreNutrition")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
       <Card class="home-pillar-card">
         <Icon name="heart" size={32} />
-        <h3>Spiritual &amp; Moral Development</h3>
-        <p>
-          Teaching encourages moral values, positive attitudes, and politeness.
-        </p>
-        <a
-          href="/programs"
-          aria-label="Explore spiritual and moral development"
-        >
-          Explore development <Icon name="arrow-right" size={18} />
+        <h3>{t("spiritualMoral")}</h3>
+        <p>{t("spiritualDescription")}</p>
+        <a href="/programs" aria-label={t("exploreSpiritual")}>
+          {t("exploreDevelopment")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
       <Card class="home-pillar-card">
         <Icon name="users" size={32} />
-        <h3>Community &amp; Mentorship</h3>
-        <p>Home visits offer families guidance, prayer, and encouragement.</p>
-        <a href="/programs" aria-label="Explore community and mentorship">
-          Explore community <Icon name="arrow-right" size={18} />
+        <h3>{t("communityMentorship")}</h3>
+        <p>{t("communityDescription")}</p>
+        <a href="/programs" aria-label={t("exploreCommunity")}>
+          {t("communityMentorship")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
     </div>
@@ -162,88 +154,84 @@ const needs = [
 
   <Section
     id="gathering"
-    eyebrow="Together each week"
-    heading="A day at our gathering"
-    intro="Children share a meal and learn about moral values, positive attitudes, and politeness."
+    eyebrow={t("togetherWeekly")}
+    heading={t("gatheringDay")}
+    intro={t("gatheringIntro")}
   >
     <figure class="home-gathering">
       <div class="ui-image-frame">
         <Image
           src="/images/design-placeholder.svg"
-          alt="Abstract hills and sunrise placeholder artwork; no people are shown."
+          alt={t("placeholderArtworkAlt")}
           width={1200}
           height={700}
           sizes="(max-width: 48rem) 100vw, 72rem"
         />
       </div>
       <figcaption>
-        Placeholder artwork only. Real gathering photos will be added only when
-        appropriate guardian consent is recorded.
+        {t("photoConsentNotice")}
       </figcaption>
     </figure>
   </Section>
 
   <Section
     id="current-needs"
-    eyebrow="How you can help"
-    heading="Current needs"
-    intro="Your support can help provide practical care for children and families."
+    eyebrow={t("howYouCanHelp")}
+    heading={t("currentNeeds")}
+    intro={t("needsIntro")}
     class="home-needs-section"
   >
     <Card class="home-needs-card">
       <div>
-        <h3>Needs we are working to meet</h3>
+        <h3>{t("needsBeingMet")}</h3>
         <ul class="home-needs-list">
           {needs.map((need) => (
             <li>
               <Icon name="check" size={20} />
-              {need}
+              {t(need)}
             </li>
           ))}
         </ul>
       </div>
-      <DonationButton label="Give Hope" />
+      <DonationButton label={t("giveHope")} />
     </Card>
   </Section>
 
   <Section
     id="story"
-    eyebrow="Stories of hope"
-    heading="Every story deserves care"
-    intro="We will share a child or parent story here when it is ready to be told safely."
+    eyebrow={t("storiesHope")}
+    heading={t("everyStory")}
+    intro={t("storyIntro")}
   >
     <Card class="home-story-placeholder">
       <!-- Child or parent stories and photographs require recorded guardian consent before publication. -->
       <Icon name="heart" size={32} />
       <div>
-        <h3>Story placeholder</h3>
-        <p>
-          A story will appear here only after it has been approved for sharing.
-          No names or identifying details are shown in this placeholder.
-        </p>
+        <h3>{t("storyPlaceholder")}</h3>
+        <p>{t("storyConsentBody")}</p>
       </div>
       <span class="home-consent-notice">
-        Consent required before publication
+        {t("consentRequired")}
       </span>
     </Card>
   </Section>
 
   <Section
     id="partners"
-    eyebrow="Working together"
-    heading="Our partners"
-    intro="We are grateful for the people and organizations who support this work."
+    eyebrow={t("workingTogether")}
+    heading={t("ourPartners")}
+    intro={t("partnersIntro")}
   >
     <div class="home-partners-empty">
-      <p>Partner logos will appear here when approved for publication.</p>
+      <p>{t("partnerLogosPlaceholder")}</p>
     </div>
   </Section>
 
   <Section
     id="latest-news"
-    eyebrow="Updates"
-    heading="Latest news"
-    intro="Stories and updates from the foundation."
+    eyebrow={t("updates")}
+    heading={t("latestNews")}
+    intro={t("newsIntro")}
   >
     {newsPosts.length ? (
       <div class="home-news-grid">
@@ -258,17 +246,17 @@ const needs = [
               </time>
             </p>
             {post.data.sample && (
-              <p class="home-news-card__sample">Sample post</p>
+              <p class="home-news-card__sample">{t("samplePost")}</p>
             )}
             <h3>{post.data.title}</h3>
             <p>{post.data.summary}</p>
-            <a href={`/news/${post.id}`}>Read more</a>
+            <a href={`/news/${post.id}`}>{t("readMore")}</a>
           </Card>
         ))}
       </div>
     ) : (
       <div class="home-news-empty">
-        <p>There are no news updates to share yet. Please check back soon.</p>
+        <p>{t("noNews")}</p>
       </div>
     )}
   </Section>
@@ -276,16 +264,16 @@ const needs = [
   <section class="home-final-cta" aria-labelledby="home-final-heading">
     <div class="home-container home-final-cta__inner">
       <div>
-        <p class="home-final-cta__eyebrow">Be part of the hope</p>
-        <h2 id="home-final-heading">Love in action starts with us.</h2>
+        <p class="home-final-cta__eyebrow">{t("bePartHope")}</p>
+        <h2 id="home-final-heading">{t("homeFinalHeading")}</h2>
       </div>
       <div class="home-final-cta__actions">
-        <DonationButton />
+        <DonationButton lang="en" />
         <Button variant="secondary" href="/volunteer">
-          Volunteer
+          {t("volunteer")}
         </Button>
         <Button variant="secondary" href="/partner">
-          Partner
+          {t("partner")}
         </Button>
       </div>
     </div>

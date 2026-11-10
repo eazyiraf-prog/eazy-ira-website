@@ -1,56 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import LegalDraftNotice from "../../components/LegalDraftNotice.astro";
-import Section from "../../components/ui/Section.astro";
+import TermsContent from "../../components/legal/TermsContent.astro";
 ---
 
 <BaseLayout
   title="Terms"
   description="Draft terms for using the EAZY-IRA Charity Foundation website."
 >
-  <Section
-    id="terms"
-    headingLevel="h1"
-    eyebrow="Legal information"
-    heading="Terms of use"
-    intro="These draft terms describe the website and the ways to contact or support the Foundation."
-  >
-    <article class="legal-content">
-      <LegalDraftNotice />
-      <p>
-        This website shares information about EAZY-IRA Charity Foundation, its
-        activities, and ways to get involved. Some information is marked as a
-        placeholder and is awaiting confirmation.
-      </p>
-
-      <h2>Forms and messages</h2>
-      <p>
-        The website offers forms for newsletter updates, contact messages,
-        partnership enquiries, volunteer applications, prayer requests, and
-        prayer partner interest. Please use them for their stated purpose and
-        avoid including sensitive information. Do not include information that
-        could identify a child in a prayer request. See the
-        <a href="/legal/privacy">Privacy Policy</a> for how form information is
-        handled.
-      </p>
-
-      <h2>Donations</h2>
-      <p>
-        Gifts are made through third parties, including an online fundraiser
-        organised by a friend of the Foundation and MTN Mobile Money. The
-        Foundation publishes how gifts are spent on the
-        <a href="/transparency">Transparency page</a>. Any terms of the
-        third-party services are provided by those services. Details of the
-        services and their terms: [to be confirmed].
-      </p>
-
-      <h2>Details to complete before launch</h2>
-      <ul>
-        <li>Effective date: [to be confirmed]</li>
-        <li>Foundation contact details: [to be confirmed]</li>
-        <li>Applicable law and dispute process: [to be confirmed]</li>
-        <li>Website content-use terms: [to be confirmed]</li>
-      </ul>
-    </article>
-  </Section>
+  <TermsContent />
 </BaseLayout>

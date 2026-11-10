@@ -4,9 +4,10 @@ import SiteSearch from "./SiteSearch.astro";
 import Container from "./ui/Container.astro";
 import nav from "../data/nav.json";
 import site from "../data/site.json";
+import { localizedPath, t, type Locale } from "../i18n";
 
 interface Props {
-  lang?: string;
+  lang?: Locale;
 }
 
 const { lang = "en" } = Astro.props;
@@ -15,7 +16,7 @@ const { lang = "en" } = Astro.props;
 <header class="site-header" data-site-header>
   <Container wide>
     <div class="site-header__inner">
-      <a class="site-brand" href="/" aria-label={`${site.name} home`}>
+      <a class="site-brand" href={localizedPath("/", lang)} aria-label={t("headerHome", lang)}>
         <span class="site-brand__mark" aria-hidden="true">
           E
         </span>
@@ -26,10 +27,14 @@ const { lang = "en" } = Astro.props;
         type="button"
         aria-controls="primary-navigation"
         aria-expanded="false"
-        aria-label="Open navigation menu"
+        aria-label={t("openNavigation", lang)}
         data-menu-toggle
+        data-open-label={t("openNavigation", lang)}
+        data-close-label={t("closeNavigation", lang)}
+        data-menu-text={t("menu", lang)}
+        data-close-text={t("close", lang)}
       >
-        <span data-menu-label>Menu</span>
+        <span data-menu-label>{t("menu", lang)}</span>
         <span class="site-menu-toggle__icon" aria-hidden="true">
           ☰
         </span>
@@ -37,44 +42,55 @@ const { lang = "en" } = Astro.props;
       <nav
         class="site-navigation"
         id="primary-navigation"
-        aria-label="Main navigation"
+        aria-label={t("mainNavigation", lang)}
       >
         <ul>
           {nav.primary.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, lang)}
                 aria-current={
-                  Astro.url.pathname === item.href ? "page" : undefined
+                  Astro.url.pathname === localizedPath(item.href, lang) ? "page" : undefined
                 }
               >
-                {item.label}
+                {t(item.labelKey, lang)}
               </a>
             </li>
           ))}
         </ul>
       </nav>
-      <SiteSearch id="header-search" />
+      <SiteSearch id="header-search" lang={lang} />
       <div class="site-header__actions">
         <div
           class="language-switcher"
           role="group"
-          aria-label="Language options"
+          aria-label={t("languageOptions", lang)}
         >
-          {["en", "fr", "rw"].map((language) => (
-            <span
+          {(["en", "fr", "rw"] as const).map((language) => (
+            <a
+              href={localizedPath(Astro.url.pathname, language as Locale)}
+              data-language-link
               lang={language}
-              aria-current={lang === language ? "true" : undefined}
+              hreflang={language}
+              data-language={language}
+              aria-current={lang === language ? "page" : undefined}
               class:list={[
                 "language-switcher__option",
                 lang === language && "is-current",
               ]}
             >
-              {language.toUpperCase()}
-            </span>
+              {t(
+                language === "en"
+                  ? "languageEnglish"
+                  : language === "fr"
+                    ? "languageFrench"
+                    : "languageKinyarwanda",
+                lang,
+              )}
+            </a>
           ))}
         </div>
-        <DonationButton />
+        <DonationButton lang={lang} />
       </div>
     </div>
   </Container>
@@ -94,10 +110,10 @@ const { lang = "en" } = Astro.props;
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute(
         "aria-label",
-        open ? "Close navigation menu" : "Open navigation menu",
+        open ? toggle.dataset.closeLabel : toggle.dataset.openLabel,
       );
       navigation.dataset.open = String(open);
-      menuLabel.textContent = open ? "Close" : "Menu";
+      menuLabel.textContent = open ? toggle.dataset.closeText ?? "" : toggle.dataset.menuText ?? "";
 
       if (open) {
         navigation.querySelector<HTMLAnchorElement>("a")?.focus();
@@ -162,4 +178,21 @@ const { lang = "en" } = Astro.props;
       }
     });
   }
+
+  const preferredLanguage = window.localStorage.getItem("eazy-ira-language");
+  if (preferredLanguage) {
+    document
+      .querySelector<HTMLAnchorElement>(
+        `[data-language="${preferredLanguage}"]`,
+      )
+      ?.classList.add("is-remembered");
+  }
+
+  document
+    .querySelectorAll<HTMLAnchorElement>(".language-switcher [data-language-link]")
+    .forEach((link) => {
+      link.addEventListener("click", () => {
+        window.localStorage.setItem("eazy-ira-language", link.lang);
+      });
+    });
 </script>

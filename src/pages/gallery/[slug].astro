@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { t } from "../../i18n";
 
 export async function getStaticPaths() {
   const albums = await getCollection("albums");
@@ -20,7 +21,7 @@ const { album } = Astro.props;
 >
   <section class="album-detail">
     <div class="album-detail__container">
-      <a class="back-link" href="/gallery">Back to gallery</a>
+      <a class="back-link" href="/gallery">{t("backToGallery")}</a>
       <p class="eyebrow">{album.data.category}</p>
       {album.data.sample && <p class="sample-label">Sample album</p>}
       <h1>{album.data.title}</h1>
@@ -44,7 +45,10 @@ const { album } = Astro.props;
               <button
                 class="image-trigger"
                 type="button"
-                aria-label={`View image ${index + 1}: ${image.alt}`}
+                aria-label={t("viewImage", "en", {
+                  number: index + 1,
+                  alt: image.alt,
+                })}
                 data-lightbox-trigger
                 data-src={image.src}
                 data-alt={image.alt}
@@ -74,12 +78,18 @@ const { album } = Astro.props;
     aria-describedby="lightbox-caption"
     data-lightbox
   >
-    <div class="lightbox__content">
+    <div
+      class="lightbox__content"
+      data-status-format={t("imageStatus", "en", {
+        number: "{number}",
+        total: "{total}",
+      })}
+    >
       <header class="lightbox__header">
-        <h2 id="lightbox-title">Image viewer</h2>
+        <h2 id="lightbox-title">{t("imageViewer")}</h2>
         <button class="lightbox__close" type="button" data-lightbox-close>
           <span aria-hidden="true">×</span>
-          <span class="visually-hidden">Close image viewer</span>
+          <span class="visually-hidden">{t("closeImageViewer")}</span>
         </button>
       </header>
       <img
@@ -94,9 +104,9 @@ const { album } = Astro.props;
         {album.data.images[0].caption}
       </p>
       <p class="visually-hidden" aria-live="polite" data-lightbox-status></p>
-      <nav class="lightbox__controls" aria-label="Image controls">
-        <button type="button" data-lightbox-previous>Previous image</button>
-        <button type="button" data-lightbox-next>Next image</button>
+      <nav class="lightbox__controls" aria-label={t("imageControls")}>
+        <button type="button" data-lightbox-previous>{t("previousImage")}</button>
+        <button type="button" data-lightbox-next>{t("nextImage")}</button>
       </nav>
     </div>
   </dialog>
@@ -109,6 +119,9 @@ const { album } = Astro.props;
     "[data-lightbox-caption]",
   );
   const status = dialog?.querySelector<HTMLElement>("[data-lightbox-status]");
+  const statusFormat = dialog?.querySelector<HTMLElement>(
+    "[data-status-format]",
+  )?.dataset.statusFormat;
   const triggers = Array.from(
     document.querySelectorAll<HTMLButtonElement>("[data-lightbox-trigger]"),
   );
@@ -130,7 +143,9 @@ const { album } = Astro.props;
     image.src = trigger.dataset.src ?? "";
     image.alt = trigger.dataset.alt ?? "";
     caption.textContent = trigger.dataset.caption ?? "";
-    status.textContent = `Image ${index + 1} of ${triggers.length}`;
+    status.textContent = (statusFormat ?? "")
+      .replace("{number}", String(index + 1))
+      .replace("{total}", String(triggers.length));
   };
 
   triggers.forEach((trigger, index) => {

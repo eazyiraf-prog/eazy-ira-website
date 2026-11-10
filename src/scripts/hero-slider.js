@@ -38,10 +38,12 @@ document.querySelectorAll("[data-hero-slider]").forEach((slider) => {
   };
 
   const updateToggle = () => {
-    toggle.textContent = userPaused ? "Play" : "Pause";
+    toggle.textContent = userPaused
+      ? slider.dataset.playLabel
+      : slider.dataset.pauseLabel;
     toggle.setAttribute(
       "aria-label",
-      userPaused ? "Play slideshow" : "Pause slideshow",
+      userPaused ? slider.dataset.playAria : slider.dataset.pauseAria,
     );
     toggle.setAttribute("aria-pressed", String(userPaused));
   };
@@ -58,7 +60,10 @@ document.querySelectorAll("[data-hero-slider]").forEach((slider) => {
       if (dotIndex === current) dot.setAttribute("aria-current", "true");
       else dot.removeAttribute("aria-current");
     });
-    status.textContent = `Slide ${current + 1} of ${slides.length}: ${slides[current].querySelector("h2")?.textContent ?? ""}`;
+    status.textContent = slider.dataset.statusFormat
+      .replace("{number}", String(current + 1))
+      .replace("{total}", String(slides.length))
+      .replace("{headline}", slides[current].querySelector("h2")?.textContent ?? "");
     remaining =
       slides[current].dataset.slideType === "video"
         ? VIDEO_MAX_DURATION

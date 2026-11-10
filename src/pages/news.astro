@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { t } from "../i18n";
 
 const posts = (await getCollection("news", ({ data }) => !data.draft)).sort(
   (first, second) => second.data.date.getTime() - first.data.date.getTime(),
@@ -9,33 +10,42 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
 ---
 
 <BaseLayout
-  title="News"
-  description="News and updates from EAZY-IRA Charity Foundation."
+  title={t("news")}
+  description={t("newsPageIntro")}
 >
   <header class="news-hero">
     <div class="news-container">
-      <p class="eyebrow">News & updates</p>
-      <h1>Stories from the foundation</h1>
-      <p>
-        Read the latest news and updates from EAZY-IRA Charity Foundation.
-      </p>
-      <a class="rss-link" href="/news/rss.xml">Subscribe via RSS</a>
+      <p class="eyebrow">{t("news")}</p>
+      <h1>{t("newsHeroHeading")}</h1>
+      <p>{t("newsPageIntro")}</p>
+      <a class="rss-link" href="/news/rss.xml">{t("subscribeRss")}</a>
     </div>
   </header>
 
   <section class="news-section" aria-labelledby="news-heading">
     <div class="news-container">
       <div class="news-toolbar">
-        <h2 id="news-heading">Latest posts</h2>
-        <label for="news-category">Filter by category</label>
+        <h2 id="news-heading">{t("latestPosts")}</h2>
+        <label for="news-category">{t("filterCategory")}</label>
         <select id="news-category" data-news-category>
-          <option value="">All categories</option>
+          <option value="">{t("allCategories")}</option>
           {categories.map((category) => <option value={category}>{category}</option>)}
         </select>
       </div>
 
-      <p class="news-status" role="status" aria-live="polite" data-news-status>
-        Showing {posts.length} {posts.length === 1 ? "post" : "posts"}.
+      <p
+        class="news-status"
+        role="status"
+        aria-live="polite"
+        data-news-status
+        data-one-post={t("showingOnePost", "en", { count: "{count}" })}
+        data-many-posts={t("showingManyPosts", "en", { count: "{count}" })}
+      >
+        {t(
+          posts.length === 1 ? "showingOnePost" : "showingManyPosts",
+          "en",
+          { count: posts.length },
+        )}
       </p>
 
       {posts.length ? (
@@ -56,7 +66,7 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
                 />
                 <p class="eyebrow">{post.data.category}</p>
                 {post.data.sample && (
-                  <p class="sample-label">Sample post — replace before publishing</p>
+                  <p class="sample-label">{t("samplePublicationNote")}</p>
                 )}
                 <h3><a href={`/news/${post.id}`}>{post.data.title}</a></h3>
                 <p class="news-card__summary">{post.data.summary}</p>
@@ -75,18 +85,22 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
           ))}
         </ul>
       ) : (
-        <p class="empty-state">There are no news posts to share yet.</p>
+        <p class="empty-state">{t("noNewsPosts")}</p>
       )}
 
       <nav
         class="news-pagination"
-        aria-label="News pages"
+        aria-label={t("newsPages")}
         data-news-pagination
         hidden={posts.length <= 6}
       >
-        <button type="button" data-news-previous disabled>Previous</button>
-        <span aria-live="polite" data-news-page></span>
-        <button type="button" data-news-next>Next</button>
+        <button type="button" data-news-previous disabled>{t("previous")}</button>
+        <span
+          aria-live="polite"
+          data-news-page
+          data-page-format={t("pageNumberOf", "en", { page: "{page}", total: "{total}" })}
+        ></span>
+        <button type="button" data-news-next>{t("next")}</button>
       </nav>
     </div>
   </section>
@@ -121,16 +135,20 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
     });
 
     if (status) {
-      status.textContent = `Showing ${visibleCards.length} ${
-        visibleCards.length === 1 ? "post" : "posts"
-      }.`;
+      const message =
+        visibleCards.length === 1
+          ? status.dataset.onePost
+          : status.dataset.manyPosts;
+      status.textContent = message?.replace("{count}", String(visibleCards.length)) ?? "";
     }
 
     if (pagination && previous && next && pageLabel) {
       pagination.hidden = visibleCards.length <= pageSize;
       previous.disabled = page <= 1;
       next.disabled = page >= pageCount;
-      pageLabel.textContent = `Page ${page} of ${pageCount}`;
+      pageLabel.textContent = (pageLabel.dataset.pageFormat ?? "")
+        .replace("{page}", String(page))
+        .replace("{total}", String(pageCount));
     }
   };
 

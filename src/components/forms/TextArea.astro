@@ -1,4 +1,6 @@
 ---
+import { t, type Locale } from "../../i18n";
+
 interface Props {
   id: string;
   name: string;
@@ -6,16 +8,17 @@ interface Props {
   hint: string;
   required?: boolean;
   rows?: number;
+  lang?: Locale;
 }
 
-const { id, name, label, hint, required = false, rows = 5 } = Astro.props;
+const { id, name, label, hint, required = false, rows = 5, lang = "en" } = Astro.props;
 ---
 
 <div class="form-field">
   <label for={id}>
     {label}
     {required && <span class="form-required" aria-hidden="true">*</span>}
-    {required && <span class="form-visually-hidden"> required</span>}
+    {required && <span class="form-visually-hidden"> {t("formRequired", lang)}</span>}
   </label>
   <textarea
     id={id}
@@ -23,7 +26,11 @@ const { id, name, label, hint, required = false, rows = 5 } = Astro.props;
     rows={rows}
     required={required}
     aria-describedby={`${id}-hint ${id}-error`}
-    data-error-id={`${id}-error`}></textarea>
+    data-error-id={`${id}-error`}
+    data-required-error={t("formRequiredError", lang)}
+    data-type-error={t("formEmailError", lang)}
+    data-generic-error={t("formGenericError", lang)}
+  ></textarea>
   <span class="form-hint" id={`${id}-hint`}>{hint}</span>
   <span class="form-error" id={`${id}-error`} hidden></span>
 </div>

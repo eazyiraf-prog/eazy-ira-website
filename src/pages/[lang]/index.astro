@@ -1,0 +1,214 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroSlider from "../../components/HeroSlider.astro";
+import ImpactCounters from "../../components/ImpactCounters.astro";
+import DonationButton from "../../components/DonationButton.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import Section from "../../components/ui/Section.astro";
+import impact from "../../data/impact.json";
+import site from "../../data/site.json";
+import { localizedPath, t, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return ["fr", "rw"].map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const newsPosts = (await getCollection("news", ({ data }) => !data.draft))
+  .sort((first, second) => second.data.date.getTime() - first.data.date.getTime())
+  .slice(0, 3);
+const counters = [
+  {
+    value: impact.childrenServed.value,
+    label: t("childrenCurrentlyServed", lang),
+    needsConfirmation: impact.childrenServed.needsConfirmation,
+  },
+  {
+    value: impact.founders,
+    label: t("universityFounders", lang),
+    needsConfirmation: false,
+  },
+  {
+    value: impact.publicSpeakingAcademy.sessions,
+    label: t("academySessions", lang),
+    needsConfirmation: false,
+  },
+].filter((counter) => counter.value !== null);
+---
+
+<BaseLayout
+  title={t("homeTitle", lang)}
+  description={t("homeDescription", lang)}
+  lang={lang}
+>
+  <h1 class="home-visually-hidden">{site.tagline}</h1>
+  <HeroSlider lang={lang} />
+  <div class="home-hero-followup">
+    <div class="home-container home-hero-followup__inner">
+      <div class="home-hero-actions" aria-label={t("waysToSupport", lang)}>
+        <DonationButton lang={lang} label={t("giveHope", lang)} />
+        <Button
+          variant="secondary"
+          href={localizedPath("/partner", lang)}
+        >
+          {t("partnerWithUs", lang)}
+        </Button>
+      </div>
+      <ul class="home-trust-strip" aria-label={t("foundationAbout", lang)}>
+        <li>{t("youthLed", lang)}</li>
+        <li>{site.location}</li>
+        <li>
+          {t("servingChildren", lang, { count: impact.childrenServed.value })}
+          {impact.childrenServed.needsConfirmation && (
+            <span class="home-confirmation">{t("needsConfirmation", lang)}</span>
+          )}
+        </li>
+        <li>
+          {t("since", lang, {
+            month: impact.foundedMonth,
+            year: impact.foundedYear,
+          })}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <Section
+    id="impact"
+    eyebrow={t("ourImpact", lang)}
+    heading={t("smallActsHope", lang)}
+    intro={t("impactIntro", lang)}
+  >
+    <ImpactCounters counters={counters} lang={lang} />
+  </Section>
+
+  <Section
+    id="who-we-are"
+    eyebrow={t("whoWeAre", lang)}
+    heading={t("rootedCommunity", lang)}
+  >
+    <Card>
+      <p>
+        {t("homeAboutText", lang, {
+          location: site.location,
+          month: impact.foundedMonth,
+          year: impact.foundedYear,
+          founders: impact.founders,
+        })}
+      </p>
+      <Button variant="secondary" href={localizedPath("/about", lang)}>
+        {t("moreAboutUs", lang)}
+      </Button>
+    </Card>
+  </Section>
+
+  <Section
+    id="pillars"
+    eyebrow={t("whatGuidesUs", lang)}
+    heading={t("fourPillars", lang)}
+    intro={t("pillarsIntro", lang)}
+  >
+    <div class="localized-home-grid">
+      {[
+        ["education", "educationDescription", "exploreEducation"],
+        ["nutrition", "nutritionDescription", "exploreNutrition"],
+        ["spiritualMoral", "spiritualDescription", "exploreDevelopment"],
+        ["communityMentorship", "communityDescription", "exploreCommunity"],
+      ].map(([titleKey, bodyKey, linkKey]) => (
+        <Card>
+          <h3>{t(titleKey, lang)}</h3>
+          <p>{t(bodyKey, lang)}</p>
+          <a href={localizedPath("/programs", lang)}>{t(linkKey, lang)}</a>
+        </Card>
+      ))}
+    </div>
+  </Section>
+
+  <Section
+    id="current-needs"
+    eyebrow={t("howYouCanHelp", lang)}
+    heading={t("currentNeeds", lang)}
+    intro={t("needsIntro", lang)}
+  >
+    <Card>
+      <h3>{t("needsBeingMet", lang)}</h3>
+      <ul>
+        <li>{t("schoolShoes", lang)}</li>
+        <li>{t("weeklyMeals", lang)}</li>
+        <li>{t("hygieneItems", lang)}</li>
+        <li>{t("uniforms", lang)}</li>
+      </ul>
+      <DonationButton lang={lang} label={t("giveHope", lang)} />
+    </Card>
+  </Section>
+
+  <Section
+    id="latest-news"
+    eyebrow={t("updates", lang)}
+    heading={t("latestNews", lang)}
+    intro={t("newsIntro", lang)}
+  >
+    {newsPosts.length ? (
+      <div class="localized-home-grid">
+        {newsPosts.map((post) => (
+          <Card>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.summary}</p>
+            <a href={localizedPath(`/news/${post.id}`, lang)}>
+              {t("readMore", lang)}
+            </a>
+          </Card>
+        ))}
+      </div>
+    ) : (
+      <p>{t("noNews", lang)}</p>
+    )}
+  </Section>
+</BaseLayout>
+
+<style>
+  .home-container {
+    width: calc(100% - var(--container-gutter) - var(--container-gutter));
+    max-width: 80rem;
+    margin-inline: auto;
+  }
+
+  .home-hero-followup {
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+  }
+
+  .home-hero-followup__inner {
+    display: grid;
+    gap: 1rem;
+    padding-block: 1.25rem;
+  }
+
+  .home-hero-actions,
+  .home-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .home-trust-strip {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-confirmation {
+    display: block;
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+  }
+
+  .localized-home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1.25rem;
+  }
+</style>

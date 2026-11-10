@@ -6,10 +6,11 @@ import FormShell from "../components/forms/FormShell.astro";
 import TextArea from "../components/forms/TextArea.astro";
 import TextField from "../components/forms/TextField.astro";
 import Section from "../components/ui/Section.astro";
+import { t } from "../i18n";
 ---
 
 <BaseLayout
-  title="Pray With Us"
+  title={t("prayWithUs")}
   description="Share a prayer request or become a prayer partner with EAZY-IRA Charity Foundation."
 >
   <Section
@@ -24,43 +25,43 @@ import Section from "../components/ui/Section.astro";
   </Section>
 
   <Section eyebrow="Share with the prayer team" heading="Prayer request">
-    <FormShell name="prayer-request" submitLabel="Send prayer request">
+    <FormShell name="prayer-request" submitLabel={t("sendPrayerRequest")}>
       <TextField
         id="prayer-first-name"
         name="first-name"
-        label="First name (optional)"
-        hint="You may leave this blank."
+        label={t("fieldFirstNameOptional")}
+        hint={t("prayerLeaveBlankHint")}
         autocomplete="given-name"
       />
       <TextArea
         id="prayer-request-text"
         name="request"
-        label="Prayer request"
-        hint="Please do not include children's names or information about children."
+        label={t("fieldPrayerRequest")}
+        hint={t("prayerRequestHint")}
         required
       />
       <Checkbox
         id="prayer-private"
         name="private-to-prayer-team"
-        hint="When selected, the request is for the prayer team only."
+        hint={t("prayerTeamOnlyHint")}
         checked
       >
-        Keep my request private to the prayer team
+        {t("prayerTeamOnlyLabel")}
       </Checkbox>
       <EmailField
         id="prayer-email"
         name="email"
-        label="Email for a reply (optional)"
-        hint="Leave this blank if you do not need a reply."
+        label={t("fieldEmailReplyOptional")}
+        hint={t("replyEmailHint")}
       />
       <Checkbox
         id="prayer-consent"
         name="consent"
-        hint="We use this information to receive your request and, if provided, reply."
+        hint={t("prayerConsentHint")}
         required
       >
-        I agree that EAZY-IRA may use this information as described in its
-        <a href="/legal/privacy">Privacy Policy</a>.
+        {t("prayerConsentIntro")}{" "}
+        <a href="/legal/privacy">{t("privacyPolicy")}</a>.
       </Checkbox>
     </FormShell>
   </Section>
@@ -70,29 +71,32 @@ import Section from "../components/ui/Section.astro";
       Let us know you would like to be a prayer partner. An email address is
       optional if you would like the team to follow up.
     </p>
-    <FormShell name="prayer-partner" submitLabel="Sign up as a prayer partner">
+    <FormShell
+      name="prayer-partner"
+      submitLabel={t("signUpPrayerPartner")}
+    >
       <Checkbox
         id="prayer-partner-opt-in"
         name="prayer-partner-opt-in"
-        hint="Select this to let us know you would like to be a prayer partner."
+        hint={t("prayerPartnerOptInHint")}
         required
       >
-        I would like to be a prayer partner
+        {t("prayerPartnerOptInLabel")}
       </Checkbox>
       <EmailField
         id="prayer-partner-email"
         name="email"
-        label="Email (optional)"
-        hint="We will only use this to follow up about prayer partnership."
+        label={t("fieldEmailOptional")}
+        hint={t("prayerPartnerEmailHint")}
       />
       <Checkbox
         id="prayer-partner-consent"
         name="consent"
-        hint="We use this information to record your interest and respond if requested."
+        hint={t("prayerPartnerConsentHint")}
         required
       >
-        I agree that EAZY-IRA may use this information as described in its
-        <a href="/legal/privacy">Privacy Policy</a>.
+        {t("prayerConsentIntro")}{" "}
+        <a href="/legal/privacy">{t("privacyPolicy")}</a>.
       </Checkbox>
     </FormShell>
   </Section>

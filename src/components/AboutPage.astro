@@ -2,30 +2,32 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "./ui/Container.astro";
 import nav from "../data/nav.json";
+import { localizedPath, t, type Locale } from "../i18n";
 
 interface Props {
   title: string;
   description: string;
   activePath: string;
+  lang?: Locale;
 }
 
-const { title, description, activePath } = Astro.props;
+const { title, description, activePath, lang = "en" } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} lang={lang}>
   <header class="about-page-header">
     <Container>
-      <p class="about-page-header__eyebrow">About the foundation</p>
+      <p class="about-page-header__eyebrow">{t("aboutEyebrow", lang)}</p>
       <h1>{title}</h1>
-      <nav class="about-subnav" aria-label="About pages">
+      <nav class="about-subnav" aria-label={t("about", lang)}>
         <ul>
           {nav.about.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, lang)}
                 aria-current={activePath === item.href ? "page" : undefined}
               >
-                {item.label}
+                {t(item.labelKey, lang)}
               </a>
             </li>
           ))}

@@ -7,29 +7,30 @@ import TextArea from "../components/forms/TextArea.astro";
 import TextField from "../components/forms/TextField.astro";
 import Section from "../components/ui/Section.astro";
 import site from "../data/site.json";
+import { t } from "../i18n";
 ---
 
 <BaseLayout
-  title="Contact"
-  description="Contact EAZY-IRA Charity Foundation in Masoro, Kigali, Rwanda."
+  title={t("contactPageTitle")}
+  description={t("contactDescription")}
 >
   <Section
     id="contact"
     headingLevel="h1"
-    eyebrow="Get in touch"
-    heading="Contact EAZY-IRA"
-    intro="Questions, ideas, or a message for the Foundation? Use the form below to get in touch."
+    eyebrow={t("getInTouch")}
+    heading={t("contactHeading")}
+    intro={t("contactIntro")}
   >
     <div class="contact-details">
-      <p><strong>Location:</strong> {site.location}</p>
+      <p><strong>{t("locationLabel")}</strong> {site.location}</p>
       <p>
-        <strong>Email:</strong>{" "}
+        <strong>{t("emailLabel")}</strong>{" "}
         {site.email.needsConfirmation
           ? "[to be confirmed]"
           : site.email.value}
       </p>
       <p>
-        <strong>Phone:</strong>{" "}
+        <strong>{t("phoneLabel")}</strong>{" "}
         {site.phone.needsConfirmation
           ? "[to be confirmed]"
           : site.phone.value}
@@ -37,65 +38,72 @@ import site from "../data/site.json";
     </div>
   </Section>
 
-  <Section eyebrow="Our location" heading="Find us in Masoro, Kigali">
+  <Section eyebrow={t("ourLocation")} heading={t("findMasoro")}>
     <div class="map-placeholder" data-map-placeholder>
       <p>
-        The map is not loaded until you choose to connect to Google Maps.
-        Google may receive your browser request when the map is loaded.
+        {t("mapPrivacyText")}
       </p>
-      <button class="ui-button ui-button--secondary" type="button" data-load-map>
-        Load map for Masoro, Kigali
+      <button
+        class="ui-button ui-button--secondary"
+        type="button"
+        data-load-map
+        data-map-title={t("mapTitle")}
+      >
+        {t("loadMap")}
       </button>
     </div>
   </Section>
 
-  <Section eyebrow="Send a message" heading="Contact form">
-    <FormShell name="contact" submitLabel="Send message">
+  <Section
+    eyebrow={t("sendMessageSection")}
+    heading={t("contactForm")}
+  >
+    <FormShell name="contact" submitLabel={t("sendMessage")}>
       <TextField
         id="contact-name"
         name="name"
-        label="Name"
-        hint="Enter your name."
+        label={t("fieldName")}
+        hint={t("contactNameHint")}
         autocomplete="name"
         required
       />
       <EmailField
         id="contact-email"
         name="email"
-        label="Email"
-        hint="We will use this address to respond to your message."
+        label={t("fieldEmail")}
+        hint={t("contactEmailHint")}
         required
       />
       <TextField
         id="contact-phone"
         name="phone"
-        label="Phone (optional)"
-        hint="Include a country code if you would like us to call."
+        label={t("fieldPhoneOptional")}
+        hint={t("contactPhoneHint")}
         type="tel"
         autocomplete="tel"
       />
       <TextField
         id="contact-subject"
         name="subject"
-        label="Subject"
-        hint="Briefly describe the reason for your message."
+        label={t("fieldSubject")}
+        hint={t("contactSubjectHint")}
         required
       />
       <TextArea
         id="contact-message"
         name="message"
-        label="Message"
-        hint="Please do not include sensitive information."
+        label={t("fieldMessage")}
+        hint={t("sensitiveInfoHint")}
         required
       />
       <Checkbox
         id="contact-consent"
         name="consent"
-        hint="We use this information to respond to your message."
+        hint={t("contactConsentHint")}
         required
       >
-        I agree that EAZY-IRA may use this information to respond to my message
-        under its <a href="/legal/privacy">Privacy Policy</a>.
+        {t("contactConsentIntro")}{" "}
+        <a href="/legal/privacy">{t("privacyPolicy")}</a>.
       </Checkbox>
     </FormShell>
   </Section>
@@ -113,7 +121,7 @@ import site from "../data/site.json";
     if (!mapPlaceholder) return;
 
     const iframe = document.createElement("iframe");
-    iframe.title = "Map showing Masoro, Kigali, Rwanda";
+    iframe.title = loadMapButton?.dataset.mapTitle ?? "";
     iframe.loading = "lazy";
     iframe.referrerPolicy = "no-referrer";
     iframe.src = `https://www.google.com/maps?q=${encodeURIComponent("Masoro, Kigali, Rwanda")}&output=embed`;
