@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "astro dev",
     "prebuild": "node scripts/validate-donation.js && node scripts/check-i18n.js",
-    "build": "astro build && pagefind --site dist",
-    "build:prod": "node scripts/validate-donation.js --production && node scripts/check-i18n.js && astro build && pagefind --site dist",
+    "build": "astro build && pagefind --site dist && node scripts/update-csp.js",
+    "build:prod": "node scripts/validate-donation.js --production && node scripts/check-i18n.js && astro build && pagefind --site dist && node scripts/update-csp.js",
     "preview": "astro preview",
+    "test:worker": "node --test worker/index.test.js",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write ."
   },
@@ -29,6 +30,7 @@
     "prettier-plugin-astro": "^1.1.2",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.72.1"
+    "typescript-eslint": "^8.72.1",
+    "wrangler": "^4.160.0"
   }
 }

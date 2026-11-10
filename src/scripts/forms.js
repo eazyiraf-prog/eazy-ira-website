@@ -1,4 +1,4 @@
-const forms = document.querySelectorAll("[data-netlify-form]");
+const forms = document.querySelectorAll("[data-form-endpoint]");
 
 for (const form of forms) {
   form.noValidate = true;
@@ -46,16 +46,20 @@ for (const form of forms) {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
         },
         body: new URLSearchParams(new FormData(form)),
       });
 
       if (!response.ok) {
-        throw new Error(`Form submission failed with status ${response.status}`);
+        const result = await response.json();
+        if (submitError && typeof result.message === "string") {
+          submitError.textContent = result.message;
+        }
+        throw new Error("Form submission was rejected.");
       }
-      window.location.assign(form.action);
-    } catch (error) {
-      console.error("Unable to submit Netlify form.", error);
+      window.location.assign("/thank-you");
+    } catch {
       if (submitError) submitError.hidden = false;
       if (submitButton) submitButton.disabled = false;
     }

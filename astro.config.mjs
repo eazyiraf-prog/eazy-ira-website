@@ -3,10 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site:
-    process.env.PUBLIC_SITE_URL ??
-    process.env.URL ??
-    process.env.DEPLOY_PRIME_URL,
+  site: process.env.PUBLIC_SITE_URL,
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr", "rw"],

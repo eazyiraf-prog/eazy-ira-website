@@ -49,7 +49,9 @@ Kinyarwanda entries in `src/i18n/fr.json` and `src/i18n/rw.json` are marked
 The selected language is remembered in the browser. `npm run build` checks
 that every key in `src/i18n/en.json` exists in both translated dictionaries.
 
-Production guard: `npm run build` validates when `NODE_ENV=production`, `CONTEXT=production` or `CONTEXT=deploy-preview`, or `CI=true`; `npm run build:prod` always validates before building.
+Production guard: `npm run build` validates when `NODE_ENV=production` or
+`CI=true`; `npm run build:prod` always validates before building and is the
+required production build command.
 
 ## Lint and format
 
@@ -65,17 +67,19 @@ Format project files with Prettier:
 npm run format
 ```
 
-## Deploy to Netlify
+## Deploy to Cloudflare Workers
 
-Connect the repository to Netlify and use the following build settings:
+The site is deployed as a Cloudflare Worker with static assets from `dist/`.
+The Worker handles form submissions at `/api/forms/<formName>`. See
+[`docs/DEPLOY.md`](docs/DEPLOY.md) for the manual Cloudflare setup.
 
-- Build command: `npm run build`
-- Publish directory: `dist`
+For local Worker development, copy `.dev.vars.example` to `.dev.vars`, fill in
+local credentials, build with `PUBLIC_TURNSTILE_SITE_KEY` set in the shell, and
+run `npx wrangler dev`. `.dev.vars` is ignored by Git.
 
 The site uses Astro's static output and Pagefind for site-wide search. The
-build creates the search index in `dist/pagefind/`. Forms use Netlify Forms.
-The Contact page's map is not requested from Google Maps unless a visitor
-chooses to load it.
+build creates the search index in `dist/pagefind/`. The Contact page's map is
+not requested from Google Maps unless a visitor chooses to load it.
 
 ## Gallery and news content
 
@@ -108,6 +112,5 @@ chooses to load it.
 - Sample posts and the sample album are clearly identified in their content
   and on the site; replace them only with verified, safeguarding-reviewed
   content.
-- Set `PUBLIC_SITE_URL` to the canonical site origin for production builds
-  outside Netlify. Netlify's `URL` environment variable is used automatically
-  when available so RSS links and canonical URLs can be absolute.
+- Set `PUBLIC_SITE_URL` to the canonical site origin for production builds so
+  RSS links and canonical URLs can be absolute.

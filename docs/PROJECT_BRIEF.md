@@ -1,6 +1,6 @@
 You are my senior front-end engineer. We are building the official website of EAZY-IRA Charity Foundation, a youth-led child development NGO in Masoro, Kigali, Rwanda. I will give you numbered tasks one at a time. Follow these rules for ALL tasks.
 
-STACK (do not change): Astro (latest stable), Tailwind CSS, TypeScript where useful, Markdown/JSON content collections, Netlify hosting, Netlify Forms for forms. Mobile-first, lightweight, minimal JavaScript.
+STACK (do not change): Astro (latest stable), Tailwind CSS, TypeScript where useful, Markdown/JSON content collections, Cloudflare Workers with static assets and a custom forms Worker. Mobile-first, lightweight, minimal JavaScript.
 
 ORGANIZATION FACTS (use exactly; never invent figures, names, accounts or legal statuses):
 - Name: EAZY-IRA Charity Foundation. Tagline: "Love in Action, Hope in Every Child."

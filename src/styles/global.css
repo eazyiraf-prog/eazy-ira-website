@@ -917,6 +917,23 @@ p {
   border-color: var(--brand-primary);
 }
 
+.design-system-intro {
+  margin-top: 1.25rem;
+}
+
+.design-system-copy,
+.design-system-card-heading {
+  margin-top: 1rem;
+}
+
+.design-system-card-heading {
+  font-size: var(--type-xl);
+}
+
+.design-system-token-heading {
+  font-size: var(--type-lg);
+}
+
 .form-field--checkbox {
   gap: 0.35rem;
 }

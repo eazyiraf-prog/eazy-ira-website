@@ -1,13 +1,12 @@
 import { readFileSync } from "node:fs";
 import process from "node:process";
 
-const { donation } = JSON.parse(
+const { donation, email } = JSON.parse(
   readFileSync(new URL("../src/data/site.json", import.meta.url), "utf8"),
 );
 const isProductionBuild =
   process.argv.includes("--production") ||
   process.env.NODE_ENV === "production" ||
-  ["production", "deploy-preview"].includes(process.env.CONTEXT) ||
   process.env.CI === "true";
 
 if (!isProductionBuild) {
@@ -15,6 +14,17 @@ if (!isProductionBuild) {
 }
 
 const bracketedTextPattern = /\[[^\]]*\]/;
+
+if (
+  email.needsConfirmation ||
+  !email.value ||
+  bracketedTextPattern.test(email.value)
+) {
+  console.error(
+    "Production build blocked: the contact email in src/data/site.json must be confirmed before release.",
+  );
+  process.exitCode = 1;
+}
 
 function stringsIn(value) {
   if (typeof value === "string") return [value];

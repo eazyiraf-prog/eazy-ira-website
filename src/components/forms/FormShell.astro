@@ -1,7 +1,7 @@
 ---
 import Button from "../ui/Button.astro";
+import site from "../../data/site.json";
 import { t, type Locale } from "../../i18n";
-import { localizedPath } from "../../i18n";
 
 interface Props {
   name: string;
@@ -11,18 +11,16 @@ interface Props {
 }
 
 const { name, submitLabel, class: className, lang = "en" } = Astro.props;
+const contactEmail = site.email.value ?? "[to be confirmed]";
 ---
 
 <form
   name={name}
   method="POST"
-  action={localizedPath("/thank-you", lang)}
-  data-netlify="true"
-  netlify-honeypot="bot-field"
-  data-netlify-form
+  action={`/api/forms/${name}`}
+  data-form-endpoint
   class:list={["form-shell", className]}
 >
-  <input type="hidden" name="form-name" value={name} />
   <div class="form-honeypot" aria-hidden="true" inert>
     <label>
       {t("formLeaveEmpty", lang)}
@@ -30,6 +28,12 @@ const { name, submitLabel, class: className, lang = "en" } = Astro.props;
     </label>
   </div>
   <slot />
+  <input type="hidden" name="contact-email" value={contactEmail} />
+  <div
+    class="cf-turnstile"
+    data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+    data-appearance="interaction-only"
+  ></div>
   <p
     class="form-submit-error"
     role="alert"
