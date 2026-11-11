@@ -1,11 +1,16 @@
 node_modules/
 dist/
 .astro/
+.wrangler/
 coverage/
 .env
 .env.*
 !.env.example
 .dev.vars
+public/admin/sveltia-cms.js
+public/admin/package.json
+public/admin/chunks/
+public/admin/vendor/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*

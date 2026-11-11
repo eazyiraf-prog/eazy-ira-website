@@ -2,5 +2,6 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "exclude": ["dist", "public/admin/sveltia-cms.js", "public/admin/vendor"]
 }

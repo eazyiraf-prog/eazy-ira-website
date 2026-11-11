@@ -9,19 +9,22 @@
       "item": "Transport to Central Rwanda Field Office",
       "quantity": "[confirm]",
       "costRWF": 6300,
-      "receiptImage": "/images/receipt-placeholder.svg"
+      "receiptImage": "/images/receipt-placeholder.svg",
+      "receiptAlt": "Placeholder image for the transport receipt"
     },
     {
       "item": "Cooking oil",
       "quantity": "5L",
       "costRWF": 14000,
-      "receiptImage": "/images/receipt-placeholder.svg"
+      "receiptImage": "/images/receipt-placeholder.svg",
+      "receiptAlt": "Placeholder image for the cooking oil receipt"
     },
     {
       "item": "Food items (vegetables, charcoal, chilies, tomatoes)",
       "quantity": "[confirm]",
       "costRWF": 9700,
-      "receiptImage": "/images/receipt-placeholder.svg"
+      "receiptImage": "/images/receipt-placeholder.svg",
+      "receiptAlt": "Placeholder image for the food items receipt"
     }
   ],
   "notes": "Donor name is not published. Date and quantities marked [confirm] need verification. Receipt images are placeholders."

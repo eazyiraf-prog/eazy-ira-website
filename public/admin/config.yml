@@ -1,0 +1,501 @@
+# yaml-language-server: $schema=/admin/vendor/@sveltia/cms/schema/sveltia-cms.json
+# Donation and contact details are changed only by a developer.
+backend:
+  name: github
+  repo: eazyiraf-prog/eazy-ira-website
+  branch: main
+  base_url: __OAUTH_BASE_URL__
+  auth_scope: __GITHUB_OAUTH_SCOPE__
+
+publish_mode:
+  type: editorial_workflow
+  stages: [draft, pending_review, pending_publish]
+  direct_publish: false
+  allow_incomplete_drafts: false
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+media_libraries:
+  default:
+    config:
+      max_file_size: 5999999
+
+collections:
+  - name: news
+    label: News posts
+    label_singular: News post
+    folder: src/content/news
+    extension: md
+    fields:
+      - { name: title, label: Post title, widget: string }
+      - { name: date, label: Publication date, widget: datetime, type: date }
+      - { name: category, label: News category, widget: string }
+      - { name: summary, label: Short summary, widget: text }
+      - name: image
+        label: Main image
+        widget: object
+        fields:
+          - name: src
+            label: Image file
+            widget: image
+            required: true
+            accept: image/jpeg,image/png,image/webp
+            hint: Upload a JPG, JPEG, PNG or WebP under 6 MB. Keep images under 2400 pixels wide. For photos of children, record guardian consent first.
+          - name: alt
+            label: Image description (alt text)
+            widget: string
+            required: true
+            hint: Describe the image for someone who cannot see it. Never use a child's full name.
+      - { name: author, label: Author name, widget: string }
+      - name: draft
+        label: Keep this post as a draft
+        widget: boolean
+        required: true
+        default: false
+      - { name: body, label: Post text, widget: markdown }
+
+  - name: albums
+    label: Photo albums
+    label_singular: Photo album
+    folder: src/content/albums
+    format: json
+    fields:
+      - { name: title, label: Album title, widget: string }
+      - { name: date, label: Album date, widget: datetime, type: date }
+      - { name: category, label: Album category, widget: string }
+      - name: consentConfirmed
+        label: Guardian consent is recorded for child photos
+        widget: boolean
+        required: true
+        hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+      - {
+          name: published,
+          label: Publish this album,
+          widget: boolean,
+          required: true,
+        }
+      - name: images
+        label: Album photos
+        widget: list
+        min: 1
+        fields:
+          - name: src
+            label: Photo file
+            widget: image
+            required: true
+            accept: image/jpeg,image/png,image/webp
+            hint: Upload JPG, JPEG, PNG or WebP under 6 MB and under 2400 pixels wide. Only upload a child's photo after guardian consent has been recorded.
+          - name: alt
+            label: Photo description (alt text)
+            widget: string
+            required: true
+            hint: Describe what is visible without identifying a child by full name.
+          - {
+              name: caption,
+              label: Photo caption,
+              widget: string,
+              required: true,
+            }
+          - name: depictsChildren
+            label: People under 18 appear in this photo
+            widget: boolean
+            required: true
+            hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+          - name: consentNotes
+            label: Guardian consent record
+            widget: text
+            required: true
+            hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+      - name: sample
+        label: This is a sample album
+        widget: boolean
+        required: true
+        default: false
+
+  - name: reports
+    label: Expense reports
+    label_singular: Expense report
+    folder: src/content/reports
+    format: json
+    description: Amounts are in RWF. Upload a receipt image for every item. The site shows Reconciled only when the item total equals the amount received.
+    fields:
+      - { name: title, label: Report title, widget: string }
+      - { name: date, label: Report date, widget: string }
+      - name: type
+        label: Report type
+        widget: select
+        options:
+          - { label: Donation report, value: donation-report }
+          - { label: Quarterly report, value: quarterly }
+          - { label: Annual report, value: annual }
+      - {
+          name: amountReceivedRWF,
+          label: Amount received (RWF),
+          widget: number,
+          value_type: int,
+          min: 0,
+        }
+      - {
+          name: donorDisplayName,
+          label: Donor display name (optional),
+          widget: string,
+          required: false,
+        }
+      - {
+          name: donorPermissionConfirmed,
+          label: Donor agreed to be named,
+          widget: boolean,
+          required: true,
+          default: false,
+        }
+      - name: items
+        label: Expense items
+        widget: list
+        min: 1
+        fields:
+          - { name: item, label: Item or expense, widget: string }
+          - { name: quantity, label: Quantity or amount, widget: string }
+          - {
+              name: costRWF,
+              label: Cost (RWF),
+              widget: number,
+              value_type: int,
+              min: 0,
+            }
+          - name: receiptImage
+            label: Receipt image
+            widget: file
+            required: true
+            accept: image/jpeg,image/png,image/webp
+            hint: Upload the receipt as JPG, JPEG, PNG or WebP under 6 MB. Do not upload photos of children here; if a receipt includes one, guardian consent must be recorded before upload. Amounts are in RWF. Reconciled appears only when the item total equals the amount received.
+          - name: receiptAlt
+            label: Receipt image description (alt text)
+            widget: string
+            required: true
+            hint: Briefly describe the receipt image for someone who cannot see it.
+      - { name: notes, label: Report notes, widget: text }
+
+  - name: team
+    label: Team profiles
+    files:
+      - name: team
+        label: Team profiles
+        file: src/data/team.json
+        format: json
+        fields:
+          - name: team
+            label: Team members
+            widget: list
+            min: 1
+            fields:
+              - name: name
+                label: Team member name
+                widget: string
+                required: true
+                hint: Do not enter a child's full name.
+              - { name: role, label: Team role, widget: string, required: true }
+              - name: photo
+                label: Team photo
+                widget: image
+                required: true
+                accept: image/jpeg,image/png,image/webp
+                hint: JPG, JPEG, PNG or WebP under 6 MB and under 2400 pixels wide. Only use photos of children if guardian consent has been recorded.
+              - { name: bio, label: Biography, widget: text, required: true }
+              - name: photoAlt
+                label: Team photo description (alt text)
+                widget: string
+                required: true
+                hint: Describe the photo for someone who cannot see it. Never use a child's full name.
+              - name: consentConfirmed
+                label: Guardian consent is recorded for child photos
+                widget: boolean
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+              - name: depictsChildren
+                label: People under 18 appear in this photo
+                widget: boolean
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+              - name: consentNotes
+                label: Guardian consent record
+                widget: text
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+
+  - name: hero-slides
+    label: Home page slides
+    files:
+      - name: home-slides
+        label: Home page slides
+        file: src/data/hero-slides.json
+        format: json
+        fields:
+          - name: slides
+            label: Home page slides
+            widget: list
+            min: 1
+            fields:
+              - name: id
+                label: Slide identifier
+                widget: select
+                required: true
+                options:
+                  - { label: Our purpose, value: love-in-action }
+                  - { label: Weekly gathering, value: weekly-gathering }
+                  - { label: Education support, value: education-support }
+                  - { label: Family outreach, value: family-outreach }
+                  - {
+                      label: Public Speaking Academy,
+                      value: public-speaking-academy,
+                    }
+              - name: type
+                label: Slide media type
+                widget: select
+                required: true
+                options:
+                  - { label: Image, value: image }
+                  - { label: Video, value: video }
+              - name: src
+                label: Slide image or video file
+                widget: file
+                required: true
+                accept: image/jpeg,image/png,image/webp,video/mp4
+                hint: JPG, JPEG, PNG or WebP images should be under 2400 pixels wide; hero images should be 1920 by 1080 pixels. MP4 videos must be under 6 MB. For photos of children, record guardian consent first.
+              - name: poster
+                label: Optional video poster image
+                widget: file
+                required: false
+                accept: image/jpeg,image/png,image/webp
+                hint: JPG, JPEG, PNG or WebP under 6 MB. Keep images under 2400 pixels wide; use 1920 by 1080 pixels for hero slides. For photos of children, record guardian consent first.
+              - name: alt
+                label: Slide description (alt text)
+                widget: string
+                required: true
+                hint: Describe the slide image or video. Never use a child's full name.
+              - {
+                  name: eyebrow,
+                  label: Small heading,
+                  widget: string,
+                  required: true,
+                }
+              - {
+                  name: headline,
+                  label: Main heading,
+                  widget: string,
+                  required: true,
+                }
+              - {
+                  name: text,
+                  label: Supporting text,
+                  widget: text,
+                  required: true,
+                }
+              - {
+                  name: buttonLabel,
+                  label: Button text,
+                  widget: string,
+                  required: true,
+                }
+              - {
+                  name: buttonHref,
+                  label: Button destination,
+                  widget: string,
+                  required: true,
+                }
+              - name: consentConfirmed
+                label: Guardian consent is recorded for child photos
+                widget: boolean
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+              - {
+                  name: needsConfirmation,
+                  label: This slide still needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+              - name: containsChildren
+                label: Children appear in this slide
+                widget: boolean
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+              - name: consentNotes
+                label: Guardian consent record
+                widget: text
+                required: true
+                hint: Only tick consent if a guardian has agreed to the photo being published. Never use children's full names.
+
+  - name: impact
+    label: Impact figures
+    files:
+      - name: impact
+        label: Confirmed impact figures
+        file: src/data/impact.json
+        format: json
+        fields:
+          - name: childrenServed
+            label: Children currently served
+            widget: object
+            fields:
+              - {
+                  name: value,
+                  label: Number of children,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                  required: false,
+                }
+              - {
+                  name: needsConfirmation,
+                  label: This figure needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+          - name: weeklyGatherings
+            label: Weekly gatherings
+            widget: object
+            fields:
+              - {
+                  name: value,
+                  label: Number of gatherings,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                  required: false,
+                }
+              - { name: startMonth, label: Start month, widget: string }
+              - {
+                  name: startYear,
+                  label: Start year,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                }
+              - {
+                  name: needsConfirmation,
+                  label: This figure needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+              - { name: note, label: Confirmation note, widget: string }
+          - name: itemsDistributed
+            label: Items distributed
+            widget: object
+            fields:
+              - {
+                  name: value,
+                  label: Number of items,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                  required: false,
+                }
+              - {
+                  name: needsConfirmation,
+                  label: This figure needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+              - { name: note, label: Confirmation note, widget: string }
+          - name: childrenWithSchoolMaterials
+            label: Children receiving school materials
+            widget: object
+            fields:
+              - {
+                  name: value,
+                  label: Number of children,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                }
+              - {
+                  name: academicYears,
+                  label: Academic years,
+                  widget: list,
+                  field: { name: year, label: Academic year, widget: string },
+                }
+              - {
+                  name: needsConfirmation,
+                  label: This figure needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+          - {
+              name: foundedYear,
+              label: Foundation year,
+              widget: number,
+              value_type: int,
+              min: 0,
+            }
+          - { name: foundedMonth, label: Foundation month, widget: string }
+          - {
+              name: founders,
+              label: Number of founders,
+              widget: number,
+              value_type: int,
+              min: 0,
+            }
+          - name: publicSpeakingAcademy
+            label: Public Speaking Academy
+            widget: object
+            fields:
+              - {
+                  name: sessions,
+                  label: Number of sessions,
+                  widget: number,
+                  value_type: int,
+                  min: 0,
+                }
+          - name: lastUpdated
+            label: Last figures update
+            widget: object
+            fields:
+              - {
+                  name: value,
+                  label: Date last updated,
+                  widget: datetime,
+                  type: date,
+                  required: false,
+                }
+              - {
+                  name: needsConfirmation,
+                  label: This date needs confirmation,
+                  widget: boolean,
+                  required: true,
+                }
+    description: Enter confirmed figures only. Keep the confirmation flags accurate and update the last-updated date when figures are checked.
+
+  - name: programs
+    label: Program pages
+    label_singular: Program page
+    folder: src/content/programs
+    format: json
+    fields:
+      - { name: title, label: Program title, widget: string }
+      - { name: category, label: Program category, widget: string }
+      - { name: summary, label: Short program summary, widget: text }
+      - { name: heroText, label: Introductory text, widget: text }
+      - { name: need, label: Need this program addresses, widget: text }
+      - name: whatWeDo
+        label: What the program does
+        widget: list
+        field: { name: item, label: Text, widget: text }
+      - name: howItWorks
+        label: How the program works
+        widget: list
+        field: { name: item, label: Text, widget: text }
+      - name: howToHelp
+        label: Ways to help
+        widget: list
+        field: { name: item, label: Text, widget: text }
+      - {
+          name: enrolmentInfo,
+          label: Enrolment information (optional),
+          widget: text,
+          required: false,
+        }
+      - {
+          name: courseOutline,
+          label: Course outline (optional),
+          widget: text,
+          required: false,
+        }

@@ -2,7 +2,7 @@
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import Button from "./ui/Button.astro";
-import slides from "../data/hero-slides.json";
+import heroSlides from "../data/hero-slides.json";
 import { localizedPath, t, type Locale } from "../i18n";
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { lang = "en" } = Astro.props;
+const { slides } = heroSlides;
 const slideKeys: Record<string, [string, string, string, string, string]> = {
   "love-in-action": ["heroPurpose", "heroLoveHeadline", "heroLoveText", "heroLearn", "placeholderArtworkAlt"],
   "weekly-gathering": ["heroWeeklyEyebrow", "heroWeeklyHeadline", "heroWeeklyText", "heroExplorePrograms", "placeholderArtworkAlt"],
@@ -49,10 +50,13 @@ const videoIsAvailable = (src: string) =>
     {slides.map((slide, index) => (
       (() => {
         const [eyebrowKey, headlineKey, textKey, buttonKey, altKey] = slideKeys[slide.id];
-        const eyebrow = t(eyebrowKey, lang);
-        const headline = t(headlineKey, lang);
-        const text = t(textKey, lang);
-        const alt = t(altKey, lang);
+        const eyebrow = lang === "en" ? slide.eyebrow : t(eyebrowKey, lang);
+        const headline =
+          lang === "en" ? slide.headline : t(headlineKey, lang);
+        const text = lang === "en" ? slide.text : t(textKey, lang);
+        const buttonLabel =
+          lang === "en" ? slide.buttonLabel : t(buttonKey, lang);
+        const alt = slide.alt || t(altKey, lang);
         return (
       <article
         class="hero-slider__slide"
@@ -99,7 +103,7 @@ const videoIsAvailable = (src: string) =>
           <p class="hero-slider__text">{text}</p>
           <div class="hero-slider__actions">
             <Button variant="primary" href={localizedPath(slide.buttonHref, lang)}>
-              {t(buttonKey, lang)}
+              {buttonLabel}
             </Button>
             <Button
               variant="secondary"

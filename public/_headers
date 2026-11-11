@@ -1,9 +1,15 @@
+# GENERATED_PUBLIC_CSP_RULES
+
 /*
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com __INLINE_SCRIPT_HASHES__; style-src 'self' __INLINE_STYLE_HASHES__; img-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com https://www.google.com; form-action 'self'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   X-Frame-Options: DENY
+  # NON_PRODUCTION_ROBOTS_HEADER
+
+/admin/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.github.com https://www.githubstatus.com blob: data:; media-src blob:; frame-src 'self' blob:; form-action 'self'; frame-ancestors 'none'
+  X-Robots-Tag: noindex, nofollow
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

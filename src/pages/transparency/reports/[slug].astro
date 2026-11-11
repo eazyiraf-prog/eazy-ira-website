@@ -72,7 +72,7 @@ const reportType = report.data.type.replaceAll("-", " ");
                 {entry.receiptImage ? (
                   <img
                     src={entry.receiptImage}
-                    alt={`Receipt image placeholder for ${entry.item}`}
+                    alt={entry.receiptAlt}
                     loading="lazy"
                     width="640"
                     height="360"

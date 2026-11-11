@@ -5,7 +5,15 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**", ".astro/**", "node_modules/**"],
+    ignores: [
+      "dist/**",
+      ".astro/**",
+      ".wrangler/**",
+      "node_modules/**",
+      "public/admin/sveltia-cms.js",
+      "public/admin/chunks/**",
+      "public/admin/vendor/**",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

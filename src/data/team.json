@@ -1,68 +1,114 @@
-[
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  },
-  {
-    "name": "[to be supplied]",
-    "role": "[to be supplied]",
-    "photo": "[to be supplied]",
-    "bio": "[to be supplied]"
-  }
-]
+{
+  "team": [
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    },
+    {
+      "name": "[to be supplied]",
+      "role": "[to be supplied]",
+      "photo": "[to be supplied]",
+      "bio": "[to be supplied]",
+      "photoAlt": "Placeholder: no team photograph has been supplied.",
+      "consentConfirmed": false,
+      "depictsChildren": false,
+      "consentNotes": "No child photo is currently used; guardian consent is not applicable."
+    }
+  ]
+}

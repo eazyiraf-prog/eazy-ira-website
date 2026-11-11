@@ -51,6 +51,7 @@ const reports = defineCollection({
         quantity: z.string(),
         costRWF: z.number().nonnegative(),
         receiptImage: z.string().optional(),
+        receiptAlt: z.string().min(1),
       }),
     ),
     notes: z.string(),

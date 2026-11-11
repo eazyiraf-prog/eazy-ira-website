@@ -81,6 +81,9 @@ The site uses Astro's static output and Pagefind for site-wide search. The
 build creates the search index in `dist/pagefind/`. The Contact page's map is
 not requested from Google Maps unless a visitor chooses to load it.
 
+Content editors save approved changes to GitHub. Run `git pull` before every
+push so your local branch includes the latest reviewed content.
+
 ## Gallery and news content
 
 - Add album JSON files under `src/content/albums/`. Each album requires:

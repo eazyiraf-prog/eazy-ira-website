@@ -21,10 +21,14 @@ type FormDefinition = {
 };
 
 type WorkerEnv = {
+  PUBLIC_SITE_URL?: string;
   PUBLIC_TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
+  GITHUB_OAUTH_CLIENT_ID?: string;
+  GITHUB_OAUTH_CLIENT_SECRET?: string;
+  GITHUB_OAUTH_SCOPE?: string;
   NEWSLETTER_TO?: string;
   CONTACT_TO?: string;
   PARTNERSHIP_ENQUIRY_TO?: string;
@@ -46,6 +50,10 @@ type EmailAdapter = (message: EmailMessage) => Promise<boolean>;
 type Dependencies = {
   fetcher?: typeof fetch;
   emailAdapter?: EmailAdapter;
+};
+
+type OAuthDependencies = {
+  fetcher?: typeof fetch;
 };
 
 const FORMS = {
@@ -155,6 +163,298 @@ function responseHeaders(): Headers {
     "X-Frame-Options": "DENY",
     "Cache-Control": "no-store",
   });
+}
+
+function getConfiguredSiteOrigin(env: WorkerEnv): string | null {
+  try {
+    const url = new URL(env.PUBLIC_SITE_URL ?? "");
+    if (
+      url.protocol !== "https:" ||
+      url.username ||
+      url.password ||
+      url.pathname !== "/" ||
+      url.search ||
+      url.hash
+    ) {
+      return null;
+    }
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
+function oauthErrorResponse(
+  status: number,
+  message: string,
+  clearStateCookie = false,
+): Response {
+  const headers = new Headers({
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Content-Security-Policy":
+      "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  });
+  if (clearStateCookie) {
+    headers.append(
+      "Set-Cookie",
+      "github_oauth_state=; HttpOnly; Max-Age=0; Path=/api; SameSite=Lax; Secure",
+    );
+  }
+  return new Response(message, { status, headers });
+}
+
+function oauthCookie(request: Request, name: string): string | null {
+  const values = (request.headers.get("Cookie") ?? "")
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .filter((cookie) => cookie.startsWith(`${name}=`))
+    .map((cookie) => cookie.slice(name.length + 1));
+  return values.length === 1 ? values[0] : null;
+}
+
+function randomState(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
+}
+
+function safeScriptValue(value: unknown): string {
+  return JSON.stringify(value).replaceAll("<", "\\u003c");
+}
+
+async function oauthBridgeResponse(
+  siteOrigin: string,
+  status: "success" | "error",
+  content: { provider: "github"; token: string } | {
+    provider: "github";
+    error: string;
+    errorCode: string;
+  },
+): Promise<Response> {
+  const serializedContent = safeScriptValue(content);
+  const serializedOrigin = safeScriptValue(siteOrigin);
+  const script = `(() => {
+    const allowedOrigin = ${serializedOrigin};
+    const content = ${serializedContent};
+    const state = ${safeScriptValue(status)};
+    window.addEventListener("message", (event) => {
+      if (
+        event.origin !== allowedOrigin ||
+        event.source !== window.opener ||
+        event.data !== "authorizing:github"
+      ) return;
+      window.opener.postMessage(
+        "authorization:github:" + state + ":" + JSON.stringify(content),
+        allowedOrigin
+      );
+    });
+    window.opener?.postMessage("authorizing:github", "*");
+  })();`;
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(script),
+  );
+  const hash = btoa(String.fromCharCode(...new Uint8Array(digest)));
+  const headers = new Headers({
+    "Content-Type": "text/html; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Content-Security-Policy": `default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; script-src 'sha256-${hash}'`,
+    "Set-Cookie":
+      "github_oauth_state=; HttpOnly; Max-Age=0; Path=/api; SameSite=Lax; Secure",
+  });
+  return new Response(
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>GitHub sign-in</title></head><body><p>Returning to the content editor…</p><script>${script}</script></body></html>`,
+    { headers },
+  );
+}
+
+async function beginGitHubOAuth(
+  request: Request,
+  env: WorkerEnv,
+): Promise<Response> {
+  const siteOrigin = getConfiguredSiteOrigin(env);
+  if (!siteOrigin || new URL(request.url).origin !== siteOrigin) {
+    return oauthErrorResponse(
+      503,
+      "GitHub sign-in is unavailable until PUBLIC_SITE_URL is configured for this site.",
+    );
+  }
+  if (!env.GITHUB_OAUTH_CLIENT_ID || !env.GITHUB_OAUTH_CLIENT_SECRET) {
+    return oauthErrorResponse(
+      503,
+      "GitHub sign-in is not configured. Please contact the site administrator.",
+    );
+  }
+
+  const url = new URL(request.url);
+  const provider = url.searchParams.get("provider");
+  const siteId = url.searchParams.get("site_id");
+  const trustedHost = new URL(siteOrigin).hostname;
+  if (
+    provider !== "github" ||
+    (siteId !== siteOrigin && siteId !== trustedHost)
+  ) {
+    return oauthErrorResponse(403, "This site is not allowed to start sign-in.");
+  }
+  const oauthScope = env.GITHUB_OAUTH_SCOPE ?? "repo";
+  if (oauthScope !== "repo" && oauthScope !== "public_repo") {
+    return oauthErrorResponse(
+      500,
+      "GitHub sign-in has an invalid OAuth scope configuration.",
+    );
+  }
+  const requestedScope = url.searchParams.get("scope");
+  if (requestedScope && requestedScope !== oauthScope) {
+    return oauthErrorResponse(
+      400,
+      "The requested GitHub permission does not match the configured scope.",
+    );
+  }
+
+  const state = randomState();
+  const authorizationUrl = new URL(
+    "https://github.com/login/oauth/authorize",
+  );
+  authorizationUrl.search = new URLSearchParams({
+    client_id: env.GITHUB_OAUTH_CLIENT_ID,
+    scope: oauthScope,
+    state,
+  }).toString();
+
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: authorizationUrl.toString(),
+      "Cache-Control": "no-store",
+      "Set-Cookie":
+        `github_oauth_state=${state}; HttpOnly; Max-Age=600; Path=/api; SameSite=Lax; Secure`,
+    },
+  });
+}
+
+async function completeGitHubOAuth(
+  request: Request,
+  env: WorkerEnv,
+  dependencies: OAuthDependencies,
+): Promise<Response> {
+  const siteOrigin = getConfiguredSiteOrigin(env);
+  if (!siteOrigin || new URL(request.url).origin !== siteOrigin) {
+    return oauthErrorResponse(
+      503,
+      "GitHub sign-in is unavailable until PUBLIC_SITE_URL is configured for this site.",
+      true,
+    );
+  }
+
+  const url = new URL(request.url);
+  const state = url.searchParams.get("state");
+  const cookieState = oauthCookie(request, "github_oauth_state");
+  if (
+    !state ||
+    !/^[0-9a-f]{64}$/.test(state) ||
+    !cookieState ||
+    state !== cookieState
+  ) {
+    return oauthErrorResponse(
+      400,
+      "GitHub sign-in could not verify this login request. Close this window and try again.",
+      true,
+    );
+  }
+  if (url.searchParams.has("error")) {
+    return oauthBridgeResponse(siteOrigin, "error", {
+      provider: "github",
+      error: "GitHub sign-in was not completed.",
+      errorCode: "AUTH_CODE_REQUEST_FAILED",
+    });
+  }
+
+  const code = url.searchParams.get("code");
+  if (
+    !code ||
+    code.length > 2048 ||
+    !env.GITHUB_OAUTH_CLIENT_ID ||
+    !env.GITHUB_OAUTH_CLIENT_SECRET
+  ) {
+    return oauthBridgeResponse(siteOrigin, "error", {
+      provider: "github",
+      error: "GitHub sign-in could not be completed. Please try again.",
+      errorCode: "MISCONFIGURED_CLIENT",
+    });
+  }
+
+  let token: unknown;
+  try {
+    const response = await (dependencies.fetcher ?? fetch)(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: env.GITHUB_OAUTH_CLIENT_ID,
+          client_secret: env.GITHUB_OAUTH_CLIENT_SECRET,
+          code,
+        }),
+      },
+    );
+    if (!response.ok) {
+      return oauthBridgeResponse(siteOrigin, "error", {
+        provider: "github",
+        error: "GitHub sign-in could not be completed. Please try again.",
+        errorCode: "TOKEN_REQUEST_FAILED",
+      });
+    }
+    const result: unknown = await response.json();
+    token =
+      typeof result === "object" && result !== null && "access_token" in result
+        ? result.access_token
+        : null;
+  } catch {
+    return oauthBridgeResponse(siteOrigin, "error", {
+      provider: "github",
+      error: "GitHub sign-in could not be completed. Please try again.",
+      errorCode: "TOKEN_REQUEST_FAILED",
+    });
+  }
+
+  if (typeof token !== "string" || !token) {
+    return oauthBridgeResponse(siteOrigin, "error", {
+      provider: "github",
+      error: "GitHub sign-in could not be completed. Please try again.",
+      errorCode: "TOKEN_REQUEST_FAILED",
+    });
+  }
+  return oauthBridgeResponse(siteOrigin, "success", {
+    provider: "github",
+    token,
+  });
+}
+
+export async function handleOAuthRequest(
+  request: Request,
+  env: WorkerEnv,
+  dependencies: OAuthDependencies = {},
+): Promise<Response> {
+  const { pathname } = new URL(request.url);
+  if (request.method !== "GET") {
+    return oauthErrorResponse(405, "GitHub sign-in only accepts GET requests.");
+  }
+  if (pathname === "/api/auth") return beginGitHubOAuth(request, env);
+  if (pathname === "/api/callback") {
+    return completeGitHubOAuth(request, env, dependencies);
+  }
+  return oauthErrorResponse(404, "The requested sign-in route was not found.");
 }
 
 function jsonResponse(
@@ -510,6 +810,10 @@ export async function handleRequest(
 
 export default {
   fetch(request: Request, env: WorkerEnv): Promise<Response> {
+    const { pathname } = new URL(request.url);
+    if (pathname === "/api/auth" || pathname === "/api/callback") {
+      return handleOAuthRequest(request, env);
+    }
     return handleRequest(request, env);
   },
 };
