@@ -54,7 +54,30 @@ for (const form of forms) {
       if (!response.ok) {
         const result = await response.json();
         if (submitError && typeof result.message === "string") {
-          submitError.textContent = result.message;
+          const contactEmail = form.querySelector(
+            'input[name="contact-email"]',
+          )?.value;
+          const emailIndex = contactEmail
+            ? result.message.indexOf(contactEmail)
+            : -1;
+
+          if (
+            emailIndex >= 0 &&
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)
+          ) {
+            const link = document.createElement("a");
+            link.href = `mailto:${contactEmail}`;
+            link.textContent = contactEmail;
+            submitError.replaceChildren(
+              document.createTextNode(result.message.slice(0, emailIndex)),
+              link,
+              document.createTextNode(
+                result.message.slice(emailIndex + contactEmail.length),
+              ),
+            );
+          } else {
+            submitError.textContent = result.message;
+          }
         }
         throw new Error("Form submission was rejected.");
       }

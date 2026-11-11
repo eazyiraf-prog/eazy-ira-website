@@ -27,7 +27,7 @@ import { t } from "../i18n";
         <strong>{t("emailLabel")}</strong>{" "}
         {site.email.needsConfirmation
           ? "[to be confirmed]"
-          : site.email.value}
+          : <a href={`mailto:${site.email.value}`}>{site.email.value}</a>}
       </p>
       <p>
         <strong>{t("phoneLabel")}</strong>{" "}

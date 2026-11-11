@@ -92,7 +92,11 @@ import site from "../../data/site.json";
     <h2>Contact</h2>
     <p>
       Privacy questions: [to be confirmed]. Foundation email:
-      {site.email.needsConfirmation ? "[to be confirmed]" : site.email.value}.
+      {site.email.needsConfirmation ? (
+        "[to be confirmed]"
+      ) : (
+        <a href={`mailto:${site.email.value}`}>{site.email.value}</a>
+      )}.
     </p>
   </article>
 </Section>
