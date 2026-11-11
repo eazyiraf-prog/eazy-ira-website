@@ -10,11 +10,12 @@ export function getStaticPaths() {
 }
 
 const lang = Astro.params.lang as Locale;
+const languageName = lang === "fr" ? "French" : "Kinyarwanda";
 ---
 
 <BaseLayout
-  title="Privacy"
-  description="Draft privacy information for EAZY-IRA Charity Foundation."
+  title={`Privacy (${languageName})`}
+  description={`Draft privacy information for EAZY-IRA Charity Foundation. This page is displayed in English for ${languageName} readers.`}
   lang={lang}
   canonical={new URL(localizedPath("/legal/privacy", "en"), Astro.site ?? Astro.url).href}
   pagefindIgnore

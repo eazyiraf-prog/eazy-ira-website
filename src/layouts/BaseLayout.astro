@@ -2,6 +2,7 @@
 import SEO from "../components/SEO.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Analytics from "../components/Analytics.astro";
 import "../styles/global.css";
 import { localizedPath, t, type Locale } from "../i18n";
 
@@ -13,6 +14,7 @@ interface Props {
   robots?: string;
   image?: string;
   pagefindIgnore?: boolean;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -23,10 +25,23 @@ const {
   robots,
   image,
   pagefindIgnore = false,
+  structuredData,
 } = Astro.props;
 const pagePath = Astro.url.pathname;
 const siteOrigin = Astro.site ?? Astro.url;
+const canonicalUrl = canonical ?? new URL(pagePath, siteOrigin).href;
 const locales: Locale[] = ["en", "fr", "rw"];
+const localizedUrl = (locale: Locale) => {
+  const path = localizedPath(pagePath, locale);
+  const normalizedPath =
+    path !== "/" && !path.endsWith("/") && !/\.[^/]+$/.test(path)
+      ? `${path}/`
+      : path;
+  return new URL(normalizedPath, siteOrigin).href;
+};
+const serializedStructuredData = structuredData
+  ? JSON.stringify(structuredData).replace(/</g, "\\u003c")
+  : undefined;
 ---
 
 <!doctype html>
@@ -34,29 +49,50 @@ const locales: Locale[] = ["en", "fr", "rw"];
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <SEO
       title={title}
       description={description}
       lang={lang}
-      canonical={canonical}
+      canonical={canonicalUrl}
       robots={robots}
       image={image}
     >
       <slot name="hreflang" slot="hreflang" />
     </SEO>
+    {serializedStructuredData && (
+      <script type="application/ld+json" set:html={serializedStructuredData} />
+    )}
     {
       locales.map((locale) => (
         <link
           rel="alternate"
           hreflang={locale}
-          href={new URL(localizedPath(pagePath, locale), siteOrigin).href}
+          href={localizedUrl(locale)}
         />
       ))
     }
     <link
       rel="alternate"
       hreflang="x-default"
-      href={new URL(localizedPath(pagePath, "en"), siteOrigin).href}
+      href={localizedUrl("en")}
     />
   </head>
   <body>
@@ -80,5 +116,6 @@ const locales: Locale[] = ["en", "fr", "rw"];
       <slot />
     </main>
     <Footer lang={lang} />
+    <Analytics />
   </body>
 </html>

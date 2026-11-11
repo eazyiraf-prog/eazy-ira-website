@@ -24,6 +24,7 @@ const href =
   href={href}
   target={opensInNewTab ? "_blank" : undefined}
   rel={opensInNewTab ? "noopener noreferrer" : undefined}
+  analyticsEvent="donate"
 >
   {label ?? t("donate", lang)}
   {opensInNewTab && <span class="visually-hidden"> {t("opensNewTab", lang)}</span>}

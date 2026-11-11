@@ -81,6 +81,20 @@ The site uses Astro's static output and Pagefind for site-wide search. The
 build creates the search index in `dist/pagefind/`. The Contact page's map is
 not requested from Google Maps unless a visitor chooses to load it.
 
+## Optional privacy-first analytics
+
+Analytics is off by default. To enable it at build time, set
+`PUBLIC_ANALYTICS_PROVIDER` to `plausible` or `cloudflare-web-analytics` and
+provide the matching site/domain or beacon token in `PUBLIC_ANALYTICS_TOKEN`.
+No analytics script loads unless both values are configured. Both supported
+providers are cookie-free, so no cookie banner is needed while analytics is
+off or when using either supported provider.
+
+Donate, Partner, and Volunteer clicks dispatch the
+`eazyira:analytics` browser event only when analytics is enabled. Plausible
+also records these as custom events. Cloudflare Web Analytics collects
+page-view and performance data but does not collect custom events.
+
 Content editors save approved changes to GitHub. Run `git pull` before every
 push so your local branch includes the latest reviewed content.
 

@@ -13,6 +13,7 @@ interface Props {
 }
 
 const { lang = "en" } = Astro.props;
+const turnstileEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 ---
 
 <footer class="site-footer">
@@ -106,9 +107,11 @@ const { lang = "en" } = Astro.props;
   </Container>
 </footer>
 
-<script
-  is:inline
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-  async
-  defer
-></script>
+{turnstileEnabled && (
+  <script
+    is:inline
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+  ></script>
+)}

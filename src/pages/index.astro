@@ -11,6 +11,7 @@ import Image from "../components/ui/Image.astro";
 import Section from "../components/ui/Section.astro";
 import impact from "../data/impact.json";
 import site from "../data/site.json";
+import { getResponsiveImageSrcSet } from "../data/image-sources";
 import { t } from "../i18n";
 
 const newsPosts = (await getCollection("news", ({ data }) => !data.draft))
@@ -41,11 +42,30 @@ const needs = [
   "hygieneItems",
   "uniforms",
 ];
+const sameAs = Object.values(site.socials)
+  .filter((social) => social.value && !social.needsConfirmation)
+  .map((social) => social.value);
+const organizationStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.name,
+  description: site.tagline,
+  foundingDate: "2025-05",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Masoro",
+    addressRegion: "Kigali",
+    addressCountry: "Rwanda",
+  },
+  email: site.email.value,
+  ...(sameAs.length ? { sameAs } : {}),
+};
 ---
 
 <BaseLayout
   title={t("homeTitle")}
   description={t("homeDescription")}
+  structuredData={organizationStructuredData}
 >
   <h1 class="home-visually-hidden">{site.tagline}</h1>
   <HeroSlider />
@@ -121,7 +141,7 @@ const needs = [
         <Icon name="book" size={32} />
         <h3>{t("education")}</h3>
         <p>{t("educationDescription")}</p>
-        <a href="/programs" aria-label={t("exploreEducation")}>
+        <a href="/programs">
           {t("exploreEducation")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
@@ -129,7 +149,7 @@ const needs = [
         <Icon name="sun" size={32} />
         <h3>{t("nutrition")}</h3>
         <p>{t("nutritionDescription")}</p>
-        <a href="/programs" aria-label={t("exploreNutrition")}>
+        <a href="/programs">
           {t("exploreNutrition")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
@@ -137,7 +157,7 @@ const needs = [
         <Icon name="heart" size={32} />
         <h3>{t("spiritualMoral")}</h3>
         <p>{t("spiritualDescription")}</p>
-        <a href="/programs" aria-label={t("exploreSpiritual")}>
+        <a href="/programs">
           {t("exploreDevelopment")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
@@ -145,7 +165,7 @@ const needs = [
         <Icon name="users" size={32} />
         <h3>{t("communityMentorship")}</h3>
         <p>{t("communityDescription")}</p>
-        <a href="/programs" aria-label={t("exploreCommunity")}>
+        <a href="/programs">
           {t("communityMentorship")} <Icon name="arrow-right" size={18} />
         </a>
       </Card>
@@ -165,6 +185,8 @@ const needs = [
           alt={t("placeholderArtworkAlt")}
           width={1200}
           height={700}
+          srcset={getResponsiveImageSrcSet("/images/design-placeholder.svg")}
+          sizes="(max-width: 48rem) 100vw, 50vw"
           sizes="(max-width: 48rem) 100vw, 72rem"
         />
       </div>
@@ -250,7 +272,10 @@ const needs = [
             )}
             <h3>{post.data.title}</h3>
             <p>{post.data.summary}</p>
-            <a href={`/news/${post.id}`}>{t("readMore")}</a>
+            <a href={`/news/${post.id}`}>
+              {t("readMore")}{" "}
+              <span class="visually-hidden">{post.data.title}</span>
+            </a>
           </Card>
         ))}
       </div>
@@ -558,7 +583,7 @@ const needs = [
 
   .home-final-cta__eyebrow {
     margin-bottom: 0.75rem;
-    color: var(--brand-accent);
+    color: var(--surface-card);
     font-size: var(--type-sm);
     font-weight: 700;
     letter-spacing: 0.1em;

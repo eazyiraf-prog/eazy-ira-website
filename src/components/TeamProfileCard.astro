@@ -20,7 +20,15 @@ const { name, role, photo, bio, photoAlt = photo } = Astro.props;
   >
     {
       photo.startsWith("/images/uploads/") ? (
-        <img src={photo} alt="" aria-hidden="true" loading="lazy" />
+        <img
+          src={photo}
+          alt=""
+          aria-hidden="true"
+          width="640"
+          height="640"
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
         <span>
           Photo

@@ -570,8 +570,28 @@ p {
   cursor: pointer;
 }
 
+:root[data-theme="dark"] .site-search button,
+[data-theme="dark"] .site-search button {
+  color: #12231e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-search button {
+    color: #12231e;
+  }
+
+  :root:not([data-theme="light"]) .ui-button--primary {
+    color: #12231e;
+  }
+}
+
 .site-search button:hover {
   background: var(--brand-primary-hover);
+}
+
+label a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 .site-header__actions {
@@ -853,6 +873,7 @@ p {
   accent-color: var(--brand-primary);
 }
 
+.visually-hidden,
 .form-honeypot,
 .form-visually-hidden {
   position: absolute !important;

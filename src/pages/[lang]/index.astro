@@ -36,12 +36,31 @@ const counters = [
     needsConfirmation: false,
   },
 ].filter((counter) => counter.value !== null);
+const sameAs = Object.values(site.socials)
+  .filter((social) => social.value && !social.needsConfirmation)
+  .map((social) => social.value);
+const organizationStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.name,
+  description: site.tagline,
+  foundingDate: "2025-05",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Masoro",
+    addressRegion: "Kigali",
+    addressCountry: "Rwanda",
+  },
+  email: site.email.value,
+  ...(sameAs.length ? { sameAs } : {}),
+};
 ---
 
 <BaseLayout
   title={t("homeTitle", lang)}
   description={t("homeDescription", lang)}
   lang={lang}
+  structuredData={organizationStructuredData}
 >
   <h1 class="home-visually-hidden">{site.tagline}</h1>
   <HeroSlider lang={lang} />
@@ -157,7 +176,8 @@ const counters = [
             <h3>{post.data.title}</h3>
             <p>{post.data.summary}</p>
             <a href={localizedPath(`/news/${post.id}`, lang)}>
-              {t("readMore", lang)}
+              {t("readMore", lang)}{" "}
+              <span class="visually-hidden">{post.data.title}</span>
             </a>
           </Card>
         ))}

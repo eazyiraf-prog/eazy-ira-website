@@ -73,24 +73,6 @@ if (styleHashes.size === 0) {
   throw new Error("No inline styles found; refusing to emit an incomplete CSP.");
 }
 
-const publicCsp = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  `script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com ${[...scriptHashes].sort().join(" ")}`,
-  `style-src 'self' ${[...styleHashes].sort().join(" ")}`,
-  "img-src 'self'",
-  "font-src 'self'",
-  "connect-src 'self'",
-  "frame-src https://challenges.cloudflare.com https://www.google.com",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-].join("; ");
-const publicCspRules = [...publicPagePatterns]
-  .sort()
-  .map((pattern) => `${pattern}\n  Content-Security-Policy: ${publicCsp}`)
-  .join("\n\n");
-
 function originFromEnvironment(name) {
   const value = process.env[name];
   if (!value) return null;
@@ -123,6 +105,46 @@ const isProductionOrigin =
   publicSiteOrigin &&
   productionSiteOrigin &&
   publicSiteOrigin === productionSiteOrigin;
+const analyticsProvider = process.env.PUBLIC_ANALYTICS_PROVIDER?.trim() ?? "";
+const analyticsToken = process.env.PUBLIC_ANALYTICS_TOKEN?.trim() ?? "";
+const analyticsOrigins = {
+  plausible: {
+    script: "https://plausible.io",
+    connect: "https://plausible.io",
+  },
+  "cloudflare-web-analytics": {
+    script: "https://static.cloudflareinsights.com",
+    connect: "https://cloudflareinsights.com",
+  },
+};
+if (analyticsProvider && !analyticsOrigins[analyticsProvider]) {
+  throw new Error(
+    "PUBLIC_ANALYTICS_PROVIDER must be plausible or cloudflare-web-analytics.",
+  );
+}
+if (analyticsProvider && !analyticsToken) {
+  throw new Error(
+    "PUBLIC_ANALYTICS_TOKEN is required when PUBLIC_ANALYTICS_PROVIDER is set.",
+  );
+}
+const analyticsOrigin = analyticsOrigins[analyticsProvider];
+const publicCsp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  `script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com ${analyticsOrigin?.script ?? ""} ${[...scriptHashes].sort().join(" ")}`,
+  `style-src 'self' ${[...styleHashes].sort().join(" ")}`,
+  "img-src 'self'",
+  "font-src 'self'",
+  `connect-src 'self' ${analyticsOrigin?.connect ?? ""}`,
+  "frame-src https://challenges.cloudflare.com https://www.google.com",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+const publicCspRules = [...publicPagePatterns]
+  .sort()
+  .map((pattern) => `${pattern}\n  Content-Security-Policy: ${publicCsp}`)
+  .join("\n\n");
 const robotsHeader = isProductionOrigin
   ? ""
   : "  X-Robots-Tag: noindex, nofollow";
@@ -130,6 +152,88 @@ const updatedHeaders = headers
   .replace(pageCspPlaceholder, publicCspRules)
   .replace(nonProductionRobotsPlaceholder, robotsHeader);
 await writeFile(headersPath, updatedHeaders);
+
+const getAttribute = (element, name) =>
+  element.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
+const pages = [];
+for (const path of await htmlFiles(outputDirectory)) {
+  const relativePath = relative(outputDirectory, path).replaceAll("\\", "/");
+  if (
+    relativePath.startsWith("admin/") ||
+    relativePath.startsWith("pagefind/")
+  ) {
+    continue;
+  }
+
+  const html = await readFile(path, "utf8");
+  const htmlPath =
+    relativePath === "index.html"
+      ? "/"
+      : relativePath.endsWith("/index.html")
+        ? `/${relativePath.slice(0, -"index.html".length)}`
+        : `/${relativePath.slice(0, -".html".length)}`;
+  const canonicalTag = html.match(/<link\b[^>]*rel="canonical"[^>]*>/)?.[0];
+  const canonical = canonicalTag && getAttribute(canonicalTag, "href");
+  const robotsTag = html.match(/<meta\b[^>]*name="robots"[^>]*>/)?.[0];
+  const robots = robotsTag && getAttribute(robotsTag, "content");
+  const language = html.match(/<html\b[^>]*lang="([^"]+)"/)?.[1];
+  const normalizedPath = htmlPath.replace(/^\/(fr|rw)(?=\/|$)/, "") || "/";
+  const excludedPath = [
+    "/admin",
+    "/design-system",
+    "/search",
+    "/thank-you",
+    "/404.html",
+  ].some(
+    (excluded) =>
+      normalizedPath === excluded || normalizedPath.startsWith(`${excluded}/`),
+  );
+  const indexable = !robots?.toLowerCase().includes("noindex");
+  const url = publicSiteOrigin
+    ? new URL(htmlPath, `${publicSiteOrigin}/`).href
+    : undefined;
+  const alternates = [...html.matchAll(/<link\b[^>]*rel="alternate"[^>]*>/g)]
+    .map((match) => ({
+      language: getAttribute(match[0], "hreflang"),
+      url: getAttribute(match[0], "href"),
+    }))
+    .filter((alternate) => alternate.language && alternate.url);
+
+  if (
+    isProductionOrigin &&
+    publicSiteOrigin &&
+    !excludedPath &&
+    indexable &&
+    language &&
+    canonical &&
+    canonical === url
+  ) {
+    pages.push({ url, language, alternates });
+  }
+}
+
+const canonicalUrls = new Set(pages.map((page) => page.url));
+const sitemapUrls = pages
+  .map((page) => {
+    const alternates = page.alternates
+      .filter((alternate) => canonicalUrls.has(alternate.url))
+      .map(
+        (alternate) =>
+          `<xhtml:link rel="alternate" hreflang="${alternate.language}" href="${alternate.url}" />`,
+      )
+      .join("");
+    return `<url><loc>${page.url}</loc>${alternates}</url>`;
+  })
+  .join("");
+await writeFile(
+  join(outputDirectory, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${sitemapUrls}</urlset>\n`,
+);
+
+const robotsTxt = isProductionOrigin
+  ? `User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: ${productionSiteOrigin}/sitemap.xml\n`
+  : `User-agent: *\nDisallow: /\n${publicSiteOrigin ? `Sitemap: ${publicSiteOrigin}/sitemap.xml\n` : ""}`;
+await writeFile(join(outputDirectory, "robots.txt"), robotsTxt);
 
 let cmsConfig = await readFile(cmsConfigPath, "utf8");
 if (
@@ -150,5 +254,5 @@ cmsConfig = cmsConfig
   .replace(cmsScopePlaceholder, oauthScope);
 await writeFile(cmsConfigPath, cmsConfig);
 console.log(
-  `CSP updated with ${scriptHashes.size} script and ${styleHashes.size} style hash(es).`,
+  `CSP updated with ${scriptHashes.size} script and ${styleHashes.size} style hash(es); generated ${pages.length} production sitemap URL(s).`,
 );

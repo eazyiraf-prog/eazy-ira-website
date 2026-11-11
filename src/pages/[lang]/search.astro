@@ -20,6 +20,7 @@ const { fallbackPaths } = Astro.props;
   title={t("searchPageTitle", lang)}
   description={t("searchPrompt", lang)}
   lang={lang}
+  robots="noindex, nofollow"
 >
   <SearchPage lang={lang} fallbackPaths={fallbackPaths} />
 </BaseLayout>

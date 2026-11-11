@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getResponsiveImageSrcSet } from "../../data/image-sources";
 import { t } from "../../i18n";
 
 export async function getStaticPaths() {
@@ -37,16 +38,29 @@ const { post, relatedPosts } = Astro.props;
 const { Content } = await render(post);
 const wordCount = post.body.trim().split(/\s+/).filter(Boolean).length;
 const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
-const canonicalUrl = Astro.site
-  ? new URL(`/news/${post.id}`, Astro.site).href
-  : undefined;
+const canonicalUrl = new URL(`/news/${post.id}/`, Astro.site ?? Astro.url).href;
+const articleStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.summary,
+  image: new URL(post.data.image.src, Astro.site ?? Astro.url).href,
+  datePublished: post.data.date.toISOString(),
+  author: {
+    "@type": "Person",
+    name: post.data.author,
+  },
+  mainEntityOfPage: canonicalUrl,
+};
 ---
 
 <BaseLayout
   title={`${post.data.title} | News`}
   description={post.data.summary}
   canonical={canonicalUrl}
-  image={Astro.site ? post.data.image.src : undefined}
+  image={post.data.image.src}
+  robots={post.data.sample ? "noindex, nofollow" : undefined}
+  structuredData={articleStructuredData}
 >
   <article class="news-article">
     <div class="news-article__container">
@@ -71,10 +85,13 @@ const canonicalUrl = Astro.site
       <img
         class="article-image"
         src={post.data.image.src}
+        srcset={getResponsiveImageSrcSet(post.data.image.src)}
+        sizes="(max-width: 52rem) 100vw, 52rem"
         alt={post.data.image.alt}
         width="1200"
         height="700"
-        fetchpriority="high"
+        loading="lazy"
+        decoding="async"
       />
       <div class="article-body">
         <Content />

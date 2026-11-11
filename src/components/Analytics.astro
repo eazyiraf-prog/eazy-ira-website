@@ -1,0 +1,65 @@
+---
+const provider = import.meta.env.PUBLIC_ANALYTICS_PROVIDER?.trim() ?? "";
+const token = import.meta.env.PUBLIC_ANALYTICS_TOKEN?.trim() ?? "";
+const supportedProviders = ["plausible", "cloudflare-web-analytics"];
+
+if (provider && !supportedProviders.includes(provider)) {
+  throw new Error(
+    "PUBLIC_ANALYTICS_PROVIDER must be plausible or cloudflare-web-analytics.",
+  );
+}
+
+if (provider && !token) {
+  throw new Error(
+    "PUBLIC_ANALYTICS_TOKEN is required when PUBLIC_ANALYTICS_PROVIDER is set.",
+  );
+}
+---
+
+{provider === "plausible" && (
+  <script
+    is:inline
+    defer
+    src="https://plausible.io/js/script.js"
+    data-domain={token}
+  ></script>
+)}
+{provider === "cloudflare-web-analytics" && (
+  <script
+    is:inline
+    defer
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon={JSON.stringify({ token })}
+  ></script>
+)}
+{
+  provider && (
+    <script is:inline define:vars={{ provider }}>
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const link = target.closest("a[href]");
+        if (!link) return;
+
+        const path = new URL(link.href, window.location.href).pathname;
+        const eventName =
+          link.dataset.analyticsEvent ??
+          path.match(/\/(donate|partner|volunteer)(?:\/|$)/)?.[1];
+        if (!eventName) return;
+
+        window.dispatchEvent(
+          new CustomEvent("eazyira:analytics", {
+            detail: { name: eventName },
+          }),
+        );
+        if (
+          provider === "plausible" &&
+          typeof window.plausible === "function"
+        ) {
+          window.plausible(eventName);
+        }
+      });
+    </script>
+  )
+}

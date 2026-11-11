@@ -4,6 +4,10 @@ import SearchPage from "../components/SearchPage.astro";
 import { t } from "../i18n";
 ---
 
-<BaseLayout title={t("searchPageTitle")} description={t("searchPrompt")}>
+<BaseLayout
+  title={t("searchPageTitle")}
+  description={t("searchPrompt")}
+  robots="noindex, nofollow"
+>
   <SearchPage />
 </BaseLayout>

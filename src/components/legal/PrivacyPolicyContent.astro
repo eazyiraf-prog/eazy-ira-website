@@ -3,6 +3,13 @@ import LegalDraftNotice from "../LegalDraftNotice.astro";
 import Section from "../ui/Section.astro";
 import site from "../../data/site.json";
 
+const analyticsProvider = import.meta.env.PUBLIC_ANALYTICS_PROVIDER?.trim() ?? "";
+const analyticsDescription =
+  analyticsProvider === "plausible"
+    ? "Plausible Analytics (cookie-free)"
+    : analyticsProvider === "cloudflare-web-analytics"
+      ? "Cloudflare Web Analytics (cookie-free)"
+      : "none at present";
 ---
 
 <Section
@@ -59,6 +66,17 @@ import site from "../../data/site.json";
       The website does not store form submissions in a database. Team inbox
       addresses are [to be confirmed].
     </p>
+    <h2>Services that handle your visit or your messages</h2>
+    <ul>
+      <li>Website hosting and network provider: [provider to be confirmed].</li>
+      <li>Cloudflare Turnstile for spam checks on forms.</li>
+      <li>Resend for delivering form messages by email.</li>
+      <li>Analytics: {analyticsDescription}.</li>
+      <li>
+        Third-party donation channels: the online fundraiser organised by a
+        friend of the Foundation, and MTN Mobile Money.
+      </li>
+    </ul>
     <p>
       How long submissions are kept: [to be confirmed]. Who on the team can
       access submissions: [to be confirmed]. The Foundation's privacy contact:
@@ -87,8 +105,6 @@ import site from "../../data/site.json";
         terms. Further details: [to be confirmed].
       </li>
     </ul>
-    <p>No analytics tools are currently installed.</p>
-
     <h2>Contact</h2>
     <p>
       Privacy questions: [to be confirmed]. Foundation email:
