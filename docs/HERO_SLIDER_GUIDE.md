@@ -2,10 +2,12 @@
 
 ## Add or remove a slide
 
-1. Open `src/data/hero-slides.json`.
-2. Add an object with a unique `id` and the required fields: `type`, `src`,
-   `poster`, `alt`, `eyebrow`, `headline`, `text`, `buttonLabel`, `buttonHref`,
-   `consentConfirmed`, and `needsConfirmation`.
+1. Open `src/data/hero-slides.json`, or use the Hero slides section of the
+   editing screen at `/admin`.
+2. Add an object with a unique `id` and these required fields: `type`, `src`,
+   `alt`, `consentConfirmed`, `depictsChildren` and `consentNotes`. Also fill
+   in the display fields: `poster` (video slides only), `eyebrow`, `headline`,
+   `text`, `buttonLabel`, `buttonHref` and `needsConfirmation`.
 3. Use `type: "image"` for an image, or `type: "video"` for a silent video.
    Video slides also need a poster image. Keep the text to one short sentence.
 4. Set `needsConfirmation` to `true` for unconfirmed claims. Never type impact
@@ -30,8 +32,19 @@ approved, descriptive images when they are available.
 ## Child-photo consent
 
 Do not publish a child's photo or video until guardian consent has been
-recorded. For any slide that contains children, set `containsChildren` to
-`true` and `consentConfirmed` to `true` only after consent is recorded. A build
-fails with a clear error if a slide is flagged as containing children without
-confirmed consent. Until then, use placeholder imagery and set
-`containsChildren` to `false`.
+recorded. Every slide must have these three fields, and the build checks them:
+
+- `depictsChildren`: `true` if any child can be seen in the image or video,
+  even partly; otherwise `false`. Only use `false` when the image really shows
+  no children. Never use `false` to get around the consent check.
+- `consentConfirmed`: `true` only after a guardian has agreed to the photo or
+  video being published. It must be `true` whenever `depictsChildren` is
+  `true`.
+- `consentNotes`: a short note saying who gave consent and how (for example,
+  "guardian written consent on file"). It must not be empty whenever
+  `depictsChildren` is `true`. Never write a child's full name here.
+
+The build fails with a clear error, naming the slide, if a field is missing or
+if a slide shows children without confirmed consent. Until consent is
+recorded, use placeholder imagery that shows no children, with
+`depictsChildren` set to `false`.
