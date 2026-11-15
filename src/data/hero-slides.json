@@ -13,7 +13,7 @@
       "buttonHref": "/about",
       "consentConfirmed": true,
       "needsConfirmation": false,
-      "containsChildren": false,
+      "depictsChildren": false,
       "consentNotes": "No children are depicted; guardian consent is not applicable."
     },
     {
@@ -29,7 +29,7 @@
       "buttonHref": "/programs",
       "consentConfirmed": true,
       "needsConfirmation": true,
-      "containsChildren": false,
+      "depictsChildren": false,
       "consentNotes": "No children are depicted; guardian consent is not applicable."
     },
     {
@@ -45,7 +45,7 @@
       "buttonHref": "/impact",
       "consentConfirmed": true,
       "needsConfirmation": true,
-      "containsChildren": false,
+      "depictsChildren": false,
       "consentNotes": "No children are depicted; guardian consent is not applicable."
     },
     {
@@ -61,7 +61,7 @@
       "buttonHref": "/about",
       "consentConfirmed": true,
       "needsConfirmation": false,
-      "containsChildren": false,
+      "depictsChildren": false,
       "consentNotes": "No children are depicted; guardian consent is not applicable."
     },
     {
@@ -77,7 +77,7 @@
       "buttonHref": "/programs",
       "consentConfirmed": true,
       "needsConfirmation": false,
-      "containsChildren": false,
+      "depictsChildren": false,
       "consentNotes": "No children are depicted; guardian consent is not applicable."
     }
   ]

@@ -20,7 +20,7 @@ const slideKeys: Record<string, [string, string, string, string, string]> = {
 };
 
 const childConsentViolation = slides.find(
-  (slide) => slide.containsChildren && !slide.consentConfirmed,
+  (slide) => slide.depictsChildren && !slide.consentConfirmed,
 );
 
 if (childConsentViolation) {

@@ -216,7 +216,7 @@ for (const directory of scannedRoots) {
       }
     }
 
-    if (path === "src/pages/design-system.astro") {
+    if (path === "src/components/DesignSystemPage.astro") {
       addFinding({
         path,
         text: "Route /design-system/ (source page)",

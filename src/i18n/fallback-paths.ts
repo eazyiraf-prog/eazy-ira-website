@@ -23,6 +23,7 @@ export async function getFallbackPagePaths() {
       "legal/donation-policy",
     ]),
   ];
+  if (!isProductionLaunchGateActive()) paths.push("design-system");
   return isProductionLaunchGateActive()
     ? paths.filter((path) => path !== "design-system")
     : paths;

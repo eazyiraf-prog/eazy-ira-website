@@ -1,0 +1,12 @@
+---
+import DesignSystemPage from "../components/DesignSystemPage.astro";
+import { isProductionLaunchGateActive } from "../../scripts/launch-gate.js";
+
+export function getStaticPaths() {
+  return isProductionLaunchGateActive()
+    ? []
+    : [{ params: { reference: "design-system" } }];
+}
+---
+
+<DesignSystemPage />

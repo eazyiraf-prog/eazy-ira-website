@@ -313,7 +313,7 @@ collections:
                   widget: boolean,
                   required: true,
                 }
-              - name: containsChildren
+              - name: depictsChildren
                 label: Children appear in this slide
                 widget: boolean
                 required: true
