@@ -334,6 +334,8 @@
   "allCategories": "All categories",
   "newsPages": "News pages",
   "noNewsPosts": "There are no news posts to share yet.",
+  "newsComingSoon": {"value":"First updates are coming soon. Follow us on Instagram and YouTube to see what is happening.","needsNativeReview":true},
+  "galleryComingSoon": {"value":"Our photo albums are coming soon. We only publish photos of children when a guardian has given consent.","needsNativeReview":true},
   "backToNews": "Back to news",
   "minuteRead": "{count} min read",
   "sharePost": "Share this post",

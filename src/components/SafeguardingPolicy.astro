@@ -1,0 +1,48 @@
+---
+import site from "../data/site.json";
+const directorRole = site.safeguardingContact.role;
+---
+
+<section aria-labelledby="safeguarding-policy-heading">
+  <h2 id="safeguarding-policy-heading">Our Child Safeguarding Policy</h2>
+  <h3>Our commitment.</h3>
+  <p>
+    EAZY-IRA Charity Foundation works with children in Masoro, Kigali. Every
+    child has the right to be safe, respected and protected from harm. Everyone
+    who takes part in our activities, including founders, leaders, volunteers
+    and visitors, must follow this policy.
+  </p>
+
+  <h3>How we protect children.</h3>
+  <ol>
+    <li><strong>Respect.</strong> We speak and act kindly. We never use physical punishment, insults, humiliation, favouritism or discrimination.</li>
+    <li><strong>Never alone.</strong> No adult is alone with a child out of sight of others during Foundation activities. We use open, shared spaces. Home visits are made by at least two team members.</li>
+    <li><strong>Photos and videos.</strong> We take and publish a child's photo or video only with the guardian's consent. We never publish a child's full name, home address or school. Guardians can withdraw consent at any time.</li>
+    <li><strong>Private information.</strong> We keep information about children and families private and share it only with people who need it to keep a child safe.</li>
+    <li><strong>Gifts and contact.</strong> Adults do not give private gifts or money to children, and do not contact children privately by phone or social media. School items are given openly through the Foundation.</li>
+    <li><strong>Volunteers.</strong> Everyone who works with children reads and agrees to this policy first, and new volunteers start by working alongside experienced team members.</li>
+  </ol>
+
+  <h3>If you are worried about a child.</h3>
+  <p>
+    Tell our {directorRole} straight away:{" "}
+    <a href={`tel:${site.phone.value.replaceAll(" ", "")}`}>{site.phone.value}</a>
+    {" "}or <a href={`mailto:${site.email.value}`}>{site.email.value}</a>. If the
+    concern is about the Director, tell another leader of the Foundation or
+    call the child helpline directly. If a child is in immediate danger, call
+    112. To report child abuse, call 116 (free, Rwanda National Police child
+    helpline). The Isange One Stop Centre, 3029 (free), offers medical, legal
+    and counselling support to children and others who have been abused.
+  </p>
+
+  <h3>What we do when a concern is raised.</h3>
+  <p>
+    We listen, we do not promise to keep it secret, and we write down what was
+    said. The Director acts the same day to keep the child safe and works with
+    the authorities where abuse is suspected. Nobody is punished for raising a
+    concern in good faith.
+  </p>
+
+  <h3>Review.</h3>
+  <p>Our leaders review this policy at least once a year.</p>
+</section>

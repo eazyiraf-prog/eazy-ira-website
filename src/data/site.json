@@ -34,9 +34,9 @@
         "details": {
           "payCode": "1446124"
         },
-        "instructions": "Dial *182*8*1*1446124*AMOUNT# (replace AMOUNT with the amount in RWF), then follow the prompts on your phone. The name shown will be our treasurer, who holds the account on behalf of EAZY-IRA Charity Foundation. We publish how every gift is spent on our Transparency page.",
+        "instructions": "Dial *182*8*1*1446124*AMOUNT# (replace AMOUNT with the amount in RWF), then follow the prompts on your phone. Before you confirm, your phone shows the name Henriette, our treasurer, who holds the account on behalf of EAZY-IRA Charity Foundation. We publish how every gift is spent on our Transparency page.",
         "enabled": true,
-        "needsConfirmation": true
+        "needsConfirmation": false
       },
       {
         "id": "online-fundraiser",

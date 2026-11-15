@@ -334,6 +334,8 @@
   "allCategories": {"value":"Ibyiciro byose","needsNativeReview":true},
   "newsPages": {"value":"Amapaji y’amakuru","needsNativeReview":true},
   "noNewsPosts": {"value":"Nta nkuru dufite yo gusangiza ubu.","needsNativeReview":true},
+  "newsComingSoon": {"value":"Amakuru ya mbere araje vuba. Dukurikire kuri Instagram na YouTube kugira ngo umenye ibiri kuba.","needsNativeReview":true},
+  "galleryComingSoon": {"value":"Alubumu z’amafoto zacu ziraza vuba. Dusohora amafoto y’abana ari uko umubyeyi cyangwa umurera yemeye.","needsNativeReview":true},
   "backToNews": {"value":"Subira ku makuru","needsNativeReview":true},
   "minuteRead": {"value":"Iminota {count} yo gusoma","needsNativeReview":true},
   "sharePost": {"value":"Sangiza abandi iyi nkuru","needsNativeReview":true},

@@ -13,9 +13,7 @@ const routes = [
   ["/transparency/", "Transparency"],
   ["/transparency/reports/donation-30000-rwf/", "Report"],
   ["/gallery/", "Gallery"],
-  ["/gallery/sample-community-moments/", "Album"],
   ["/news/", "News"],
-  ["/news/sample-learning-together/", "News post"],
   ["/get-involved/", "Get involved"],
   ["/donate/", "Donate"],
   ["/partner/", "Partner"],
@@ -189,18 +187,26 @@ try {
     .count();
 
   await page.setViewportSize({ width: 1365, height: 900 });
-  await page.goto(new URL("/gallery/sample-community-moments/", baseUrl).href, {
+  await page.goto(new URL("/gallery/", baseUrl).href, {
     waitUntil: "domcontentloaded",
   });
   const trigger = page.locator("[data-lightbox-trigger]").first();
-  await trigger.click();
-  const lightboxOpen = await page.locator("[data-lightbox]").evaluate(
-    (dialog) => dialog.open,
-  );
-  await page.locator("[data-lightbox-close]").click();
-  const lightboxFocusReturned = await trigger.evaluate(
-    (element) => element === document.activeElement,
-  );
+  const hasAlbumImages = (await page.locator("[data-lightbox-trigger]").count()) > 0;
+  let lightboxOpen = false;
+  let lightboxFocusReturned = false;
+  let emptyGalleryMessage = "";
+  if (hasAlbumImages) {
+    await trigger.click();
+    lightboxOpen = await page.locator("[data-lightbox]").evaluate(
+      (dialog) => dialog.open,
+    );
+    await page.locator("[data-lightbox-close]").click();
+    lightboxFocusReturned = await trigger.evaluate(
+      (element) => element === document.activeElement,
+    );
+  } else {
+    emptyGalleryMessage = (await page.locator(".empty-state").textContent()) ?? "";
+  }
 
   console.log(
     JSON.stringify(
@@ -218,8 +224,10 @@ try {
           dataSaverVideoSources,
           wideVideoSources,
           formErrors,
+          hasAlbumImages,
           lightboxOpen,
           lightboxFocusReturned,
+          emptyGalleryMessage,
         },
       },
       null,
@@ -239,8 +247,8 @@ try {
       dataSaverVideoSources.every((src) => !src)) ||
     !wideVideoSources.some(Boolean) ||
     formErrors === 0 ||
-    !lightboxOpen ||
-    !lightboxFocusReturned;
+    (hasAlbumImages && (!lightboxOpen || !lightboxFocusReturned)) ||
+    (!hasAlbumImages && !emptyGalleryMessage.includes("Our photo albums are coming soon"));
   if (
     interactionProblems ||
     results.some(

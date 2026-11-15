@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/ui/Container.astro";
 import { localizedPath, t, type Locale } from "../../i18n";
 import { getFallbackPagePaths } from "../../i18n/fallback-paths";
+import site from "../../data/site.json";
+import SafeguardingPolicy from "../../components/SafeguardingPolicy.astro";
 
 export async function getStaticPaths() {
   const fallbackPaths = await getFallbackPagePaths();
@@ -16,6 +18,12 @@ export async function getStaticPaths() {
 const lang = Astro.params.lang as Locale;
 const englishPath = `/${Astro.params.path}`;
 const isLegal = englishPath.startsWith("/legal/");
+const isNewsFallback = englishPath === "/news";
+const isGalleryFallback = englishPath === "/gallery";
+const isSafeguardingFallback = englishPath === "/about/safeguarding";
+const socials = Object.entries(site.socials).filter(
+  ([, social]) => social.value && !social.needsConfirmation,
+);
 const languageName = lang === "fr" ? "French" : "Kinyarwanda";
 const title = `${t("fallbackPageTitle", lang)}: ${englishPath} (${languageName})`;
 ---
@@ -36,7 +44,28 @@ const title = `${t("fallbackPageTitle", lang)}: ${englishPath} (${languageName})
           ? t("legalEnglishNotice", lang)
           : t("englishFallbackNotice", lang)}
       </p>
-      <p>{t("fallbackPageBody", lang)}</p>
+      {isNewsFallback ? (
+        <section>
+          <p>{t("newsComingSoon", lang)}</p>
+          <p>
+            {socials.map(([network, social], index) => (
+              <>
+                {index > 0 && " and "}
+                <a href={social.value} target="_blank" rel="noopener noreferrer">
+                  {network === "instagram" ? "Instagram" : network === "youtube" ? "YouTube" : network}
+                </a>
+              </>
+            ))}
+          </p>
+          <p><a href={localizedPath("/contact", lang)}>{t("contact", lang)}</a></p>
+        </section>
+      ) : isGalleryFallback ? (
+        <p>{t("galleryComingSoon", lang)}</p>
+      ) : isSafeguardingFallback ? (
+        <div class="safeguarding-fallback"><SafeguardingPolicy /></div>
+      ) : (
+        <p>{t("fallbackPageBody", lang)}</p>
+      )}
       <a
         class="ui-button ui-button--primary"
         href={localizedPath(englishPath, "en")}
@@ -48,3 +77,10 @@ const title = `${t("fallbackPageTitle", lang)}: ${englishPath} (${languageName})
     </Container>
   </section>
 </BaseLayout>
+
+<style>
+  .safeguarding-fallback :global(section) { display: grid; gap: 1rem; margin-top: 2rem; }
+  .safeguarding-fallback :global(h2) { font-size: var(--type-2xl); }
+  .safeguarding-fallback :global(h3) { font-size: var(--type-lg); }
+  .safeguarding-fallback :global(ol) { display: grid; gap: 0.75rem; padding-inline-start: 1.5rem; }
+</style>

@@ -334,6 +334,8 @@
   "allCategories": {"value":"Toutes les catégories","needsNativeReview":true},
   "newsPages": {"value":"Pages d’actualités","needsNativeReview":true},
   "noNewsPosts": {"value":"Aucun article d’actualité n’est encore disponible.","needsNativeReview":true},
+  "newsComingSoon": {"value":"Les premières nouvelles arrivent bientôt. Suivez-nous sur Instagram et YouTube pour découvrir nos activités.","needsNativeReview":true},
+  "galleryComingSoon": {"value":"Nos albums photo arrivent bientôt. Nous ne publions des photos d’enfants qu’avec le consentement d’un tuteur.","needsNativeReview":true},
   "backToNews": {"value":"Retour aux actualités","needsNativeReview":true},
   "minuteRead": {"value":"Lecture : {count} min","needsNativeReview":true},
   "sharePost": {"value":"Partager cet article","needsNativeReview":true},

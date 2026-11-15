@@ -249,15 +249,14 @@ const organizationStructuredData = {
     </div>
   </Section>
 
-  <Section
+  {newsPosts.length > 0 && <Section
     id="latest-news"
     eyebrow={t("updates")}
     heading={t("latestNews")}
     intro={t("newsIntro")}
   >
-    {newsPosts.length ? (
-      <div class="home-news-grid">
-        {newsPosts.map((post) => (
+    <div class="home-news-grid">
+      {newsPosts.map((post) => (
           <Card class="home-news-card">
             <p class="home-news-card__date">
               <time datetime={post.data.date.toISOString()}>
@@ -277,14 +276,9 @@ const organizationStructuredData = {
               <span class="visually-hidden">{post.data.title}</span>
             </a>
           </Card>
-        ))}
-      </div>
-    ) : (
-      <div class="home-news-empty">
-        <p>{t("noNews")}</p>
-      </div>
-    )}
-  </Section>
+      ))}
+    </div>
+  </Section>}
 
   <section class="home-final-cta" aria-labelledby="home-final-heading">
     <div class="home-container home-final-cta__inner">
@@ -538,8 +532,7 @@ const organizationStructuredData = {
     font-weight: 700;
   }
 
-  .home-partners-empty,
-  .home-news-empty {
+  .home-partners-empty {
     border: 1px dashed var(--border-subtle);
     border-radius: var(--radius-card-token);
     padding: clamp(1.5rem, 5vw, 3rem);
