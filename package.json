@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/validate-donation.js && node scripts/check-i18n.js",
+    "prebuild": "node scripts/validate-donation.js && node scripts/check-i18n.js && npm run check:launch",
     "build": "node scripts/copy-cms.js && astro build && pagefind --site dist && node scripts/update-csp.js",
-    "build:prod": "node scripts/validate-donation.js --production && node scripts/check-i18n.js && node scripts/copy-cms.js && astro build && pagefind --site dist && node scripts/update-csp.js",
+    "build:prod": "npm run check:launch && node scripts/validate-donation.js --production && node scripts/check-i18n.js && node scripts/copy-cms.js && astro build && pagefind --site dist && node scripts/update-csp.js",
+    "check:launch": "node scripts/check-launch-ready.js",
+    "check:dist-links": "node scripts/check-dist-links.js",
     "preview": "astro preview",
     "test:worker": "node --test worker/index.test.js",
     "test:a11y": "node scripts/audit-accessibility.mjs",

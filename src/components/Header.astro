@@ -11,6 +11,9 @@ interface Props {
 }
 
 const { lang = "en" } = Astro.props;
+const languageSwitchPath = /^\/404(?:\/|\.html)?$/.test(Astro.url.pathname)
+  ? "/"
+  : Astro.url.pathname;
 ---
 
 <header class="site-header" data-site-header>
@@ -68,7 +71,7 @@ const { lang = "en" } = Astro.props;
         >
           {(["en", "fr", "rw"] as const).map((language) => (
             <a
-              href={localizedPath(Astro.url.pathname, language as Locale)}
+              href={localizedPath(languageSwitchPath, language as Locale)}
               data-language-link
               lang={language}
               hreflang={language}

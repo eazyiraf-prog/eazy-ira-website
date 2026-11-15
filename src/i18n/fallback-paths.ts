@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { getStaticPagePaths } from "./static-paths.js";
+import { isProductionLaunchGateActive } from "../../scripts/launch-gate.js";
 
 export async function getFallbackPagePaths() {
   const [staticPaths, programs, reports, albums, news] = await Promise.all([
@@ -10,7 +11,7 @@ export async function getFallbackPagePaths() {
     getCollection("news", ({ data }) => !data.draft),
   ]);
 
-  return [
+  const paths = [
     ...new Set([
       ...staticPaths,
       ...programs.map((entry) => `programs/${entry.id}`),
@@ -22,4 +23,7 @@ export async function getFallbackPagePaths() {
       "legal/donation-policy",
     ]),
   ];
+  return isProductionLaunchGateActive()
+    ? paths.filter((path) => path !== "design-system")
+    : paths;
 }

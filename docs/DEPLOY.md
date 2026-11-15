@@ -1,4 +1,31 @@
-# Cloudflare Workers deployment draft
+# Deployment
+
+## What the site needs
+
+- Static hosting that serves the generated `./dist` directory and supports
+  clean routes and the included static response headers.
+- A server-side runtime for the forms Worker (`/api/forms/*`) and the CMS
+  GitHub OAuth routes. Do not expose Worker secrets to the static site.
+- A domain and DNS provider for the canonical, indexable production origin.
+- Environment variables and secret storage as listed in the reference below.
+  At minimum, the build needs `PUBLIC_SITE_URL`,
+  `PRODUCTION_SITE_URL`, and `PUBLIC_TURNSTILE_SITE_KEY`; the forms Worker
+  needs its Turnstile, email-provider, sender, and recipient settings.
+- Build and deploy from the repository with `npm ci`, `npm run build:prod`,
+  and deployment of `./dist` plus the Worker. Set
+  `PUBLIC_SITE_URL` and `PRODUCTION_SITE_URL` to the same canonical origin
+  only for a production launch build; that enables the launch gate.
+
+The static output is portable. The Worker and OAuth callback hosting are
+separate server-side requirements and must be routed to the same production
+domain. Keep all credentials in the selected host's encrypted secrets store,
+never in Git.
+
+## Cloudflare Workers deployment option
+
+The instructions below document the current Cloudflare implementation. Other
+hosts should provide equivalent static hosting, Worker runtime, secret
+management, and routing.
 
 Complete every step marked **[MANUAL]** yourself. Do not put secret values in
 Git or in this document.
@@ -21,6 +48,8 @@ Git or in this document.
 5. **[MANUAL] Set the build variables and Worker variables/secrets.**
    - In Workers Builds **Build variables and secrets**, set
      `PUBLIC_SITE_URL` to the canonical site origin and
+     `PRODUCTION_SITE_URL` to the same canonical origin for a production
+     release (use a different value for previews), and
      `PUBLIC_TURNSTILE_SITE_KEY` to the Turnstile site key. The public site key
      is compiled into the form markup.
    - In the Worker **Settings > Variables & Secrets**, set
@@ -28,7 +57,12 @@ Git or in this document.
      verified sender address.
    - Add the following as **Worker secrets**, not plain-text variables:
      `TURNSTILE_SECRET_KEY` (Turnstile verification secret) and
-     `RESEND_API_KEY` (Resend API key).
+     `RESEND_API_KEY` (Resend API key),
+     `GITHUB_OAUTH_CLIENT_SECRET` (GitHub CMS OAuth app secret).
+   - Add `GITHUB_OAUTH_CLIENT_ID` as a Worker variable and
+     `GITHUB_OAUTH_SCOPE` as both a Worker and build variable. Use the same
+     scope in both places (`repo` for the private repository, or
+     `public_repo` only if the repository is public).
    - Add these as **Worker variables** after the team inboxes are confirmed:
      `NEWSLETTER_TO`, `CONTACT_TO`, `PARTNERSHIP_ENQUIRY_TO`,
      `VOLUNTEER_APPLICATION_TO`, `PRAYER_REQUEST_TO`, and
@@ -103,6 +137,10 @@ the form endpoint applies the same baseline security headers itself.
 | Name | Where | Purpose |
 | --- | --- | --- |
 | `PUBLIC_SITE_URL` | Build variable | Canonical origin for RSS and absolute canonical URLs. |
+| `PRODUCTION_SITE_URL` | Build variable | Canonical production origin; when it matches `PUBLIC_SITE_URL`, enables blocking launch checks and excludes design-system pages. |
+| `GITHUB_OAUTH_CLIENT_ID` | Worker variable | GitHub OAuth App client ID for CMS sign-in. |
+| `GITHUB_OAUTH_CLIENT_SECRET` | Worker secret | GitHub OAuth App client secret. |
+| `GITHUB_OAUTH_SCOPE` | Worker and build variable | OAuth scope; the build embeds the matching value in CMS configuration. |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Build variable and Worker variable | Public Turnstile widget key; also compiled into static form markup. |
 | `TURNSTILE_SECRET_KEY` | Worker secret | Server-side Turnstile Siteverify requests. |
 | `RESEND_API_KEY` | Worker secret | Authorization for Resend's email API. |
