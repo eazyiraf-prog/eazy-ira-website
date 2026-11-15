@@ -2,6 +2,8 @@
 import AboutPage from "../../components/AboutPage.astro";
 import Card from "../../components/ui/Card.astro";
 import Section from "../../components/ui/Section.astro";
+import impact from "../../data/impact.json";
+import site from "../../data/site.json";
 ---
 
 <AboutPage
@@ -12,25 +14,24 @@ import Section from "../../components/ui/Section.astro";
   <Section
     eyebrow="Accountability"
     heading="Governance information"
-    intro="We will publish verified organizational and governance details when they are supplied."
+    intro="The Foundation is led through defined director and treasurer roles."
   >
     <Card>
       <dl class="governance-details">
         <div>
-          <dt>Registration status</dt>
-          <dd>[to be supplied]</dd>
+          <dt>Leadership</dt>
+          <dd>Led by a {site.safeguardingContact.role}.</dd>
         </div>
         <div>
-          <dt>Legal name</dt>
-          <dd>[to be supplied]</dd>
+          <dt>Founding</dt>
+          <dd>
+            Founded in {impact.foundedMonth} {impact.foundedYear} by {impact.founders}
+            university student volunteers.
+          </dd>
         </div>
         <div>
-          <dt>Registration number</dt>
-          <dd>[to be supplied]</dd>
-        </div>
-        <div>
-          <dt>Leadership structure</dt>
-          <dd>[to be supplied]</dd>
+          <dt>Finance</dt>
+          <dd>A treasurer role is part of the Foundation's governance.</dd>
         </div>
       </dl>
     </Card>

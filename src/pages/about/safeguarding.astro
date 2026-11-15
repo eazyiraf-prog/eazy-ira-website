@@ -1,6 +1,13 @@
 ---
 import AboutPage from "../../components/AboutPage.astro";
 import Section from "../../components/ui/Section.astro";
+import site from "../../data/site.json";
+
+const safeguardingContact = {
+  ...site.safeguardingContact,
+  phone: site.phone.value,
+  email: site.email.value,
+};
 ---
 
 <AboutPage
@@ -21,7 +28,11 @@ import Section from "../../components/ui/Section.astro";
       </p>
       <p>
         If you have a safeguarding concern, please contact:
-        <strong>[reporting contact to be supplied]</strong>
+        <strong>{safeguardingContact.role}</strong>
+        <a href={`tel:${safeguardingContact.phone.replaceAll(" ", "")}`}>
+          {safeguardingContact.phone}
+        </a>
+        <a href={`mailto:${safeguardingContact.email}`}>{safeguardingContact.email}</a>
       </p>
     </div>
   </Section>

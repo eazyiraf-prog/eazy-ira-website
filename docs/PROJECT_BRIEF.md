@@ -6,8 +6,8 @@ ORGANIZATION FACTS (use exactly; never invent figures, names, accounts or legal 
 - Name: EAZY-IRA Charity Foundation. Tagline: "Love in Action, Hope in Every Child."
 - Youth-led, community-rooted initiative in Masoro, Kigali, Rwanda. Founded May 2025 by eleven university student volunteers.
 - Focus: education, nutrition, spiritual and moral development, mentorship, community support. Christian, Sabbath-based fellowship.
-- Children currently served: 78 [confirm]. Weekly children's gathering since May 2025 (shared meal + teaching on moral values, positive attitudes, politeness), almost 70 consecutive weekly gatherings [confirm].
-- School materials (bags, notebooks, pens) and uniforms for all 78 children across 2025-2026 and 2026-2027 [confirm]. Helped some children attend school for the first time.
+- Children currently served: 78 as of 15 November 2026. Weekly Sabbath gathering every Saturday since 10 May 2025 (shared meal + teaching on moral values, positive attitudes, politeness), with 80 weekly gatherings as of 14 November 2026.
+- School materials (bags, notebooks, pens) and uniforms for all 78 children across 2025-2026 and 2026-2027 as of 15 November 2026. Items distributed: 300 notebooks, 120 pens, and 20 bags. Helped some children attend school for the first time.
 - Home visits to vulnerable families (meeting parents, prayer, educational guidance, encouragement).
 - EAZY-IRA Public Speaking Academy: eight structured sessions, trilingual (English, French, Kinyarwanda).
 - Fundraiser via a US-based friend on a GoFundMe-style platform, open-ended, no fixed target: weekly gathering meals, school shoes, school feeding fees, uniforms, hygiene items.

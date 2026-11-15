@@ -1,24 +1,27 @@
 {
   "childrenServed": {
     "value": 78,
-    "needsConfirmation": true
+    "needsConfirmation": false,
+    "asOf": "2026-11-15"
   },
   "weeklyGatherings": {
-    "value": null,
+    "value": 80,
     "startMonth": "May",
     "startYear": 2025,
-    "needsConfirmation": true,
-    "note": "Placeholder: confirm the current total of weekly gatherings."
+    "needsConfirmation": false,
+    "asOf": "2026-11-14"
   },
   "itemsDistributed": {
-    "value": null,
-    "needsConfirmation": true,
-    "note": "Placeholder: confirm the total number of items distributed."
+    "notebooks": 300,
+    "pens": 120,
+    "bags": 20,
+    "needsConfirmation": false
   },
   "childrenWithSchoolMaterials": {
     "value": 78,
     "academicYears": ["2025-2026", "2026-2027"],
-    "needsConfirmation": true
+    "needsConfirmation": false,
+    "asOf": "2026-11-15"
   },
   "foundedYear": 2025,
   "foundedMonth": "May",
@@ -28,7 +31,7 @@
     "sessions": 8
   },
   "lastUpdated": {
-    "value": null,
-    "needsConfirmation": true
+    "value": "2026-11-15",
+    "needsConfirmation": false
   }
 }

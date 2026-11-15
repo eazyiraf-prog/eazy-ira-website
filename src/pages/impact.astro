@@ -41,13 +41,25 @@ const chartStats = [
     label: "Gatherings held",
     value: impact.weeklyGatherings.value,
     needsConfirmation: impact.weeklyGatherings.needsConfirmation,
-    note: impact.weeklyGatherings.note,
+    note: `Weekly gatherings since ${impact.weeklyGatherings.startMonth} ${impact.weeklyGatherings.startYear}.`,
   },
   {
-    label: "Items distributed",
-    value: impact.itemsDistributed.value,
+    label: "Notebooks distributed",
+    value: impact.itemsDistributed.notebooks,
     needsConfirmation: impact.itemsDistributed.needsConfirmation,
-    note: impact.itemsDistributed.note,
+    note: undefined,
+  },
+  {
+    label: "Pens distributed",
+    value: impact.itemsDistributed.pens,
+    needsConfirmation: impact.itemsDistributed.needsConfirmation,
+    note: undefined,
+  },
+  {
+    label: "Bags distributed",
+    value: impact.itemsDistributed.bags,
+    needsConfirmation: impact.itemsDistributed.needsConfirmation,
+    note: undefined,
   },
 ];
 
@@ -55,14 +67,10 @@ const milestoneDates: Record<string, string> = {
   founded: `${impact.foundedMonth} ${impact.foundedYear}`,
   firstSchoolYear: impact.childrenWithSchoolMaterials.academicYears[0],
   currentSchoolYear: impact.childrenWithSchoolMaterials.academicYears[1],
-  present: impact.lastUpdated.needsConfirmation
-    ? "Present — update date to be confirmed"
-    : `Updated ${impact.lastUpdated.value}`,
+  present: `Updated ${impact.lastUpdated.value}`,
 };
 
-const dataUpdated = impact.lastUpdated.needsConfirmation
-  ? "[date to be confirmed]"
-  : impact.lastUpdated.value;
+const dataUpdated = impact.lastUpdated.value;
 ---
 
 <BaseLayout
@@ -136,7 +144,7 @@ const dataUpdated = impact.lastUpdated.needsConfirmation
   <Section
     eyebrow="Data snapshot"
     heading="What we can report"
-    intro="Only totals available in the impact data are shown. Historical series are not yet available for charting."
+    intro="Available figures from the impact data are shown separately. Historical series are not yet available for charting."
   >
     <div class="impact-stat-grid">
       {chartStats.map((stat) => (
@@ -144,13 +152,11 @@ const dataUpdated = impact.lastUpdated.needsConfirmation
           <h3>{stat.label}</h3>
           <dl>
             <div>
-              <dt>Reported total</dt>
-              <dd>
-                {stat.value === null ? "[to be confirmed]" : stat.value}
-              </dd>
+              <dt>Reported count</dt>
+              <dd>{stat.value}</dd>
             </div>
           </dl>
-          <p>{stat.note}</p>
+          {stat.note && <p>{stat.note}</p>}
           {stat.needsConfirmation && (
             <span class="impact-confirmation">Needs confirmation</span>
           )}
@@ -158,9 +164,9 @@ const dataUpdated = impact.lastUpdated.needsConfirmation
       ))}
     </div>
     <p class="impact-chart-alternative">
-      Text alternative: children served, gatherings held, and items distributed
-      are listed above as accessible text totals; confirmed historical data
-      points are not available.
+      Text alternative: children served and gatherings held are listed above.
+      Notebooks, pens, and bags are listed separately; confirmed historical
+      data points are not available.
     </p>
   </Section>
 
@@ -172,8 +178,6 @@ const dataUpdated = impact.lastUpdated.needsConfirmation
     <div class="impact-methodology">
       <p>
         Attendance at gatherings is counted using attendance registers.
-        Confirmed counts for children served and items distributed should be
-        reconciled with foundation records before publication.
       </p>
       <p>
         <strong>Data last updated:</strong> {dataUpdated}

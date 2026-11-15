@@ -26,16 +26,15 @@ const turnstileEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
         <p>{site.tagline}</p>
         <p>{site.location}</p>
         <ul class="site-socials" aria-label={t("footerSocial", lang)}>
-          {Object.entries(site.socials).map(([platform, contact]) => (
-            <li>
-              <span>
-                {platform}:{" "}
-                {contact.needsConfirmation
-                  ? t("linkToConfirm", lang)
-                  : contact.value}
-              </span>
-            </li>
-          ))}
+          {Object.entries(site.socials)
+            .filter(([, contact]) => contact.value && !contact.needsConfirmation)
+            .map(([platform, contact]) => (
+              <li>
+                <a href={contact.value} target="_blank" rel="noopener noreferrer">
+                  {platform}
+                </a>
+              </li>
+            ))}
         </ul>
       </div>
 
@@ -77,12 +76,6 @@ const turnstileEnabled = Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 
       <div class="site-footer__details">
         <h2>{t("organizationDetails", lang)}</h2>
-        <p>
-          {t("registrationDetails", lang)}{" "}
-          {site.registrationDetails.needsConfirmation
-            ? t("toBeConfirmed", lang)
-            : site.registrationDetails.value}
-        </p>
         <p>
           {t("lastUpdated", lang)}{" "}
           {impact.lastUpdated.needsConfirmation

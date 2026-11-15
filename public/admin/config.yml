@@ -350,6 +350,7 @@ collections:
                   widget: boolean,
                   required: true,
                 }
+              - { name: asOf, label: Figure date, widget: datetime, type: date }
           - name: weeklyGatherings
             label: Weekly gatherings
             widget: object
@@ -376,26 +377,20 @@ collections:
                   widget: boolean,
                   required: true,
                 }
-              - { name: note, label: Confirmation note, widget: string }
+              - { name: asOf, label: Figure date, widget: datetime, type: date }
           - name: itemsDistributed
             label: Items distributed
             widget: object
             fields:
-              - {
-                  name: value,
-                  label: Number of items,
-                  widget: number,
-                  value_type: int,
-                  min: 0,
-                  required: false,
-                }
+              - { name: notebooks, label: Notebooks distributed, widget: number, value_type: int, min: 0, required: true }
+              - { name: pens, label: Pens distributed, widget: number, value_type: int, min: 0, required: true }
+              - { name: bags, label: Bags distributed, widget: number, value_type: int, min: 0, required: true }
               - {
                   name: needsConfirmation,
                   label: This figure needs confirmation,
                   widget: boolean,
                   required: true,
                 }
-              - { name: note, label: Confirmation note, widget: string }
           - name: childrenWithSchoolMaterials
             label: Children receiving school materials
             widget: object
@@ -419,6 +414,7 @@ collections:
                   widget: boolean,
                   required: true,
                 }
+              - { name: asOf, label: Figure date, widget: datetime, type: date }
           - {
               name: foundedYear,
               label: Foundation year,

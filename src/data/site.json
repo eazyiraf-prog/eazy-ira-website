@@ -7,22 +7,21 @@
     "needsConfirmation": false
   },
   "phone": {
-    "value": null,
-    "needsConfirmation": true
+    "value": "+250 798 574 569",
+    "needsConfirmation": false
   },
   "socials": {
-    "facebook": {
-      "value": null,
-      "needsConfirmation": true
-    },
     "instagram": {
-      "value": null,
-      "needsConfirmation": true
+      "value": "https://www.instagram.com/eazyiracharityfoundation/",
+      "needsConfirmation": false
     },
     "youtube": {
-      "value": null,
-      "needsConfirmation": true
+      "value": "https://www.youtube.com/channel/UCwPQekStsoGruoZeKHdwn_g",
+      "needsConfirmation": false
     }
+  },
+  "safeguardingContact": {
+    "role": "Director"
   },
   "donation": {
     "primaryMethod": "mtn-momo",
@@ -82,9 +81,5 @@
         "needsConfirmation": true
       }
     ]
-  },
-  "registrationDetails": {
-    "value": null,
-    "needsConfirmation": true
   }
 }

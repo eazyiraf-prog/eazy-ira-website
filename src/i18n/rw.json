@@ -41,7 +41,6 @@
   "newsletterConsent": {"value":"Nemeye kujya mbona amakuru. Soma","needsNativeReview":true},
   "privacyPolicy": {"value":"Politiki y’ibanga","needsNativeReview":true},
   "organizationDetails": {"value":"Amakuru y’umuryango","needsNativeReview":true},
-  "registrationDetails": {"value":"Amakuru yo kwandikwa mu mategeko:","needsNativeReview":true},
   "toBeConfirmed": {"value":"bigomba kwemezwa","needsNativeReview":true},
   "lastUpdated": {"value":"Byaherukaga kuvugururwa:","needsNativeReview":true},
   "dateToBeConfirmed": {"value":"itariki igomba kwemezwa","needsNativeReview":true},

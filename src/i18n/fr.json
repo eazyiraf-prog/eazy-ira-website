@@ -41,7 +41,6 @@
   "newsletterConsent": {"value":"J’accepte de recevoir des nouvelles. Consultez notre","needsNativeReview":true},
   "privacyPolicy": {"value":"Politique de confidentialité","needsNativeReview":true},
   "organizationDetails": {"value":"Informations sur l’organisation","needsNativeReview":true},
-  "registrationDetails": {"value":"Informations d’enregistrement :","needsNativeReview":true},
   "toBeConfirmed": {"value":"à confirmer","needsNativeReview":true},
   "lastUpdated": {"value":"Dernière mise à jour :","needsNativeReview":true},
   "dateToBeConfirmed": {"value":"date à confirmer","needsNativeReview":true},

@@ -25,16 +25,25 @@ import { t } from "../i18n";
       <p><strong>{t("locationLabel")}</strong> {site.location}</p>
       <p>
         <strong>{t("emailLabel")}</strong>{" "}
-        {site.email.needsConfirmation
-          ? "[to be confirmed]"
-          : <a href={`mailto:${site.email.value}`}>{site.email.value}</a>}
+        <a href={`mailto:${site.email.value}`}>{site.email.value}</a>
       </p>
       <p>
         <strong>{t("phoneLabel")}</strong>{" "}
-        {site.phone.needsConfirmation
-          ? "[to be confirmed]"
-          : site.phone.value}
+        <a href={`tel:${site.phone.value.replaceAll(" ", "")}`}>
+          {site.phone.value}
+        </a>
       </p>
+      <ul class="site-socials" aria-label={t("footerSocial")}>
+        {Object.entries(site.socials)
+          .filter(([, social]) => social.value && !social.needsConfirmation)
+          .map(([platform, social]) => (
+            <li>
+              <a href={social.value} target="_blank" rel="noopener noreferrer">
+                {platform}
+              </a>
+            </li>
+          ))}
+      </ul>
     </div>
   </Section>
 
